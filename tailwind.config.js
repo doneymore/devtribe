@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         primary: {
           50: "#1A3681",
+          nav: "#0D1651",
         },
         secondary: {
           50: "#FFFFFF",
@@ -27,6 +28,7 @@ module.exports = {
           azul_light: "#0C2873",
           azul_lighter: "#1A3681",
           azul_bright: "#c8e3fe",
+          azul_text: "#111C60",
         },
       },
       fontFamily: {
@@ -36,6 +38,11 @@ module.exports = {
         neuton: ["var(--font-neuton)", "serif"],
         sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
         serif: ["var(--font-neuton)", "ui-serif", "Georgia"],
+      },
+      fontSize: {
+        sm: "14px",
+        base: "16px",
+        lg: "18px",
       },
     },
   },
