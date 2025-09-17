@@ -13,11 +13,10 @@ export default function Posts() {
   const handleCreatePost = async () => {
     if (newPostTitle.trim()) {
       try {
-        await createPost({
-          title: newPostTitle,
-          body: "This is a test post created with RTK Query",
-          userId: 1,
-        }).unwrap();
+        // await createPost({
+        //   title: newPostTitle,
+        //   userId: 1,
+        // }).unwrap();
         setNewPostTitle("");
       } catch (err) {
         console.error("Failed to create post:", err);
@@ -64,7 +63,7 @@ export default function Posts() {
 
       {/* Posts list */}
       <div className="space-y-4 max-h-96 overflow-y-auto">
-        {posts?.items?.slice(0, 10).map((post: Post) => (
+        {/* {posts?.items?.slice(0, 10).map((post: Post) => (
           <div key={post.id} className="p-4 border rounded bg-white">
             <div className="flex justify-between items-start">
               <div className="flex-1">
@@ -83,7 +82,7 @@ export default function Posts() {
               </button>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );

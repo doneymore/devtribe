@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { StaticImageData } from "next/image";
+
 
 interface HeroSectionProps {
   title: string;
@@ -8,7 +10,7 @@ interface HeroSectionProps {
   description: string;
   buttonText: string;
   buttonVariant?: "primary" | "secondary" | "outline";
-  imageSrc: string | any; // Allow Next.js imported images
+  imageSrc: string | StaticImageData; // Allow Next.js imported images
   imageAlt: string;
   imageWidth?: number;
   imageHeight?: number;

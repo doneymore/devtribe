@@ -3,13 +3,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import Image from "next/image";
 import { secneedle } from "@/public/assests/image";
-import { Button } from "./buttons";
+
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("ENG");
-  const languageRef = useRef(null);
+  const languageRef = useRef<HTMLDivElement>(null);
 
   // Navigation items
   const navItems = [
@@ -29,12 +29,23 @@ export const Navbar = () => {
 
   // Close language dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    interface Language {
+      code: string;
+      name: string;
+      flag: string;
+    }
+
+    interface NavItem {
+      name: string;
+      href: string;
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
       if (
-        languageRef.current &&
-        !languageRef?.current?.contains(event.target)
+      languageRef.current &&
+      !languageRef?.current?.contains(event.target as Node)
       ) {
-        setIsLanguageOpen(false);
+      setIsLanguageOpen(false);
       }
     };
 
@@ -44,7 +55,13 @@ export const Navbar = () => {
     };
   }, []);
 
-  const handleLanguageSelect = (language) => {
+  interface Language {
+    code: string;
+    name: string;
+    flag: string;
+  }
+
+  const handleLanguageSelect = (language: Language): void => {
     setSelectedLanguage(language.code);
     setIsLanguageOpen(false);
   };
