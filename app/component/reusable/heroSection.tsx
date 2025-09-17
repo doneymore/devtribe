@@ -37,44 +37,44 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <section className={`bg-gray-100 py-16 lg:py-20 ${className}`}>
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          {/* Left Content */}
-          <div className="flex-1 text-center lg:text-left order-2 lg:order-1 ">
-            <h1 className=" font-gurajada text-7xl tracking-wide md:text-5xl lg:text-6xl font-bold text-shades-azul_text leading-tight mb-4">
+    <section className={`bg-secondary-50 py-16 lg:py-20 ${className}`}>
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          {/* Text Content - 40% width on large screens */}
+          <div className="w-full lg:w-2/5 text-center lg:text-left order-2 lg:order-1">
+            <h1 className="font-gurajada text-4xl md:text-5xl lg:text-6xl font-bold text-shades-azul_text leading-tight mb-4">
               {title}
             </h1>
-            <p className="text-[48px]  font-orelega md:text-2xl text-gray-700 font-[400] mb-8">
+            <p className="text-2xl md:text-3xl font-orelega text-gray-700 font-normal mb-6">
               {subtitle}
             </p>
-            <p className="text-[15px] font-inter md:text-lg text-[#0D0D0D] leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0">
+            <p className="text-base md:text-lg font-inter text-[#0D0D0D] leading-relaxed mb-8">
               {description}
             </p>
             <button
               onClick={onButtonClick}
               className={`
-                ${buttonClasses[buttonVariant]}
-                px-8 py-3 rounded-full font-medium text-lg
-                transition-all duration-200 ease-in-out
-                focus:outline-none focus:ring-4 focus:ring-blue-200
-                shadow-lg hover:shadow-xl
-                transform hover:scale-105 active:scale-95
-              `}
+            ${buttonClasses[buttonVariant]}
+            px-8 py-3 rounded-full font-medium text-lg
+            transition-all duration-200 ease-in-out
+            focus:outline-none focus:ring-4 focus:ring-blue-200
+            shadow-lg hover:shadow-xl
+            transform hover:scale-105 active:scale-95
+          `}
             >
               {buttonText}
             </button>
           </div>
 
-          {/* Right Image */}
-          <div className="flex-1 order-1 lg:order-2">
-            <div className="relative">
+          {/* Image Container - 60% width on large screens */}
+          <div className="w-full lg:w-3/5 order-1 lg:order-2">
+            <div className="relative flex justify-center lg:justify-end">
               <Image
                 src={imageSrc}
                 alt={imageAlt}
                 width={imageWidth}
                 height={imageHeight}
-                className="w-full h-auto max-w-lg mx-auto lg:max-w-none"
+                className="w-full max-w-md lg:max-w-2xl xl:max-w-3xl h-auto"
                 priority
               />
             </div>
