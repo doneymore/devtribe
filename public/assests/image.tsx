@@ -3,4 +3,5 @@ import hero from "./hero.png";
 import profile from "./profile.png";
 import explore from "./explore.png";
 import blog from "./blog.png";
-export { secneedle, hero, profile, explore, blog };
+import hero1 from "./hero1.png";
+export { secneedle, hero, profile, explore, blog, hero1 };

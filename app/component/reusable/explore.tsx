@@ -2,6 +2,7 @@
 import { explore } from "@/public/assests/image";
 import Image from "next/image";
 import React from "react";
+import { Button } from "./buttons";
 
 interface KnowledgeJourneySectionProps {
   title: string;
@@ -32,7 +33,7 @@ export const KnowledgeJourneySection: React.FC<
           <div className="w-full lg:w-3/5 order-2 lg:order-1 text-center lg:text-left">
             {/* Title with exact specifications */}
             <h1
-              className="font-gurajada text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-normal text-blue-900 capitalize mb-6"
+              className="font-gurajada text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-normal text-[#091248] capitalize mb-6"
               style={{
                 fontSize: "clamp(2rem, 8vw, 96px)",
                 lineHeight: "0.9375", // 90px/96px = 0.9375
@@ -55,12 +56,11 @@ export const KnowledgeJourneySection: React.FC<
             </p>
 
             {/* Pill Button */}
-            <button
+            <Button
               onClick={onButtonClick}
+              text={buttonText}
               className="bg-blue-900 text-white px-8 py-3 rounded-full font-light text-base hover:bg-blue-800 active:bg-blue-950 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-            >
-              {buttonText}
-            </button>
+            />
           </div>
 
           {/* Right Image - 40% width */}

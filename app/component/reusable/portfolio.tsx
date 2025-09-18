@@ -2,6 +2,7 @@
 import { profile } from "@/public/assests/image";
 import Image from "next/image";
 import React from "react";
+import { Button } from "./buttons";
 
 interface AboutSectionProps {
   greeting?: string;
@@ -59,17 +60,23 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             </h4>
 
             {/* Description */}
-            <p className="text-base md:text-lg font-inter text-[#0D0D0D] leading-relaxed mb-8">
+            <p
+              className="font-gurajada text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-[#6A6868]  leading-tight mb-10"
+              style={{
+                fontSize: "clamp(1rem, 3vw, 32px)",
+                lineHeight: "0.9375", // 30px/32px = 0.9375
+                letterSpacing: "0px",
+              }}
+            >
               {description}
             </p>
 
             {/* Button */}
-            <button
+            <Button
               onClick={onButtonClick}
-              className="bg-blue-900 text-white px-8 py-3 rounded-full font-medium text-base hover:bg-blue-800 active:bg-blue-950 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-            >
-              {buttonText}
-            </button>
+              text={buttonText}
+              className="bg-primary-nav text-white px-8 py-3 rounded-full font-medium text-base hover:bg-blue-800 active:bg-blue-950 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+            />
           </div>
         </div>
       </div>

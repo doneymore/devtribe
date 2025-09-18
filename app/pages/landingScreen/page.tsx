@@ -3,17 +3,19 @@ import { BlogHeroSection } from "@/app/component/reusable/blog";
 import { KnowledgeJourneySection } from "@/app/component/reusable/explore";
 import Footer from "@/app/component/reusable/footer";
 import { HeroSection } from "@/app/component/reusable/heroSection";
+import { WelcomeSection } from "@/app/component/reusable/heroSection1";
 import { Navbar } from "@/app/component/reusable/navItem";
 import { AboutSection } from "@/app/component/reusable/portfolio";
 import BlogCardsSection from "@/app/component/reusable/streams";
-import { hero } from "@/public/assests/image";
+// import { hero } from "@/public/assests/image";
 import React from "react";
 
 const LandingPage = () => {
   return (
     <div>
       <Navbar />
-      <HeroSection
+      <WelcomeSection />
+      {/* <HeroSection
         title="Master the art"
         subtitle="of secure digital communication."
         description="Cybersecurity Has Rapidly Evolved From A Niche Technical Concern Into A Fundamental Pillar Of Modern Life. As Digital Infrastructures Expand And Data Becomes More Valuable Than Ever, Threats To Privacy, Systems, And Information Continue To Grow In Both Frequency And Sophistication."
@@ -21,7 +23,7 @@ const LandingPage = () => {
         imageSrc={hero}
         imageAlt="Cyber Security Shield"
         onButtonClick={() => alert("Login clicked!")}
-      />
+      /> */}
       <AboutSection
         greeting="Hi"
         name="Daniel"
