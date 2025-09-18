@@ -116,7 +116,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 alt="Secneedle cybersecurity illustration"
                 width={800}
                 height={600}
-                className="w-full h-auto object-contain rounded-2xl shadow-2xl"
+                className="w-full h-auto object-contain rounded-2xl"
                 priority
               />
             </div>
