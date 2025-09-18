@@ -44,10 +44,10 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 style={{
                   fontFamily: "Impact, sans-serif",
                   fontWeight: 400,
-                  fontSize: "clamp(2.5rem, 8vw, 6.875rem)", // Responsive from 40px to 110px
-                  lineHeight: "clamp(2.5rem, 8vw, 7.1875rem)", // Responsive from 40px to 115px
+                  fontSize: "clamp(1.5rem, 5vw + 1rem, 6.875rem)", // Better mobile scaling
+                  lineHeight: "clamp(1.6rem, 5vw + 1rem, 7.1875rem)", // Proportional line height
                   letterSpacing: "0px",
-                  textAlign: "justify",
+                  textAlign: "left", // Changed from justify for better mobile readability
                 }}
               >
                 {title}
