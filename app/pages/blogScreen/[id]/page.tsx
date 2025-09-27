@@ -88,28 +88,28 @@ const BlogDetailPageRoute = () => {
 export default BlogDetailPageRoute;
 
 // Optional: Add generateMetadata if you need SEO
-export async function generateMetadata({ params }: BlogDetailProps) {
-  try {
-    const post = await getBlogPostById(params.id);
+// export async function generateMetadata({ params }: BlogDetailProps) {
+//   try {
+//     const post = await getBlogPostById(params.id);
 
-    if (!post) {
-      return {
-        title: "Post Not Found",
-      };
-    }
+//     if (!post) {
+//       return {
+//         title: "Post Not Found",
+//       };
+//     }
 
-    return {
-      title: post.title,
-      description: post.content?.substring(0, 150) + "..." || "Blog post",
-      openGraph: {
-        title: post.title,
-        description: post.content?.substring(0, 150) + "..." || "Blog post",
-        images: [post.imageUrl || "/default-blog-image.jpg"],
-      },
-    };
-  } catch (error) {
-    return {
-      title: "Post Not Found",
-    };
-  }
-}
+//     return {
+//       title: post.title,
+//       description: post.content?.substring(0, 150) + "..." || "Blog post",
+//       openGraph: {
+//         title: post.title,
+//         description: post.content?.substring(0, 150) + "..." || "Blog post",
+//         images: [post.imageUrl || "/default-blog-image.jpg"],
+//       },
+//     };
+//   } catch (error) {
+//     return {
+//       title: "Post Not Found",
+//     };
+//   }
+// }
