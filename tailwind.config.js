@@ -38,6 +38,8 @@ module.exports = {
         neuton: ["var(--font-neuton)", "serif"],
         sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
         serif: ["var(--font-neuton)", "ui-serif", "Georgia"],
+        roboto: ["Roboto", "sans-serif"],
+        segoe: ["Segoe UI", "sans-serif"],
       },
       fontSize: {
         sm: "14px",

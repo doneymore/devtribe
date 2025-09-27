@@ -2,23 +2,28 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { secneedle } from "@/public/assests/image";
-
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("ENG");
   const languageRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
-  // Navigation items
+  // Navigation items with their routes
   const navItems = [
-    { name: "Home", href: "#" },
-    { name: "Portfolio", href: "#" },
-    { name: "Videos Stream", href: "#" },
-    { name: "Blog", href: "#" },
-    { name: "About Us", href: "#" },
+    { name: "Home", href: "/" },
+    { name: "Portfolio", href: "/portfolio" },
+    { name: "Videos Stream", href: "/streams" },
+    { name: "Blog", href: "/pages/blogScreen" },
+    { name: "About Us", href: "/about" },
   ];
+
+  // Filter out the current page from navigation
+  const filteredNavItems = navItems.filter((item) => item.href !== pathname);
 
   // Language options
   const languages = [
@@ -29,23 +34,12 @@ export const Navbar = () => {
 
   // Close language dropdown when clicking outside
   useEffect(() => {
-    interface Language {
-      code: string;
-      name: string;
-      flag: string;
-    }
-
-    interface NavItem {
-      name: string;
-      href: string;
-    }
-
     const handleClickOutside = (event: MouseEvent) => {
       if (
-      languageRef.current &&
-      !languageRef?.current?.contains(event.target as Node)
+        languageRef.current &&
+        !languageRef?.current?.contains(event.target as Node)
       ) {
-      setIsLanguageOpen(false);
+        setIsLanguageOpen(false);
       }
     };
 
@@ -72,26 +66,29 @@ export const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
           <div className="flex items-center space-x-3 flex-shrink-0">
-            <div className="rounded-full flex items-center justify-center overflow-hidden">
+            <Link
+              href="/"
+              className="rounded-full flex items-center justify-center overflow-hidden"
+            >
               <Image
                 src={secneedle}
                 alt="SecNeedle Logo"
                 className="w-full h-24 py-2 object-cover"
               />
-            </div>
+            </Link>
           </div>
 
           {/* Center Navigation - Desktop */}
-          <div className="hidden lg:flex items-center space-x-12 font-orelega text-base flex-1 justify-center">
-            {navItems.map((item) => (
-              <a
+          <div className="hidden lg:flex items-center space-x-12 font-orelega text-base flex-1 justify-center cursor-pointer">
+            {filteredNavItems.map((item) => (
+              <Link
                 key={item.name}
                 href={item.href}
                 className="text-white hover:text-blue-200 transition-colors duration-200 font-medium relative group"
               >
                 {item.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -172,15 +169,15 @@ export const Navbar = () => {
           <div className="lg:hidden absolute top-full left-0 right-0 bg-blue-900 border-t border-blue-700 shadow-xl">
             <div className="px-4 py-4 space-y-3">
               {/* Mobile Navigation Links */}
-              {navItems.map((item) => (
-                <a
+              {filteredNavItems.map((item) => (
+                <Link
                   key={item.name}
                   href={item.href}
                   className="block px-4 py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
 
               {/* Mobile Auth Buttons */}

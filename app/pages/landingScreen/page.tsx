@@ -1,19 +1,18 @@
 "use client";
-import { BlogHeroSection } from "@/app/component/reusable/blog";
-import { KnowledgeJourneySection } from "@/app/component/reusable/explore";
-import Footer from "@/app/component/reusable/footer";
-import { HeroSection } from "@/app/component/reusable/heroSection";
-import { WelcomeSection } from "@/app/component/reusable/heroSection1";
-import { Navbar } from "@/app/component/reusable/navItem";
-import { AboutSection } from "@/app/component/reusable/portfolio";
-import BlogCardsSection from "@/app/component/reusable/streams";
+import { BlogHeroSection } from "@/app/component/reusable/landingpage/blog";
+import { KnowledgeJourneySection } from "@/app/component/reusable/landingpage/explore";
+import Footer from "@/app/component/reusable/landingpage/footer";
+import { HeroSection } from "@/app/component/reusable/landingpage/heroSection";
+import { WelcomeSection } from "@/app/component/reusable/landingpage/heroSection1";
+import { Navbar } from "@/app/component/reusable/landingpage/navItem";
+import { AboutSection } from "@/app/component/reusable/landingpage/portfolio";
+import BlogCardsSection from "@/app/component/reusable/landingpage/streams";
 // import { hero } from "@/public/assests/image";
 import React from "react";
 
 const LandingPage = () => {
   return (
     <div>
-      <Navbar />
       <WelcomeSection />
       {/* <HeroSection
         title="Master the art"
@@ -45,7 +44,6 @@ const LandingPage = () => {
         onButtonClick={() => alert("Subscribe clicked!")}
       />
       <BlogCardsSection />
-      <Footer />
     </div>
   );
 };

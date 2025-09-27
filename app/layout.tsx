@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { gurajada, inter, neuton, orelegaOne } from "@/font";
 import StoreProvider from "./lib/providers/storeProvider";
+import { Navbar } from "./component/reusable/landingpage/navItem";
+import Footer from "./component/reusable/landingpage/footer";
 
 export const metadata: Metadata = {
   title: "Secneedle",
@@ -27,7 +29,11 @@ export default function RootLayout({
       `}
     >
       <body className="font-inter antialiased">
-        <StoreProvider>{children}</StoreProvider>
+        <StoreProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </StoreProvider>
       </body>
     </html>
   );
