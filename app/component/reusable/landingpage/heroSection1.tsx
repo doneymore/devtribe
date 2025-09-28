@@ -38,37 +38,37 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
           {/* Left Content - 40% */}
           <div className="w-full lg:w-2/5 space-y-6 lg:space-y-8 text-center lg:text-left">
             {/* Title */}
-            <div className="space-y-2">
+
+            <div className="space-y-0">
               <h1
-                className="text-[#0E508B] leading-tight"
+                className="text-[#0E508B] leading-none"
                 style={{
-                  fontFamily: "Impact, sans-serif",
+                  fontFamily: "'Imbue', serif",
                   fontWeight: 400,
-                  fontSize: "clamp(1.5rem, 5vw + 1rem, 6.875rem)", // Better mobile scaling
-                  lineHeight: "clamp(1.6rem, 5vw + 1rem, 7.1875rem)", // Proportional line height
+                  fontSize: "clamp(2.5rem, 8vw, 6.25rem)", // 40px to 100px responsive
+                  lineHeight: "clamp(2.5rem, 8vw, 6.25rem)", // 100% line-height
                   letterSpacing: "0px",
-                  textAlign: "left", // Changed from justify for better mobile readability
+                  textAlign: "left",
                 }}
               >
                 {title}
               </h1>
               <h1
-                className="text-[#0E508B] leading-tight"
+                className="text-[#0E508B] leading-none"
                 style={{
-                  fontFamily: "Impact, sans-serif",
+                  fontFamily: "'Imbue', serif",
                   fontWeight: 400,
-                  fontSize: "clamp(2.5rem, 8vw, 6.875rem)",
-                  lineHeight: "clamp(2.5rem, 8vw, 7.1875rem)",
+                  fontSize: "clamp(2.5rem, 8vw, 6.25rem)", // 40px to 100px responsive
+                  lineHeight: "clamp(2.5rem, 8vw, 6.25rem)", // 100% line-height
                   letterSpacing: "0px",
-                  textAlign: "justify",
+                  textAlign: "left",
                 }}
               >
                 {subtitle}
               </h1>
             </div>
 
-            {/* Subtitle */}
-            <p
+            {/* <p
               className="text-[#6A6868] mb-6"
               style={{
                 fontFamily: "Gurajada, serif",
@@ -82,7 +82,6 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
               Thank you for stopping by. Nice to have you here.
             </p>
 
-            {/* Description */}
             <p
               className="text-[#6A6868] mb-8"
               style={{
@@ -90,6 +89,36 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 fontWeight: 400,
                 fontSize: "clamp(1rem, 4vw, 2rem)", // Responsive description
                 lineHeight: "clamp(1.2rem, 4vw, 1.875rem)",
+                letterSpacing: "0px",
+                textAlign: "justify",
+              }}
+            >
+              {description}
+            </p> */}
+
+            {/* Subtitle */}
+            <p
+              className="text-[#0D1651] mb-6"
+              style={{
+                fontFamily: "'Times New Roman', Times, serif",
+                fontWeight: 400,
+                fontSize: "clamp(1rem, 3vw, 1.5rem)", // Responsive from 16px to 24px
+                lineHeight: "clamp(1.25rem, 3.125vw, 1.5625rem)", // Responsive from 20px to 25px
+                letterSpacing: "0px",
+                textAlign: "justify",
+              }}
+            >
+              Thank you for stopping by. Nice to have you here.
+            </p>
+
+            {/* Description */}
+            <p
+              className="text-[#0D1651] mb-8"
+              style={{
+                fontFamily: "'Times New Roman', Times, serif",
+                fontWeight: 400,
+                fontSize: "clamp(1rem, 3vw, 1.5rem)", // Responsive from 16px to 24px
+                lineHeight: "clamp(1.25rem, 3.125vw, 1.5625rem)", // Responsive from 20px to 25px
                 letterSpacing: "0px",
                 textAlign: "justify",
               }}

@@ -16,9 +16,11 @@ export const Navbar = () => {
   // Navigation items with their routes
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Portfolio", href: "/portfolio" },
-    { name: "Videos Stream", href: "/streams" },
     { name: "Blog", href: "/pages/blogScreen" },
+    { name: "Videos Stream", href: "/streams" },
+    { name: "Portfolio", href: "/portfolio" },
+    { name: "Services", href: "/streams" },
+    { name: "Activites", href: "/streams" },
     { name: "About Us", href: "/about" },
   ];
 
@@ -79,7 +81,20 @@ export const Navbar = () => {
           </div>
 
           {/* Center Navigation - Desktop */}
-          <div className="hidden lg:flex items-center space-x-12 font-orelega text-base flex-1 justify-center cursor-pointer">
+          {/* <div className="hidden lg:flex items-center space-x-12 font-orelega text-base flex-1 justify-center cursor-pointer">
+            {filteredNavItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-white hover:text-blue-200 transition-colors duration-200 font-medium relative group"
+              >
+                {item.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+              </Link>
+            ))}
+          </div> */}
+
+          <div className="hidden lg:flex items-center space-x-12 font-times text-base flex-1 justify-center cursor-pointer">
             {filteredNavItems.map((item) => (
               <Link
                 key={item.name}

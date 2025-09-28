@@ -40,6 +40,8 @@ module.exports = {
         serif: ["var(--font-neuton)", "ui-serif", "Georgia"],
         roboto: ["Roboto", "sans-serif"],
         segoe: ["Segoe UI", "sans-serif"],
+        times: ["var(--font-times-roman)", "Times New Roman", "serif"],
+        imbue: ["var(--font-imbue)", "serif"],
       },
       fontSize: {
         sm: "14px",

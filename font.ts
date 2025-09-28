@@ -41,3 +41,27 @@ export const gurajada = localFont({
   display: "swap",
   variable: "--font-gurajada",
 });
+
+export const timesRoman = localFont({
+  src: [
+    {
+      path: "./public/fonts/times.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  display: "swap",
+  variable: "--font-times-roman",
+});
+
+export const imbue = localFont({
+  src: [
+    {
+      path: "./public/fonts/Imbue.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  display: "swap",
+  variable: "--font-imbue",
+});
