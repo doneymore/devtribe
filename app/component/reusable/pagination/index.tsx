@@ -26,7 +26,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         disabled={!canGoPrevious}
         className={`flex items-center justify-center rounded-[20px] border-[3px] transition-all duration-200 ${
           canGoPrevious
-            ? "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+            ? "border-blue-400 text-blue-500 hover:bg-blue-500 hover:text-white"
             : "border-gray-300 text-gray-400 cursor-not-allowed"
         }`}
         style={{
@@ -43,7 +43,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <span className="font-medium text-xs sm:hidden">Prev</span>
       </button>
 
-      <span className="text-gray-600 font-medium px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap">
+      <span className="text-blue-600 font-medium px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap">
         {currentPage} / {totalPages}
       </span>
 

@@ -82,7 +82,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           {/* See Full Link */}
           <div className="flex justify-end">
             <Link
-              href={`/blogScreen/${slug}`}
+              href={`/pages/blogScreen/${slug}`}
               // href={`/blogScreen/${slug}`}
               className="inline-flex items-center text-[#005DFF] hover:text-blue-700 font-medium text-base lg:text-lg transition-colors duration-200 group"
             >

@@ -1,13 +1,17 @@
+import { blog, blog_post, blog_right, blog_story } from "@/public/assests/image";
+import { StaticImageData } from "next/image";
+
 export interface BlogPost {
   id: number;
   title: string;
   author: string;
   date: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string | StaticImageData;
   likes: number;
   comments: number;
   isLiked?: boolean;
+  slug?: string; // Add this optional slug property
 }
 
 export interface FeaturedPost {
@@ -59,7 +63,7 @@ export interface Reply {
   likes: number;
   isLiked: boolean;
 }
-
+const blogImages = [blog, blog_post, blog_right, blog_story];
 // Mock data
 const mockBlogPosts: BlogPost[] = [
   {
@@ -106,7 +110,7 @@ const mockBlogPosts: BlogPost[] = [
     date: `Jan ${22 + i}, 2025`,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageUrl: `/images/blog/post-${i + 4}.jpg`,
+    imageUrl: (blogImages[i % blogImages.length] as { src: string }).src,
     likes: ((i * 3 + 5) % 50) + 1,
     comments: ((i * 2 + 1) % 20) + 1,
     isLiked: false,
@@ -184,13 +188,17 @@ export const getBlogPostById = async (
 ): Promise<BlogDetailPost | null> => {
   await new Promise((resolve) => setTimeout(resolve, 100));
 
-  const post = mockBlogPosts.find((p) => p.id.toString() === id);
+  // Convert string id to number for comparison
+  const numericId = parseInt(id, 10);
+  const post = mockBlogPosts.find((p) => p.id === numericId);
+
   if (!post) return null;
+
   return {
     id: post.id,
     title: post.title,
     content: post.description,
-    imageUrl: post.imageUrl,
+    imageUrl: typeof post.imageUrl === "string" ? post.imageUrl : post.imageUrl.src,
     author: {
       name: post.author,
       avatar: "/images/avatars/default.jpg",

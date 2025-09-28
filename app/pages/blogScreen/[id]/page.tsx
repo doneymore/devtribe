@@ -80,7 +80,7 @@ const BlogDetailPageRoute = () => {
     <BlogDetailPage
       post={post}
       comments={sampleComments}
-      onBack={() => router.push("/blogScreen")}
+      onBack={() => router.push("/pages/blogScreen")}
     />
   );
 };

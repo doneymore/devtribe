@@ -121,6 +121,16 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
     setReplyingTo(null);
   };
 
+  const getInitials = (name: string): string => {
+    const names = name.trim().split(" ");
+    if (names.length === 1) {
+      return names[0].charAt(0).toUpperCase();
+    }
+    return (
+      names[0].charAt(0) + names[names.length - 1].charAt(0)
+    ).toUpperCase();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -292,13 +302,19 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
             </div>
 
             {/* Comments Section */}
-            <div>
+            <div
+              className=""
+              style={{
+                background:
+                  "linear-gradient(115.42deg, #F9F7F7 10.85%, #578FC5 93.7%)",
+              }}
+            >
               <h3 className="text-2xl font-semibold text-gray-800 mb-6">
                 Comments ({comments.length})
               </h3>
 
               {/* Add Comment */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <div className="bg-[#E1EFFF] p-4 rounded-lg mb-6">
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
@@ -325,20 +341,10 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                   >
                     {/* Comment Header */}
                     <div className="flex items-start space-x-3 mb-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                        {comment.author.avatar ? (
-                          <Image
-                            src={comment.author.avatar}
-                            alt={comment.author.name}
-                            width={40}
-                            height={40}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <User size={16} className="text-gray-400" />
-                          </div>
-                        )}
+                      <div className="w-10 h-10 rounded-full bg-[#578FC5] overflow-hidden text-center m-auto  flex-shrink-0">
+                        <span className="text-black  font-medium text-xs px-1 rounded">
+                          {getInitials(postData.author.name)}
+                        </span>
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
@@ -384,7 +390,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
                     {/* Reply Form */}
                     {replyingTo === comment.id && (
-                      <div className="ml-13 mt-4 bg-gray-50 p-3 rounded-lg">
+                      <div className="ml-13 mt-4 bg-[#E1EFFF] p-3 rounded-lg">
                         <textarea
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
@@ -417,20 +423,10 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                             key={reply.id}
                             className="flex items-start space-x-3"
                           >
-                            <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                              {reply.author.avatar ? (
-                                <Image
-                                  src={reply.author.avatar}
-                                  alt={reply.author.name}
-                                  width={32}
-                                  height={32}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                  <User size={14} className="text-gray-400" />
-                                </div>
-                              )}
+                            <div className="w-8 h-8 rounded-full text-center overflow-hidden bg-[#578FC5] flex-shrink-0">
+                              <span className=" text-black  font-medium text-xs px-1 rounded">
+                                {getInitials(reply.author.name)}
+                              </span>
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center space-x-2 mb-1">

@@ -100,7 +100,7 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
 
           {/* Read More Link - Updated for dynamic routing */}
           <Link
-            href={`/blogScreen/${post.id}`}
+            href={`/pages/blogScreen/${post.id}`}
             className="flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 mb-4"
           >
             <span className="text-sm font-medium mr-1">Read more</span>
