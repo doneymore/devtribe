@@ -1,4 +1,5 @@
-import { AboutSectionSec } from "@/app/component/reusable/porfolio/aboutme";
+
+import AboutSectionSec from "@/app/component/reusable/porfolio/aboutme";
 import EducationCertificationContent from "@/app/component/reusable/porfolio/certifications";
 import ConferencesContent from "@/app/component/reusable/porfolio/conference";
 import ExperienceSection from "@/app/component/reusable/porfolio/experience";
