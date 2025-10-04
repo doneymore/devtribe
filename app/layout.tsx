@@ -4,6 +4,7 @@ import { gurajada, inter, neuton, orelegaOne } from "@/font";
 import StoreProvider from "./lib/providers/storeProvider";
 import { Navbar } from "./component/reusable/landingpage/navItem";
 import Footer from "./component/reusable/landingpage/footer";
+import ConditionalFooter from "./component/reusable/conditionalFooter";
 
 export const metadata: Metadata = {
   title: "Secneedle",
@@ -32,7 +33,7 @@ export default function RootLayout({
         <StoreProvider>
           <Navbar />
           {children}
-          <Footer />
+          <ConditionalFooter />
         </StoreProvider>
       </body>
     </html>
