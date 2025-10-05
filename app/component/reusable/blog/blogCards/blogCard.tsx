@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, MessageCircle, ExternalLink } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { blog_story } from "@/public/assests/image";
 import { BlogPost } from "../types";
 
@@ -16,8 +16,6 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
   onLike,
   onCommentClick,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   const handleLikeClick = () => {
     onLike(post.id);
   };
@@ -27,116 +25,93 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
   };
 
   return (
-    <div
-      className="w-full max-w-[432px] h-auto min-h-[400px] sm:h-[516px] bg-white rounded-[20px] sm:rounded-[41px] shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Image Section */}
-      <div className="relative h-32 sm:h-40 md:h-48 w-full overflow-hidden">
-        <Image
-          src={blog_story}
-          alt={post.title}
-          fill
-          className="object-cover transition-transform duration-300 hover:scale-110"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-      </div>
+    <div className="w-full bg-gradient-to-br from-gray-100 to-blue-100 rounded-[20px] shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+      <div className="flex flex-row h-[220px] sm:h-[240px] lg:h-[260px]">
+        {/* Image Section - Left Side - Fixed percentage */}
+        <div className="relative w-[35%] flex-shrink-0">
+          <Image
+            src={blog_story}
+            alt={post.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 35vw, (max-width: 1024px) 35vw, 400px"
+            priority
+          />
+        </div>
 
-      {/* Content Section with Gradient Background */}
-      <div
-        className="p-4 sm:p-6 flex-1 flex flex-col justify-between"
-        style={{
-          background:
-            "linear-gradient(117.42deg, rgba(249, 247, 247, 0.1) 19.16%, rgba(148, 203, 255, 0.4) 80.19%)",
-        }}
-      >
-        <div className="flex-grow">
+        {/* Content Section - Right Side */}
+        <div className="flex-1 p-5 lg:p-7 flex flex-col justify-between">
+          {/* Title */}
           <h3
-            className="text-[#00173A] mb-3 leading-tight line-clamp-2"
+            className="text-[#1a1a1a] mb-2 line-clamp-2"
             style={{
               fontFamily: "Roboto, sans-serif",
-              fontWeight: 500,
-              fontSize: "clamp(18px, 4vw, 25px)",
-              lineHeight: "100%",
-              letterSpacing: "0%",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              fontWeight: 600,
+              fontSize: "16px",
+              lineHeight: "1.4",
             }}
           >
             {post.title}
           </h3>
 
-          <div
-            className="flex items-center justify-between mb-4"
-            style={{
-              fontFamily: "Roboto, sans-serif",
-              fontWeight: 500,
-              fontSize: "clamp(14px, 3vw, 18px)",
-              lineHeight: "100%",
-              letterSpacing: "0%",
-            }}
-          >
-            <span className="text-[#6F6E6ED6]">By {post.author}</span>
-            <span className="text-[#6F6E6ED6]">{post.date}</span>
+          {/* Author and Date */}
+          <div className="flex items-center justify-between mb-3 text-[13px] text-gray-600">
+            <span className="truncate mr-2">by {post.author}</span>
+            <span className="whitespace-nowrap">{post.date}</span>
           </div>
 
+          {/* Description */}
           <p
-            className="text-[#464343] mb-4 text-justify"
+            className="text-gray-700 mb-4 line-clamp-3"
             style={{
-              fontFamily: "Segoe UI, sans-serif",
+              fontFamily: "Roboto, sans-serif",
               fontWeight: 400,
-              fontSize: "clamp(14px, 2.5vw, 16px)",
-              lineHeight: "100%",
-              letterSpacing: "0%",
+              fontSize: "13px",
+              lineHeight: "1.6",
             }}
           >
             {post.description}
           </p>
 
-          {/* Read More Link - Updated for dynamic routing */}
-          <Link
-            href={`/pages/blogScreen/${post.id}`}
-            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 mb-4"
-          >
-            <span className="text-sm font-medium mr-1">Read more</span>
-            <ExternalLink size={16} />
-          </Link>
-        </div>
+          {/* Footer with interactions and See All button */}
+          <div className="flex items-center justify-between mt-auto">
+            {/* Like and Comment buttons */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleLikeClick}
+                className={`flex items-center space-x-1.5 transition-colors ${
+                  post.isLiked
+                    ? "text-blue-600"
+                    : "text-gray-600 hover:text-blue-600"
+                }`}
+              >
+                <Heart
+                  size={16}
+                  className={post.isLiked ? "fill-current" : ""}
+                />
+                <span className="text-[13px]">{post.likes}</span>
+              </button>
 
-        <div className="flex items-center justify-start space-x-3 pt-4 border-t border-gray-200">
-          <button
-            onClick={handleLikeClick}
-            className={`flex items-center space-x-1 transition-all duration-200 px-2 py-1.5 rounded-full ${
-              post.isLiked
-                ? "text-red-500 bg-red-50 hover:bg-red-100"
-                : "text-gray-600 hover:text-red-500 hover:bg-red-50"
-            }`}
-          >
-            <Heart
-              size={16}
-              className={`transition-all duration-200 ${
-                post.isLiked ? "fill-current" : ""
-              } ${isHovered && !post.isLiked ? "scale-110" : ""}`}
-            />
-            <span className="text-xs font-medium">{post.likes}</span>
-          </button>
+              <button
+                onClick={handleCommentClick}
+                className="flex items-center space-x-1.5 text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                <MessageCircle size={16} />
+                <span className="text-[13px]">{post.comments}</span>
+              </button>
+            </div>
 
-          <button
-            onClick={handleCommentClick}
-            className="flex items-center space-x-1 text-gray-600 hover:text-blue-500 hover:bg-blue-50 transition-all duration-200 px-2 py-1.5 rounded-full"
-          >
-            <MessageCircle size={16} />
-            <span className="text-xs font-medium">{post.comments}</span>
-          </button>
+            {/* See All button */}
+            <Link
+              href={`/pages/blogScreen/${post.id}`}
+              className="text-blue-600 hover:text-blue-800 transition-colors text-[14px] font-medium whitespace-nowrap"
+            >
+              See All
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default BlogCard;

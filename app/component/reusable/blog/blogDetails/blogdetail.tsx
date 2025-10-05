@@ -1,8 +1,7 @@
-// components/BlogDetailPage.tsx
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Heart, MessageCircle, Send, User } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, User } from "lucide-react";
 import { BlogDetailPost, Comment, Reply } from "../types";
 
 interface BlogDetailPageProps {
@@ -20,8 +19,10 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
   const [postData, setPostData] = useState(post);
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
+  const [commentAuthorName, setCommentAuthorName] = useState("");
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyText, setReplyText] = useState("");
+  const [replyAuthorName, setReplyAuthorName] = useState("");
 
   const handleBack = () => {
     if (onBack) {
@@ -75,12 +76,12 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
   };
 
   const handleAddComment = () => {
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || !commentAuthorName.trim()) return;
 
     const comment: Comment = {
       id: Date.now(),
       author: {
-        name: "Current User",
+        name: commentAuthorName,
         avatar: "/api/placeholder/40/40",
       },
       content: newComment,
@@ -92,15 +93,16 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
     setComments((prev) => [...prev, comment]);
     setNewComment("");
+    setCommentAuthorName("");
   };
 
   const handleAddReply = (commentId: number) => {
-    if (!replyText.trim()) return;
+    if (!replyText.trim() || !replyAuthorName.trim()) return;
 
     const reply: Reply = {
       id: Date.now(),
       author: {
-        name: "Current User",
+        name: replyAuthorName,
         avatar: "/api/placeholder/40/40",
       },
       content: replyText,
@@ -118,6 +120,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
     );
 
     setReplyText("");
+    setReplyAuthorName("");
     setReplyingTo(null);
   };
 
@@ -303,7 +306,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
             {/* Comments Section */}
             <div
-              className=""
+              className="p-6 rounded-lg"
               style={{
                 background:
                   "linear-gradient(115.42deg, #F9F7F7 10.85%, #578FC5 93.7%)",
@@ -315,6 +318,13 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
               {/* Add Comment */}
               <div className="bg-[#E1EFFF] p-4 rounded-lg mb-6">
+                <input
+                  type="text"
+                  value={commentAuthorName}
+                  onChange={(e) => setCommentAuthorName(e.target.value)}
+                  placeholder="Your name"
+                  className="w-full p-3 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
@@ -325,7 +335,8 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                 <div className="flex justify-end mt-3">
                   <button
                     onClick={handleAddComment}
-                    className="px-6 py-2 bg-[#E1EFFF] text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200 font-medium"
+                    disabled={!newComment.trim() || !commentAuthorName.trim()}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
                   >
                     Post
                   </button>
@@ -341,9 +352,9 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                   >
                     {/* Comment Header */}
                     <div className="flex items-start space-x-3 mb-3">
-                      <div className="w-10 h-10 rounded-full bg-[#578FC5] overflow-hidden text-center m-auto  flex-shrink-0">
-                        <span className="text-black  font-medium text-xs px-1 rounded">
-                          {getInitials(postData.author.name)}
+                      <div className="w-10 h-10 rounded-full bg-[#578FC5] flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-medium text-sm">
+                          {getInitials(comment.author.name)}
                         </span>
                       </div>
                       <div className="flex-1">
@@ -391,6 +402,13 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                     {/* Reply Form */}
                     {replyingTo === comment.id && (
                       <div className="ml-13 mt-4 bg-[#E1EFFF] p-3 rounded-lg">
+                        <input
+                          type="text"
+                          value={replyAuthorName}
+                          onChange={(e) => setReplyAuthorName(e.target.value)}
+                          placeholder="Your name"
+                          className="w-full p-2 border border-gray-300 rounded mb-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
                         <textarea
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
@@ -400,14 +418,21 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                         />
                         <div className="flex justify-end mt-2 space-x-2">
                           <button
-                            onClick={() => setReplyingTo(null)}
+                            onClick={() => {
+                              setReplyingTo(null);
+                              setReplyAuthorName("");
+                              setReplyText("");
+                            }}
                             className="px-3 py-1 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                           >
                             Cancel
                           </button>
                           <button
                             onClick={() => handleAddReply(comment.id)}
-                            className="px-4 py-1 bg-[#E1EFFF] text-blue-700 rounded hover:bg-blue-100 transition-colors duration-200"
+                            disabled={
+                              !replyText.trim() || !replyAuthorName.trim()
+                            }
+                            className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
                           >
                             Post
                           </button>
@@ -423,8 +448,8 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                             key={reply.id}
                             className="flex items-start space-x-3"
                           >
-                            <div className="w-8 h-8 rounded-full text-center overflow-hidden bg-[#578FC5] flex-shrink-0">
-                              <span className=" text-black  font-medium text-xs px-1 rounded">
+                            <div className="w-8 h-8 rounded-full bg-[#578FC5] flex items-center justify-center flex-shrink-0">
+                              <span className="text-white font-medium text-xs">
                                 {getInitials(reply.author.name)}
                               </span>
                             </div>

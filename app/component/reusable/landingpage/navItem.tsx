@@ -254,9 +254,9 @@ export const Navbar = () => {
               <button className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base">
                 Login
               </button>
-              <button className="bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-3 lg:px-4 xl:px-6 py-1.5 lg:py-2 rounded-full text-sm lg:text-base whitespace-nowrap">
+              {/* <button className="bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-3 lg:px-4 xl:px-6 py-1.5 lg:py-2 rounded-full text-sm lg:text-base whitespace-nowrap">
                 Sign Up
-              </button>
+              </button> */}
             </div>
 
             {/* Mobile Menu Button - Show only on small screens */}
