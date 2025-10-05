@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 interface SkillItemProps {
   icon: React.ReactNode;
@@ -8,16 +10,15 @@ interface SkillItemProps {
 export const SkillItem: React.FC<SkillItemProps> = ({ icon, label }) => {
   return (
     <div className="flex flex-col items-center justify-center bg-white rounded-2xl p-6 shadow-sm">
-      <div className="w-16 h-16 flex items-center justify-center mb-3">
+      <div className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center mb-4">
         {icon}
       </div>
       <p
-        className="text-center"
+        className="text-center text-4xl text-[#124384] font-light" 
         style={{
           fontFamily: "Gurajada, serif",
-          fontWeight: 400,
-          fontSize: "14px",
-          lineHeight: "1.2",
+        
+          lineHeight: "1.3",
           letterSpacing: "0px",
           color: "#1a1a1a",
         }}
@@ -213,22 +214,88 @@ export const SkillsContent: React.FC<Omit<SkillsSectionProps, "title">> = ({
   ],
   className = "",
 }) => {
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const itemsPerPage = 16; // 4 rows × 4 columns
+  const totalPages = Math.ceil(skills.length / itemsPerPage);
+
+  const visibleSkills = skills.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const goToPrevPage = () => {
+    setCurrentPage((prev) => (prev > 0 ? prev - 1 : totalPages - 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
+  };
+
   return (
-    <div
-      className={`w-full py-8 ${className}`}
-      style={{
-        background: "#F3F0F0",
-        borderRadius: "32px",
-      }}
-    >
-      {/* Skills Grid with max width and centered */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {skills.map((skill, index) => (
-            <SkillItem key={index} icon={skill.icon} label={skill.label} />
-          ))}
+    <div className={`w-full ${className}`}>
+      <div
+        className="py-8"
+        style={{
+          background: "#F3F0F0",
+          borderRadius: "32px",
+        }}
+      >
+        {/* Skills Grid with max width and centered */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {visibleSkills.map((skill, index) => (
+              <SkillItem
+                key={currentPage * itemsPerPage + index}
+                icon={skill.icon}
+                label={skill.label}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Carousel Navigation */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-3 mt-6">
+          <button
+            onClick={goToPrevPage}
+            className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+            aria-label="Previous page"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a3a5c"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            onClick={goToNextPage}
+            className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+            aria-label="Next page"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a3a5c"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -239,38 +306,104 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({
   skills,
   className = "",
 }) => {
-  return (
-    <div
-      className={`w-full py-12 ${className}`}
-      style={{
-        background: "#F3F0F0",
-        borderRadius: "32px",
-      }}
-    >
-      {/* Content container with max width and centered */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
-        {/* Skills Title */}
-        <h2
-          className="mb-12"
-          style={{
-            fontFamily: "Gurajada, serif",
-            fontWeight: 400,
-            fontSize: "clamp(48px, 8vw, 96px)",
-            lineHeight: "30px",
-            letterSpacing: "0px",
-            color: "#1a1a1a",
-          }}
-        >
-          {title}
-        </h2>
+  const [currentPage, setCurrentPage] = useState(0);
 
-        {/* Skills Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {skills?.map((skill, index) => (
-            <SkillItem key={index} icon={skill.icon} label={skill.label} />
-          ))}
+  const itemsPerPage = 16; // 4 rows × 4 columns
+  const totalPages = Math.ceil((skills?.length || 0) / itemsPerPage);
+
+  const visibleSkills = skills?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const goToPrevPage = () => {
+    setCurrentPage((prev) => (prev > 0 ? prev - 1 : totalPages - 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
+  };
+
+  return (
+    <div className={`w-full ${className}`}>
+      <div
+        className="py-10"
+        style={{
+          background: "#F3F0F0",
+          borderRadius: "32px",
+        }}
+      >
+        {/* Content container with max width and centered */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
+          {/* Skills Title */}
+          <h2
+            className="mb-10"
+            style={{
+              fontFamily: "Gurajada, serif",
+              fontWeight: 400,
+              fontSize: "clamp(48px, 8vw, 96px)",
+              lineHeight: "1.1",
+              letterSpacing: "0px",
+              color: "#1a1a1a",
+            }}
+          >
+            {title}
+          </h2>
+
+          {/* Skills Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {visibleSkills?.map((skill, index) => (
+              <SkillItem
+                key={currentPage * itemsPerPage + index}
+                icon={skill.icon}
+                label={skill.label}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Carousel Navigation */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-3 mt-6">
+          <button
+            onClick={goToPrevPage}
+            className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+            aria-label="Previous page"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a3a5c"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            onClick={goToNextPage}
+            className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+            aria-label="Next page"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a3a5c"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

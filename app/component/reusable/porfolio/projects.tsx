@@ -15,26 +15,30 @@ const cardData: CardData[] = [
     id: 1,
     title: "Lorem Ipsum",
     description: "Cybersecurity interface and concepts.",
-    imageSrc: `${blog.src}`,
+    imageSrc:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop",
   },
   {
     id: 2,
     title: "Types of Cyber Security Courses",
     description:
       "SOC Analyst, Ethical Hacking, InfoSec, Forensics, Cloud, Network, Application Security.",
-    imageSrc: "/images/course-list.jpg",
+    imageSrc:
+      "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&h=400&fit=crop",
   },
   {
     id: 3,
     title: "Cybersecurity Training",
-    description: "Explore Indeed’s breakdown of training essentials.",
-    imageSrc: "/images/training-include.jpg",
+    description: "Explore Indeed's breakdown of training essentials.",
+    imageSrc:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=400&fit=crop",
   },
   {
     id: 4,
     title: "Top Cyber Security Course",
     description: "With job guarantee and hands-on learning.",
-    imageSrc: "/images/job-guarantee.jpg",
+    imageSrc:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&h=400&fit=crop",
   },
 ];
 
@@ -63,9 +67,8 @@ const ProjectsCarousel: React.FC = () => {
               <Image
                 src={card.imageSrc}
                 alt={card.title}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-xl"
+                fill
+                className="object-cover rounded-xl"
               />
             </div>
 

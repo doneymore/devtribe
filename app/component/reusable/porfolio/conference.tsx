@@ -18,16 +18,16 @@ interface ConferencesContentProps {
 
 const ConferenceCard: React.FC<{ item: ConferenceItem }> = ({ item }) => {
   return (
-    <div className="flex flex-col md:flex-row gap-6 items-start">
+    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start">
       {/* Conference Logo/Image */}
-      <div className="flex-shrink-0 w-full md:w-48 lg:w-56">
-        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-white shadow-sm">
+      <div className="flex-shrink-0 w-full sm:w-44 md:w-48 lg:w-52">
+        <div className="relative w-full aspect-[4/3]">
           <Image
             src={item.image}
             alt={item.imageAlt}
             fill
-            className="object-contain p-4"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 224px, 224px"
+            className="object-contain rounded-3xl"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 176px, (max-width: 1024px) 192px, 208px"
           />
         </div>
       </div>
@@ -38,8 +38,8 @@ const ConferenceCard: React.FC<{ item: ConferenceItem }> = ({ item }) => {
           style={{
             fontFamily: "Times New Roman, serif",
             fontWeight: 400,
-            fontSize: "clamp(14px, 2.5vw, 18px)",
-            lineHeight: "1.4",
+            fontSize: "clamp(15px, 2.2vw, 18px)",
+            lineHeight: "1.5",
             letterSpacing: "0px",
             color: "#000000",
           }}
@@ -51,11 +51,11 @@ const ConferenceCard: React.FC<{ item: ConferenceItem }> = ({ item }) => {
           href={item.readMoreUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block mt-3 hover:underline"
+          className="inline-block mt-2 hover:underline"
           style={{
             fontFamily: "Times New Roman, serif",
             fontWeight: 400,
-            fontSize: "clamp(14px, 2.5vw, 18px)",
+            fontSize: "clamp(15px, 2.2vw, 18px)",
             color: "#0066cc",
           }}
         >
@@ -119,7 +119,7 @@ const ConferencesContent: React.FC<ConferencesContentProps> = ({
   return (
     <div className={className}>
       {/* Conferences List */}
-      <div className="space-y-8">
+      <div className="space-y-6">
         {visibleConferences.map((conference, index) => (
           <ConferenceCard
             key={currentPage * itemsPerPage + index}
@@ -173,5 +173,4 @@ const ConferencesContent: React.FC<ConferencesContentProps> = ({
   );
 };
 
-export default ConferencesContent;  
-
+export default ConferencesContent;

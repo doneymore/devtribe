@@ -42,7 +42,7 @@ const Portfolio: React.FC<PortfolioProps> = ({
       label: "Conferences",
       targetId: "conferences-section",
     },
-    { id: "contact", label: "Contact", targetId: "contact-section" },
+    // { id: "contact", label: "Contact", targetId: "contact-section" },
   ];
 
   const certifications = [

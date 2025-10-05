@@ -19,20 +19,18 @@ export const Navbar = () => {
     { name: "Blog", href: "/pages/blogScreen" },
     { name: "Videos Stream", href: "/streams" },
     { name: "Portfolio", href: "/pages/portfolioScreen" },
-    { name: "Services", href: "/streams" },
-    { name: "Activities", href: "/streams" },
+    { name: "Services", href: "/services" },
+    { name: "Activities", href: "/activities" },
     { name: "About Us", href: "/about" },
   ];
 
-  // Filter out nav items based on current route
-  const filteredNavItems = navItems.filter((item) => {
-    // Hide "Blog" item if on any blog-related route
-    if (item.name === "Blog" && pathname.startsWith("/pages/blogScreen")) {
-      return false;
+  // Helper function to check if nav item is active
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
     }
-    // Hide current page from navigation
-    return item.href !== pathname;
-  });
+    return pathname.startsWith(href);
+  };
 
   // Language options
   const languages = [
@@ -89,21 +87,26 @@ export const Navbar = () => {
 
           {/* Navigation - Different layouts for different screen sizes */}
 
-          {/* Small Mobile: Hidden navigation (hamburger menu only) */}
           {/* Tablet Portrait (md): Compact horizontal with 4 items */}
           <div className="hidden md:flex lg:hidden items-center flex-1 justify-center mx-2">
             <div className="flex items-center space-x-2 overflow-x-auto scrollbar-hide max-w-full">
-              {filteredNavItems.slice(0, 4).map((item) => (
+              {navItems.slice(0, 4).map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-white hover:text-blue-200 transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-2 py-1 flex-shrink-0"
+                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 rounded-lg ${
+                    isActive(item.href)
+                      ? "bg-blue-600 text-white border-2 border-blue-400"
+                      : "text-white hover:text-blue-200"
+                  }`}
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                  {!isActive(item.href) && (
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                  )}
                 </Link>
               ))}
-              {filteredNavItems.length > 4 && (
+              {navItems.length > 4 && (
                 <button
                   className="text-white hover:text-blue-200 text-sm font-medium flex-shrink-0 px-2"
                   onClick={() => setIsMenuOpen(true)}
@@ -117,17 +120,23 @@ export const Navbar = () => {
           {/* Tablet Landscape/Small Laptop (lg): Compact horizontal with 5 items */}
           <div className="hidden lg:flex xl:hidden items-center flex-1 justify-center mx-3">
             <div className="flex items-center space-x-3 overflow-x-auto scrollbar-hide max-w-full">
-              {filteredNavItems.slice(0, 5).map((item) => (
+              {navItems.slice(0, 5).map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-white hover:text-blue-200 transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-2 py-1 flex-shrink-0"
+                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 rounded-lg ${
+                    isActive(item.href)
+                      ? "bg-blue-600 text-white border-2 border-blue-400"
+                      : "text-white hover:text-blue-200"
+                  }`}
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                  {!isActive(item.href) && (
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                  )}
                 </Link>
               ))}
-              {filteredNavItems.length > 5 && (
+              {navItems.length > 5 && (
                 <button
                   className="text-white hover:text-blue-200 text-sm font-medium flex-shrink-0 px-2"
                   onClick={() => setIsMenuOpen(true)}
@@ -141,17 +150,23 @@ export const Navbar = () => {
           {/* Desktop (xl): Full navigation with 6 items */}
           <div className="hidden xl:flex 2xl:hidden items-center flex-1 justify-center mx-4">
             <div className="flex items-center space-x-4 overflow-x-auto scrollbar-hide max-w-full">
-              {filteredNavItems.slice(0, 6).map((item) => (
+              {navItems.slice(0, 6).map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-white hover:text-blue-200 transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-2 py-1 flex-shrink-0"
+                  className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 flex-shrink-0 rounded-lg ${
+                    isActive(item.href)
+                      ? "bg-blue-600 text-white border-2 border-blue-400"
+                      : "text-white hover:text-blue-200"
+                  }`}
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                  {!isActive(item.href) && (
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                  )}
                 </Link>
               ))}
-              {filteredNavItems.length > 6 && (
+              {navItems.length > 6 && (
                 <button
                   className="text-white hover:text-blue-200 text-base font-medium flex-shrink-0 px-2"
                   onClick={() => setIsMenuOpen(true)}
@@ -164,14 +179,20 @@ export const Navbar = () => {
 
           {/* Large Desktop (2xl+): Full navigation with all items */}
           <div className="hidden 2xl:flex items-center space-x-6 font-times flex-1 justify-center cursor-pointer">
-            {filteredNavItems.map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-white hover:text-blue-200 transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-2 py-1"
+                className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 rounded-lg ${
+                  isActive(item.href)
+                    ? "bg-blue-600 text-white border-2 border-blue-400"
+                    : "text-white hover:text-blue-200"
+                }`}
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                {!isActive(item.href) && (
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
+                )}
               </Link>
             ))}
           </div>
@@ -258,11 +279,15 @@ export const Navbar = () => {
             <div className="px-4 py-4 space-y-2 sm:space-y-3">
               {/* Mobile Navigation Links */}
               <div className="grid grid-cols-2 gap-2 sm:block sm:space-y-1">
-                {filteredNavItems.map((item) => (
+                {navItems.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="block px-3 sm:px-4 py-2 sm:py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-center sm:text-left"
+                    className={`block px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-center sm:text-left ${
+                      isActive(item.href)
+                        ? "bg-blue-600 text-white border-2 border-blue-400"
+                        : "text-white hover:text-blue-200 hover:bg-blue-800/50"
+                    }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
