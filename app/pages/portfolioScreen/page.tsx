@@ -1,4 +1,3 @@
-
 import AboutSectionSec from "@/app/component/reusable/porfolio/aboutme";
 import EducationCertificationContent from "@/app/component/reusable/porfolio/certifications";
 import ConferencesContent from "@/app/component/reusable/porfolio/conference";
@@ -18,15 +17,7 @@ interface PortfolioProps {
   ContactComponent?: React.ComponentType;
 }
 
-const Portfolio: React.FC<PortfolioProps> = ({
-  AboutComponent,
-  SkillsComponent,
-  ExperienceComponent,
-  ProjectsComponent,
-  EducationComponent,
-  ConferencesComponent,
-  ContactComponent,
-}) => {
+const Portfolio = () => {
   const navItems = [
     { id: "about", label: "About", targetId: "about-section" },
     { id: "skills", label: "Skills", targetId: "skills-section" },
@@ -142,30 +133,22 @@ const Portfolio: React.FC<PortfolioProps> = ({
 
       {/* Experience Section */}
       <SectionWrapper id="experience-section" title="Experience">
-        {ExperienceComponent ? <ExperienceComponent /> : <ExperienceSection />}
+        {<ExperienceSection />}
       </SectionWrapper>
 
       {/* Projects Section */}
       <SectionWrapper id="projects-section" title="Projects">
-        {ProjectsComponent ? <ProjectsComponent /> : <ProjectsCarousel />}
+        {<ProjectsCarousel />}
       </SectionWrapper>
 
       {/* Education Section */}
       <SectionWrapper id="education-section" title="Education & Certification">
-        {EducationComponent ? (
-          <EducationComponent />
-        ) : (
-          <EducationCertificationContent certifications={certifications} />
-        )}
+        {<EducationCertificationContent certifications={certifications} />}
       </SectionWrapper>
 
       {/* Conferences Section */}
       <SectionWrapper id="conferences-section" title="Conferences">
-        {ConferencesComponent ? (
-          <ConferencesComponent />
-        ) : (
-          <ConferencesContent  />
-        )}
+        {<ConferencesContent />}
       </SectionWrapper>
 
       {/* Contact Section
