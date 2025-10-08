@@ -14,15 +14,7 @@ const LandingPage = () => {
   return (
     <div>
       <WelcomeSection />
-      {/* <HeroSection
-        title="Master the art"
-        subtitle="of secure digital communication."
-        description="Cybersecurity Has Rapidly Evolved From A Niche Technical Concern Into A Fundamental Pillar Of Modern Life. As Digital Infrastructures Expand And Data Becomes More Valuable Than Ever, Threats To Privacy, Systems, And Information Continue To Grow In Both Frequency And Sophistication."
-        buttonText="Login"
-        imageSrc={hero}
-        imageAlt="Cyber Security Shield"
-        onButtonClick={() => alert("Login clicked!")}
-      /> */}
+    
       <AboutSection
         greeting="Hi"
         name="Daniel"

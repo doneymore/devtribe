@@ -17,11 +17,11 @@ export const Navbar = () => {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Blog", href: "/pages/blogScreen" },
-    { name: "Videos Stream", href: "/streams" },
+    { name: "Video Streams", href: "/streams" },
     { name: "Portfolio", href: "/pages/portfolioScreen" },
     { name: "Services", href: "/services" },
     { name: "Activities", href: "/pages/activityScreen" },
-    { name: "About Us", href: "/about" },
+    { name: "About Us", href: "/pages/contactScreen" },
   ];
 
   // Helper function to check if nav item is active
@@ -94,16 +94,18 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 rounded-lg ${
+                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
-                      ? "bg-blue-600 text-white border-2 border-blue-400"
+                      ? "text-white"
                       : "text-white hover:text-blue-200"
                   }`}
                 >
                   {item.name}
-                  {!isActive(item.href) && (
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
-                  )}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
+                      isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
                 </Link>
               ))}
               {navItems.length > 4 && (
@@ -124,16 +126,18 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 rounded-lg ${
+                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
-                      ? "bg-blue-600 text-white border-2 border-blue-400"
+                      ? "text-white"
                       : "text-white hover:text-blue-200"
                   }`}
                 >
                   {item.name}
-                  {!isActive(item.href) && (
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
-                  )}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
+                      isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
                 </Link>
               ))}
               {navItems.length > 5 && (
@@ -154,16 +158,18 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 flex-shrink-0 rounded-lg ${
+                  className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
-                      ? "bg-blue-600 text-white border-2 border-blue-400"
+                      ? "text-white"
                       : "text-white hover:text-blue-200"
                   }`}
                 >
                   {item.name}
-                  {!isActive(item.href) && (
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
-                  )}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
+                      isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
                 </Link>
               ))}
               {navItems.length > 6 && (
@@ -183,16 +189,18 @@ export const Navbar = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 rounded-lg ${
+                className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 ${
                   isActive(item.href)
-                    ? "bg-blue-600 text-white border-2 border-blue-400"
+                    ? "text-white"
                     : "text-white hover:text-blue-200"
                 }`}
               >
                 {item.name}
-                {!isActive(item.href) && (
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-200 group-hover:w-full"></span>
-                )}
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
+                    isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                ></span>
               </Link>
             ))}
           </div>
@@ -254,9 +262,6 @@ export const Navbar = () => {
               <button className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base">
                 Login
               </button>
-              {/* <button className="bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-3 lg:px-4 xl:px-6 py-1.5 lg:py-2 rounded-full text-sm lg:text-base whitespace-nowrap">
-                Sign Up
-              </button> */}
             </div>
 
             {/* Mobile Menu Button - Show only on small screens */}
@@ -283,14 +288,17 @@ export const Navbar = () => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`block px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-center sm:text-left ${
+                    className={`block px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-center sm:text-left relative ${
                       isActive(item.href)
-                        ? "bg-blue-600 text-white border-2 border-blue-400"
+                        ? "text-white"
                         : "text-white hover:text-blue-200 hover:bg-blue-800/50"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
+                    {isActive(item.href) && (
+                      <span className="absolute bottom-1 left-3 right-3 h-0.5 bg-white"></span>
+                    )}
                   </Link>
                 ))}
               </div>
