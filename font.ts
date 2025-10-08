@@ -1,5 +1,5 @@
 // fonts.ts
-import { Inter, Neuton } from "next/font/google";
+import { Inter, Neuton, Lora } from "next/font/google";
 import localFont from "next/font/local";
 
 // Google Fonts
@@ -7,6 +7,14 @@ export const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+});
+
+export const lora = Lora({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-lora",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const neuton = Neuton({

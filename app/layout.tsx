@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { gurajada, inter, neuton, orelegaOne } from "@/font";
+import {
+  inter,
+  lora,
+  neuton,
+  orelegaOne,
+  gurajada,
+  timesRoman,
+  imbue,
+} from "@/font";
 import StoreProvider from "./lib/providers/storeProvider";
 import { Navbar } from "./component/reusable/landingpage/navItem";
-import Footer from "./component/reusable/landingpage/footer";
 import ConditionalFooter from "./component/reusable/conditionalFooter";
 
 export const metadata: Metadata = {
@@ -22,12 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`
-        ${inter.variable} 
-        ${neuton.variable} 
-        ${orelegaOne.variable} 
-        ${gurajada.variable}
-      `}
+      className={`${inter.variable} ${lora.variable} ${neuton.variable} ${orelegaOne.variable} ${gurajada.variable} ${timesRoman.variable} ${imbue.variable}`}
     >
       <body className="font-inter antialiased">
         <StoreProvider>

@@ -42,6 +42,7 @@ module.exports = {
         segoe: ["Segoe UI", "sans-serif"],
         times: ["var(--font-times-roman)", "Times New Roman", "serif"],
         imbue: ["var(--font-imbue)", "serif"],
+        lora: ["var(--font-lora)"],
       },
       fontSize: {
         sm: "14px",

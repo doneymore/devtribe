@@ -33,11 +33,11 @@ export const KnowledgeJourneySection: React.FC<
           <div className="w-full lg:w-3/5 order-2 lg:order-1 text-center lg:text-left">
             {/* Title with exact specifications */}
             <h1
-              className="font-gurajada text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-normal text-[#091248] capitalize mb-6"
+              className="font-inter text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-normal text-[#0E508B] capitalize mb-6"
               style={{
-                fontSize: "clamp(2rem, 8vw, 96px)",
-                lineHeight: "0.9375", // 90px/96px = 0.9375
-                letterSpacing: "0px",
+                fontSize: "clamp(2rem, 8vw, 50px)",
+                // lineHeight: "0.9375", // 90px/96px = 0.9375
+                // letterSpacing: "0px",
               }}
             >
               {title}
@@ -45,10 +45,10 @@ export const KnowledgeJourneySection: React.FC<
 
             {/* Description with exact specifications */}
             <p
-              className="font-gurajada text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-[#6A6868]  leading-tight mb-10"
+              className="font-lora text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-[#6A6868]  leading-tight mb-10"
               style={{
-                fontSize: "clamp(1rem, 3vw, 32px)",
-                lineHeight: "0.9375", // 30px/32px = 0.9375
+                fontSize: "clamp(1rem, 3vw, 24px)",
+                // lineHeight: "0.9375", // 30px/32px = 0.9375
                 letterSpacing: "0px",
               }}
             >

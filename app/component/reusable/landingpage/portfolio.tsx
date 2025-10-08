@@ -45,27 +45,27 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           {/* Right Content - 60% width on large screens */}
           <div className="w-full lg:w-3/5 order-2 lg:order-2 text-center lg:text-left leading-tight">
             {/* Greeting */}
-            <h2 className="font-gurajada text-5xl sm:text-4xl lg:text-6xl font-semibold text-shades-azul_text mb-2">
+            <h2 className="font-inter text-5xl sm:text-4xl lg:text-5xl font-normal text-[#0E508B] mb-2">
               {greeting}
             </h2>
 
             {/* Name */}
-            <h3 className="font-gurajada tracking-normal text-5xl sm:text-4xl lg:text-6xl font-semibold text-[#091248] mb-4">
+            <h3 className="font-inter tracking-normal text-5xl sm:text-4xl lg:text-5xl font-normal text-[#0E508B] mb-4">
               I'm {name}
             </h3>
 
             {/* Title */}
-            <h4 className="font-gurajada text-xl sm:text-2xl lg:text-6xl font-semibold text-[#091248] mb-6">
+            <h4 className="font-inter text-xl sm:text-2xl lg:text-5xl font-normal text-[#0E508B] mb-6">
               {title}
             </h4>
 
             {/* Description */}
             <p
-              className="font-gurajada text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-[#6A6868]  leading-tight mb-10"
+              className="font-lora text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-[#6A6868]   mb-10"
               style={{
-                fontSize: "clamp(1rem, 3vw, 32px)",
-                lineHeight: "0.9375", // 30px/32px = 0.9375
-                letterSpacing: "0px",
+                fontSize: "clamp(1rem, 3vw, 24px)",
+                // lineHeight: "0.9375", // 30px/32px = 0.9375
+                // letterSpacing: "0px",
               }}
             >
               {description}
