@@ -7,21 +7,41 @@ import { WelcomeSection } from "@/app/component/reusable/landingpage/heroSection
 import { Navbar } from "@/app/component/reusable/landingpage/navItem";
 import { AboutSection } from "@/app/component/reusable/landingpage/portfolio";
 import BlogCardsSection from "@/app/component/reusable/landingpage/streams";
+import VideoStreams from "@/app/component/reusable/landingpage/videoStream";
 // import { hero } from "@/public/assests/image";
 import React from "react";
 
 const LandingPage = () => {
+  const videoData = [
+  {
+    id: '1',
+    title: 'Here you will find everything to spark your inspiration!',
+    videoId: 'dQw4w9WgXcQ',
+  },
+  {
+    id: '2',
+    title: 'Awareness Month, a dedicated time to raise awareness',
+    videoId: 'dQw4w9WgXcQ',
+  },
+  {
+    id: '3',
+    title: 'Latest post heading sample text',
+    videoId: 'dQw4w9WgXcQ',
+  },
+];
+
+
   return (
     <div>
       <WelcomeSection />
     
-      <AboutSection
-        greeting="Hi"
-        name="Daniel"
-        title="Cybersecurity Analyst"
-        description="I am a Cybersecurity Analyst with a strong focus on identifying vulnerabilities, monitoring threats, and implementing security measures to protect digital systems. I am passionate about safeguarding data and ensuring the confidentiality, integrity, and availability of information in today's evolving cyber landscape."
-        buttonText="View Portfolio"
-        onButtonClick={() => alert("View Portfolio clicked!")}
+     
+      
+      <BlogHeroSection
+        title="SECNEEDLE BLOG"
+        description="Welcome to our blog - home of everything there is to know about cybersecurity and how you can secure your networks. Here you will find everything to spark your inspiration!"
+        buttonText="SUBSCRIBE"
+        onButtonClick={() => alert("Subscribe clicked!")}
       />
       <KnowledgeJourneySection
         title="Your Journey To Knowledge Begins Here."
@@ -29,13 +49,17 @@ const LandingPage = () => {
         buttonText="Explore"
         onButtonClick={() => alert("Explore clicked!")}
       />
-      <BlogHeroSection
-        title="SECNEEDLE BLOG"
-        description="Welcome to our blog - home of everything there is to know about cybersecurity and how you can secure your networks. Here you will find everything to spark your inspiration!"
-        buttonText="SUBSCRIBE"
-        onButtonClick={() => alert("Subscribe clicked!")}
+       <AboutSection
+        greeting="Hi"
+        name="Daniel"
+        title="Cybersecurity Analyst"
+        description="I am a Cybersecurity Analyst with a strong focus on identifying vulnerabilities, monitoring threats, and implementing security measures to protect digital systems. I am passionate about safeguarding data and ensuring the confidentiality, integrity, and availability of information in today's evolving cyber landscape."
+        buttonText="View Portfolio"
+        onButtonClick={() => alert("View Portfolio clicked!")}
       />
-      <BlogCardsSection />
+      
+      {/* <BlogCardsSection /> */}
+      <VideoStreams videos={videoData} />
     </div>
   );
 };

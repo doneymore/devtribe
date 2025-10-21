@@ -17,9 +17,9 @@ export const Navbar = () => {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Blog", href: "/pages/blogScreen" },
-    { name: "Video Streams", href: "/streams" },
+    { name: "Video Streams", href: "/pages/videoScreen" },
+    { name: "Services", href: "/pages/servicesScreen" },
     { name: "Portfolio", href: "/pages/portfolioScreen" },
-    { name: "Services", href: "/services" },
     { name: "Activities", href: "/pages/activityScreen" },
     { name: "About Us", href: "/pages/contactScreen" },
   ];
