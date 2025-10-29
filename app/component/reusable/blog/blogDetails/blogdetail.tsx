@@ -2,7 +2,40 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Heart, MessageCircle, User } from "lucide-react";
-import { BlogDetailPost, Comment, Reply } from "../types";
+
+interface Author {
+  name: string;
+  avatar: string;
+}
+
+interface Reply {
+  id: number;
+  author: Author;
+  content: string;
+  timestamp: string;
+  likes: number;
+  isLiked: boolean;
+}
+
+interface Comment {
+  id: number;
+  author: Author;
+  content: string;
+  timestamp: string;
+  likes: number;
+  isLiked: boolean;
+  replies: Reply[];
+}
+
+interface BlogDetailPost {
+  imageUrl: string;
+  title: string;
+  publishedDate: string;
+  author: Author;
+  content: string;
+  likes: number;
+  isLiked: boolean;
+}
 
 interface BlogDetailPageProps {
   post: BlogDetailPost;
@@ -24,6 +57,8 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
   const [replyText, setReplyText] = useState("");
   const [replyAuthorName, setReplyAuthorName] = useState("");
 
+
+  console.log(postData, "postDataInBlogDetailPage");  
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -82,7 +117,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
       id: Date.now(),
       author: {
         name: commentAuthorName,
-        avatar: "/api/placeholder/40/40",
+        avatar: "",
       },
       content: newComment,
       timestamp: "Just now",
@@ -103,7 +138,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
       id: Date.now(),
       author: {
         name: replyAuthorName,
-        avatar: "/api/placeholder/40/40",
+        avatar: "",
       },
       content: replyText,
       timestamp: "Just now",
@@ -134,6 +169,11 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
     ).toUpperCase();
   };
 
+  // Function to render HTML content safely
+  const renderContent = (htmlContent: string) => {
+    return { __html: htmlContent };
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,17 +189,32 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
         {/* Main Content */}
         <article className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Hero Image */}
-          <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[595px]">
-            <Image
-              src={postData.imageUrl}
-              alt={postData.title}
-              fill
-              className="object-cover"
-              style={{ borderRadius: "15px 15px 0 0" }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1215px"
-              priority
-            />
-          </div>
+          {/* Hero Image */}
+<div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[595px]">
+  {postData.imageUrl && postData.imageUrl.trim() !== "" ? (
+    <Image
+      src={postData.imageUrl}
+      alt={postData.title}
+      fill
+      className="object-cover"
+      style={{ borderRadius: "15px 15px 0 0" }}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1215px"
+      priority
+    />
+  ) : (
+    <div 
+      className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300"
+      style={{ borderRadius: "15px 15px 0 0" }}
+    >
+      <div className="text-center">
+        <div className="w-20 h-20 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+          <User size={40} className="text-gray-600" />
+        </div>
+        <p className="text-gray-600 font-medium text-lg">No Image Available</p>
+      </div>
+    </div>
+  )}
+</div>
 
           {/* Content Container */}
           <div className="p-6 sm:p-8 lg:p-12">
@@ -222,68 +277,12 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
               </span>
             </div>
 
-            {/* Content Sections */}
+            {/* Blog Content - Render actual content from API */}
             <div className="prose prose-lg max-w-none mb-8">
-              <div className="space-y-6">
-                <section>
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-3">
-                    What is Lorem Ipsum?
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book. It has survived not only five centuries,
-                    but also the leap into electronic typesetting, remaining
-                    essentially unchanged. It was popularised in the 1960s with
-                    the release of Letraset sheets containing Lorem Ipsum
-                    passages, and more recently with desktop publishing software
-                    like Aldus PageMaker including versions of Lorem Ipsum.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-3">
-                    Where does it come from?
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    Contrary to popular belief, Lorem Ipsum is not simply random
-                    text. It has roots in a piece of classical Latin literature
-                    from 45 BC, making it over 2000 years old. Richard
-                    McClintock, a Latin professor at Hampden-Sydney College in
-                    Virginia, looked up one of the more obscure Latin words,
-                    consectetur, from a Lorem Ipsum passage, and going through
-                    the cites of the word in classical literature, discovered
-                    the undoubtable source. Lorem Ipsum comes from sections
-                    1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The
-                    Extremes of Good and Evil) by Cicero, written in 45 BC. This
-                    book is a treatise on the theory of ethics, very popular
-                    during the Renaissance. The first line of Lorem Ipsum,
-                    "Lorem ipsum dolor sit amet..", comes from a line in section
-                    1.10.32.
-                  </p>
-                </section>
-
-                <section>
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-3">
-                    Why do we use it?
-                  </h2>
-                  <p className="text-gray-700 leading-relaxed">
-                    It is a long established fact that a reader will be
-                    distracted by the readable content of a page when looking at
-                    its layout. The point of using Lorem Ipsum is that it has a
-                    more-or-less normal distribution of letters, as opposed to
-                    using 'Content here, content here', making it look like
-                    readable English. Many desktop publishing packages and web
-                    page editors now use Lorem Ipsum as their default model
-                    text, and a search for 'lorem ipsum' will uncover many web
-                    sites still in their infancy. Various versions have evolved
-                    over the years, sometimes by accident, sometimes on purpose
-                    (injected humour and the like).
-                  </p>
-                </section>
-              </div>
+              <div 
+                className="text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={renderContent(postData.content)}
+              />
             </div>
 
             {/* Like Button */}

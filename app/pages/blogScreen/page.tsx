@@ -1,114 +1,80 @@
-"use client";
-
-import BlogGrid from "@/app/component/reusable/blog/blogCards/blogGrid";
-import BlogDetailPage from "@/app/component/reusable/blog/blogDetails/blogdetail";
-// import { BlogGrid, BlogPost } from "@/app/component/reusable/blog/blogGrid";
+import React from "react";
 import { BlogCard } from "@/app/component/reusable/blog/blogPost";
 import { BlogHeroSection } from "@/app/component/reusable/blog/hero";
-import { sampleComments, samplePostCard, samplePosts } from "@/app/component/reusable/blog/types";
-import { BlogPost, FeaturedPost, getAllBlogPosts, getBlogPostById, getFeaturedPost } from "@/app/lib/blogSerice";
+import BlogGrid from "@/app/component/reusable/blog/blogCards/blogGrid";
+
 import { blog_post } from "@/public/assests/image";
-import React, { useEffect, useState } from "react";
+import type { Metadata } from 'next';
+import { getAllBlogPosts } from "@/app/lib/blogServices";
+import { formatBlogDate } from "@/app/utils/dateformatter";
+import { createExcerpt } from "@/app/utils/createExcerptOfImage";
+import { getImageSrc } from "@/app/utils/convertBase64toImage";
 
+export const metadata: Metadata = {
+  title: 'Blog - Latest Posts',
+  description: 'Read our latest blog posts and articles',
+  openGraph: {
+    title: 'Blog - Latest Posts',
+    description: 'Read our latest blog posts and articles',
+    type: 'website',
+  },
+};
 
-interface BlogDetailProps {
-  params: {
-    id: string;
-  };
-}
-
-
-const Blog = () => {
-
- const [posts, setPosts] = useState<BlogPost[]>([]);
- const [featuredPost, setFeaturedPost] = useState<FeaturedPost | null>(null);
- const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-   
-    const loadData = async () => {
-      try {
-        const [blogPosts, featured] = await Promise.all([
-          getAllBlogPosts(),
-          getFeaturedPost(),
-        ]);
-        setPosts(blogPosts);
-        setFeaturedPost(featured);
-      } catch (error) {
-        console.error("Error loading blog data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading...
-      </div>
-    );
+// This is now a Server Component (SSR)
+export default async function BlogScreen() {
+  let postsData: any = null;
+  let featuredPost: any = null;
+  
+  try {
+    postsData = await getAllBlogPosts();
+    console.log(postsData, "showAllBlogPosts");
+    
+    // Get the most recent post as featured from the payload
+    if (postsData?.payload && Array.isArray(postsData.payload) && postsData.payload.length > 0) {
+      featuredPost = postsData.payload[0];
+    }
+  } catch (error) {
+    console.error("Error loading blog data:", error);
   }
-  const samplePost = {
-    id: "1",
-    image: "", // Dummy image
-    imageAlt: "Blog post illustration",
-    title: "Latest post heading sample text...",
-    author: "Writer Name",
-    date: "23 Dec",
-    excerpt:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-    slug: "latest-post-heading-sample",
-  };
 
-   
+  // Normalize posts from the payload
+  const normalizedPosts = postsData?.payload && Array.isArray(postsData.payload)
+    ? postsData.payload
+    : [];
+    console.log(normalizedPosts, "normalizedPosts");
+
   return (
     <div>
       <BlogHeroSection />
 
-      <BlogCard
-        image={blog_post}
-        imageAlt={samplePost.imageAlt}
-        title={samplePost.title}
-        author={samplePost.author}
-        date={samplePost.date}
-        excerpt={samplePost.excerpt}
-        slug={samplePost.slug}
-      />
-      <BlogGrid posts={samplePosts} itemsPerPage={9} className="mb-8" />
+      {/* Featured Post */}
+      {featuredPost && (
+        <BlogCard
+          image={getImageSrc(featuredPost.thumnailImage) ?? blog_post}
+          imageAlt={featuredPost.blogTItle}
+          title={featuredPost.blogTItle}
+          author={featuredPost.createdBy}
+          date={formatBlogDate(featuredPost.dateCreated)}
+          excerpt={createExcerpt(featuredPost.blogBody, 300)}
+          slug={featuredPost.blogId.toString()}
+        />
+      )}
 
-      {/* <Blo gDetailPage post={samplePostCard} comments={sampleComments} /> */}
+      {/* Blog Grid - Convert posts to format BlogGrid expects */}
+      <BlogGrid 
+        posts={normalizedPosts.map((post: any) => ({
+          id: post.blogId.toString(),
+          title: post.blogTItle,
+          description: createExcerpt(post.blogBody, 150),
+          author: post.createdBy,
+          date: formatBlogDate(post.dateCreated),
+          image: getImageSrc(post.thumnailImage) ?? blog_post,
+          slug: post.blogId.toString(),
+          likes: post.likes,
+        }))}
+        itemsPerPage={9}
+        className="mb-8"
+      />
     </div>
   );
-};
-
-export default Blog;
-
-
-// export async function generateMetadata({ params }: BlogDetailProps) {
-//   try {
-//     const post = await getBlogPostById(params.id);
-
-//     if (!post) {
-//       return {
-//         title: "Post Not Found",
-//       };
-//     }
-
-//     return {
-//       title: post.title,
-//       description: post.content.substring(0, 150) + "...",
-//       openGraph: {
-//         title: post.title,
-//         description: post.content.substring(0, 150) + "...",
-//         images: [post.imageUrl],
-//       },
-//     };
-//   } catch (error) {
-//     return {
-//       title: "Post Not Found",
-//     };
-//   }
-// }
+}
