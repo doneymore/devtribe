@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    // Await the params in Next.js 15
+    const { id } = await params;
     
     const response = await fetch(
       `https://secneedles-webapi.onrender.com/api/Blog/GetBlogPostById/${id}`,
