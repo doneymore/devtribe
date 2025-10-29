@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from "react";
 import { BlogCard } from "@/app/component/reusable/blog/blogPost";
 import { BlogHeroSection } from "@/app/component/reusable/blog/hero";
