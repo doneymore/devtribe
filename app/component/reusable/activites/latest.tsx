@@ -1,19 +1,92 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 
-interface CarouselItem {
-  title: string;
-  description: string;
+interface PostImage {
   imageUrl: string;
   imageAlt: string;
   link: string;
-  hoverText: string;
 }
 
-interface LatestCarouselProps {
+interface CarouselSection {
+  title: string;
+  link: string;
+  images: PostImage[];
+}
+
+interface PaginationControlsProps {
+  currentPage: number;
+  totalPages: number;
+  canGoPrevious: boolean;
+  canGoNext: boolean;
+  onPrevious: () => void;
+  onNext: () => void;
+}
+
+const PaginationControls: React.FC<PaginationControlsProps> = ({
+  currentPage,
+  totalPages,
+  canGoPrevious,
+  canGoNext,
+  onPrevious,
+  onNext,
+}) => {
+  return (
+    <div className="flex items-center justify-center space-x-2 sm:space-x-6 mt-8 md:mt-12 px-4">
+      <button
+        onClick={onPrevious}
+        disabled={!canGoPrevious}
+        className={`flex items-center justify-center rounded-[20px] border-[3px] transition-all duration-200 ${
+          canGoPrevious
+            ? "border-blue-400 text-blue-500 hover:bg-blue-500 hover:text-white"
+            : "border-gray-300 text-gray-400 cursor-not-allowed"
+        }`}
+        style={{
+          width: "clamp(100px, 25vw, 137px)",
+          height: "53px",
+          padding: "11px 8px",
+          gap: "10px",
+        }}
+      >
+        <ChevronLeft size={16} className="sm:inline block" />
+        <span className="font-medium text-xs sm:text-sm hidden sm:inline">
+          Previous
+        </span>
+        <span className="font-medium text-xs sm:hidden">Prev</span>
+      </button>
+
+      <span className="text-blue-600 font-medium px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap">
+        {currentPage} / {totalPages}
+      </span>
+
+      <button
+        onClick={onNext}
+        disabled={!canGoNext}
+        className={`flex items-center justify-center rounded-[20px] border-[3px] transition-all duration-200 ${
+          canGoNext
+            ? "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+            : "border-gray-300 text-gray-400 cursor-not-allowed"
+        }`}
+        style={{
+          width: "clamp(90px, 22vw, 123px)",
+          height: "53px",
+          padding: "11px 8px",
+        }}
+      >
+        <span className="font-medium text-xs sm:text-sm hidden sm:inline">
+          Next
+        </span>
+        <span className="font-medium text-xs sm:hidden">Next</span>
+        <ChevronRight size={16} className="sm:inline block" />
+      </button>
+    </div>
+  );
+};
+
+interface ScrollingCarouselProps {
   // Title Configuration
   showTitle?: boolean;
   title?: string;
@@ -22,15 +95,13 @@ interface LatestCarouselProps {
   titleAlignment?: "left" | "center" | "right";
 
   // Content Configuration
-  items?: CarouselItem[];
+  sections?: CarouselSection[];
+  sectionsPerPage?: number;
   autoScrollInterval?: number;
-  showNavigationArrows?: boolean;
-  showNavigationDots?: boolean;
 
   // Spacing & Layout
   className?: string;
   sectionClassName?: string;
-  containerClassName?: string;
   marginTop?: string;
   marginBottom?: string;
   paddingTop?: string;
@@ -39,122 +110,279 @@ interface LatestCarouselProps {
   backgroundColor?: string;
 
   // Card Styling
-  cardClassName?: string;
   cardBorderRadius?: string;
 
-  // Hover Overlay Color
-  hoverOverlayColor?: string;
+  // Link styling
+  showLinkIcon?: boolean;
+  linkIconColor?: string;
 }
 
-const LatestCarousel: React.FC<LatestCarouselProps> = ({
+const ScrollingCarousel: React.FC<ScrollingCarouselProps> = ({
   // Title props
   showTitle = true,
-  title = "Latest",
+  title = "Our Activities",
   titleClassName = "",
   titleStyle = {},
-  titleAlignment = "left",
+  titleAlignment = "center",
 
   // Content props
-  items,
-  autoScrollInterval = 3000,
-  showNavigationArrows = true,
-  showNavigationDots = true,
+  sections,
+  sectionsPerPage = 3,
+  autoScrollInterval = 4000,
 
   // Spacing props
   className = "",
   sectionClassName = "",
-  containerClassName = "",
   marginTop = "",
   marginBottom = "",
-  paddingTop = "py-8 md:py-12 lg:py-16 xl:py-20",
-  paddingBottom = "",
+  paddingTop = "py-8 md:py-12 lg:py-16",
+  paddingBottom = "pb-8 md:pb-12",
   paddingX = "px-4 md:px-6 lg:px-8",
-  backgroundColor = "bg-gray-100",
+  backgroundColor = "bg-gray-200",
 
   // Card styling
-  cardClassName = "",
-  cardBorderRadius = "15px md:rounded-[20px]",
+  cardBorderRadius = "rounded-[15px] md:rounded-[20px]",
 
-  // Hover overlay
-  hoverOverlayColor = "#124384",
+  // Link styling
+  showLinkIcon = true,
+  linkIconColor = "text-blue-600",
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [carouselIndices, setCarouselIndices] = useState<{
+    [key: number]: number;
+  }>({});
+  const [hoveredCarousel, setHoveredCarousel] = useState<number | null>(null);
 
-  const defaultCarouselItems: CarouselItem[] = [
+  const defaultSections: CarouselSection[] = [
     {
-      title: "Coding, Real-World",
-      description: "Consectetur Adipiscing Et Dolore Magna Aliqua",
-      imageUrl:
-        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
-      imageAlt: "Students learning together",
-      link: "/activities/coding-real-world",
-      hoverText: "Explore Real-World Coding",
+      title: "Hands-On Training, Real-World Examples",
+      link: "/activities/hands-on-training",
+      images: [
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
+          imageAlt: "Group training session",
+          link: "/activities/training-1",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
+          imageAlt: "Classroom learning",
+          link: "/activities/training-2",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
+          imageAlt: "Professional presentation",
+          link: "/activities/training-3",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&q=80",
+          imageAlt: "Team workshop",
+          link: "/activities/training-4",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1551836026-d5c55ac5d4c5?w=800&q=80",
+          imageAlt: "Learning session",
+          link: "/activities/training-5",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
+          imageAlt: "Study group",
+          link: "/activities/training-6",
+        },
+      ],
     },
     {
-      title: "Interactive Learning",
-      description: "Hands-on Experience with Technology",
-      imageUrl:
-        "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
-      imageAlt: "Students in classroom",
-      link: "/activities/interactive-learning",
-      hoverText: "Discover Interactive Learning",
+      title: "Build A Career In Cybersecurity",
+      link: "/activities/build-career",
+      images: [
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80",
+          imageAlt: "Professional woman",
+          link: "/activities/career-1",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
+          imageAlt: "Team collaboration",
+          link: "/activities/career-2",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80",
+          imageAlt: "Business meeting",
+          link: "/activities/career-3",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1581094794322-737c6ddee8b1?w=800&q=80",
+          imageAlt: "Career development",
+          link: "/activities/career-4",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
+          imageAlt: "Professional growth",
+          link: "/activities/career-5",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80",
+          imageAlt: "Career path",
+          link: "/activities/career-6",
+        },
+      ],
     },
     {
-      title: "Professional Development",
-      description: "Building Skills for the Future",
-      imageUrl:
-        "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
-      imageAlt: "Business presentation",
-      link: "/activities/professional-development",
-      hoverText: "Learn Professional Skills",
+      title: "Understand Hackers, Stay Ahead Of Them",
+      link: "/activities/understand-hackers",
+      images: [
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+          imageAlt: "Security analysis",
+          link: "/activities/hacker-1",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80",
+          imageAlt: "Cybersecurity work",
+          link: "/activities/hacker-2",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
+          imageAlt: "Team meeting",
+          link: "/activities/hacker-3",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1563013541-2e0e51d3415c?w=800&q=80",
+          imageAlt: "Security monitoring",
+          link: "/activities/hacker-4",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&q=80",
+          imageAlt: "Threat analysis",
+          link: "/activities/hacker-5",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
+          imageAlt: "Security research",
+          link: "/activities/hacker-6",
+        },
+      ],
     },
     {
-      title: "Team Collaboration",
-      description: "Working Together to Achieve Goals",
-      imageUrl:
-        "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80",
-      imageAlt: "Team collaboration",
-      link: "/activities/team-collaboration",
-      hoverText: "Join Our Team",
-    },
-    {
-      title: "Innovation & Technology",
-      description: "Embracing the Future of Learning",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-      imageAlt: "Technology innovation",
-      link: "/activities/innovation",
-      hoverText: "Explore Innovation",
+      title: "Network Security Fundamentals",
+      link: "/activities/network-security",
+      images: [
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+          imageAlt: "Network security",
+          link: "/activities/network-1",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+          imageAlt: "Security protocols",
+          link: "/activities/network-2",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
+          imageAlt: "Technology innovation",
+          link: "/activities/network-3",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
+          imageAlt: "Coding work",
+          link: "/activities/network-4",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+          imageAlt: "Programming",
+          link: "/activities/network-5",
+        },
+        {
+          imageUrl:
+            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
+          imageAlt: "Web development",
+          link: "/activities/network-6",
+        },
+      ],
     },
   ];
 
-  const carouselItems = items || defaultCarouselItems;
+  const carouselSections = sections || defaultSections;
+  const totalPages = Math.ceil(carouselSections.length / sectionsPerPage);
 
+  const getCurrentPageSections = () => {
+    const startIndex = (currentPage - 1) * sectionsPerPage;
+    const endIndex = startIndex + sectionsPerPage;
+    return carouselSections.slice(startIndex, endIndex);
+  };
+
+  const currentSections = getCurrentPageSections();
+
+  // Initialize carousel indices for current sections
   useEffect(() => {
-    if (isHovered) return;
+    const initialIndices: { [key: number]: number } = {};
+    currentSections.forEach((_, index) => {
+      initialIndices[index] = 0;
+    });
+    setCarouselIndices(initialIndices);
+  }, [currentPage]);
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
-    }, autoScrollInterval);
-
-    return () => clearInterval(interval);
-  }, [isHovered, carouselItems.length, autoScrollInterval]);
-
+  // Auto-scroll for each carousel - moves by 3 images at a time
   useEffect(() => {
-    if (scrollContainerRef.current) {
-      const cardWidth =
-        scrollContainerRef.current.querySelector(".carousel-card")
-          ?.clientWidth || 430;
-      const gap = window.innerWidth < 768 ? 16 : 24;
-      const scrollAmount = currentIndex * (cardWidth + gap);
-      scrollContainerRef.current.scrollTo({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
+    const intervals: NodeJS.Timeout[] = [];
+
+    currentSections.forEach((section, index) => {
+      if (hoveredCarousel === index || section.images.length <= 3) return;
+
+      const interval = setInterval(() => {
+        setCarouselIndices((prev) => {
+          const currentIndex = prev[index] || 0;
+          const maxIndex = section.images.length - 3;
+          const nextIndex = currentIndex + 3 > maxIndex ? 0 : currentIndex + 3;
+
+          return {
+            ...prev,
+            [index]: nextIndex,
+          };
+        });
+      }, autoScrollInterval);
+
+      intervals.push(interval);
+    });
+
+    return () => {
+      intervals.forEach((interval) => clearInterval(interval));
+    };
+  }, [hoveredCarousel, autoScrollInterval, currentPage]);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
-  }, [currentIndex]);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const titleAlignmentClass = {
     left: "text-left",
@@ -163,9 +391,8 @@ const LatestCarousel: React.FC<LatestCarouselProps> = ({
   }[titleAlignment];
 
   const defaultTitleStyle: React.CSSProperties = {
-    fontFamily: "Times New Roman, serif",
-    fontWeight: 400,
-    letterSpacing: "0px",
+    fontFamily: "Arial, sans-serif",
+    fontWeight: 700,
     ...titleStyle,
   };
 
@@ -176,191 +403,104 @@ const LatestCarousel: React.FC<LatestCarouselProps> = ({
     ${marginBottom} 
     ${backgroundColor} 
     w-full 
-    overflow-hidden 
     ${sectionClassName}
   `.trim();
 
   return (
     <section className={`${sectionStyles} ${className}`}>
-      {/* Title - Optional and Customizable */}
-      {showTitle && (
-        <div className={paddingX}>
-          <h2
-            className={`
-              text-3xl sm:text-4xl md:text-5xl lg:text-6xl 
-              mb-6 md:mb-8 lg:mb-12 
-              capitalize 
-              leading-none 
-              ${titleAlignmentClass}
-              ${titleClassName}
-            `}
-            style={defaultTitleStyle}
-          >
-            {title}
-          </h2>
-        </div>
-      )}
+      <div className={paddingX}>
+        
 
-      {/* Carousel Container - Full Width */}
-      <div className={`relative w-full ${containerClassName}`}>
-        <div
-          ref={scrollContainerRef}
-          className={`flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide scroll-smooth ${paddingX} pb-4`}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
-          {carouselItems.map((item, index) => (
-            <div
-              key={index}
-              className={`
-                carousel-card 
-                flex-shrink-0 
-                relative 
-                group 
-                cursor-pointer 
-                w-[280px] h-[270px] 
-                sm:w-[340px] sm:h-[328px] 
-                md:w-[380px] md:h-[366px] 
-                lg:w-[430px] lg:h-[414px] 
-                rounded-[${cardBorderRadius}]
-                ${cardClassName}
-              `}
-            >
-              {/* Image */}
-              <div
-                className={`w-full h-full relative overflow-hidden rounded-[${cardBorderRadius}]`}
+        {/* Carousel Sections */}
+        <div className="space-y-8 md:space-y-12">
+          {currentSections.map((section, sectionIndex) => (
+            <div key={sectionIndex}>
+              {/* Section Title with Link Icon */}
+              <Link
+                href={section.link}
+                className="inline-flex items-center gap-2 mb-4 md:mb-6 group"
               >
-                <Image
-                  src={item.imageUrl}
-                  alt={item.imageAlt}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 640px) 280px, (max-width: 768px) 340px, (max-width: 1024px) 380px, 430px"
-                  priority={index === 0}
-                />
+                <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                  {section.title}
+                </h3>
+                {showLinkIcon && (
+                  <ExternalLink
+                    className={`w-4 h-4 md:w-5 md:h-5 ${linkIconColor} opacity-0 group-hover:opacity-100 transition-opacity`}
+                  />
+                )}
+              </Link>
 
-                {/* Default Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-0" />
-
-                {/* Hover Overlay with Link */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-6"
-                  style={{ backgroundColor: `${hoverOverlayColor}f2` }} // f2 = 95% opacity
-                >
-                  <Link
-                    href={item.link}
-                    className="text-white text-xl sm:text-2xl md:text-3xl font-bold text-center hover:underline underline-offset-4 decoration-2 transition-all"
-                  >
-                    {item.hoverText}
-                  </Link>
-                  <span className="text-white/80 text-sm mt-3 hover:text-white transition-colors">
-                    Click to learn more →
-                  </span>
+              {/* Scrolling Carousel */}
+              <div
+                className="relative"
+                onMouseEnter={() => setHoveredCarousel(sectionIndex)}
+                onMouseLeave={() => setHoveredCarousel(null)}
+              >
+                {/* Images Grid - Show 3 at once */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {section.images
+                    .slice(
+                      carouselIndices[sectionIndex] || 0,
+                      (carouselIndices[sectionIndex] || 0) + 3
+                    )
+                    .map((image, imgIndex) => (
+                      <Link key={imgIndex} href={image.link} className="group">
+                        <div
+                          className={`relative overflow-hidden ${cardBorderRadius} bg-gray-300 hover:shadow-lg transition-shadow duration-300 aspect-[4/3]`}
+                        >
+                          <Image
+                            src={image.imageUrl}
+                            alt={image.imageAlt}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        </div>
+                      </Link>
+                    ))}
                 </div>
 
-                {/* Default Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 md:p-6 text-white transition-opacity duration-300 group-hover:opacity-0">
-                  <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm md:text-base opacity-90">
-                    {item.description}
-                  </p>
-                </div>
+                {/* Carousel Indicator Dots */}
+                {section.images.length > 3 && (
+                  <div className="flex justify-center gap-2 mt-6">
+                    {Array.from({
+                      length: Math.ceil(section.images.length / 3),
+                    }).map((_, dotIndex) => (
+                      <div
+                        key={dotIndex}
+                        className={`
+                          h-2 rounded-full transition-all duration-300
+                          ${
+                            Math.floor(
+                              (carouselIndices[sectionIndex] || 0) / 3
+                            ) === dotIndex
+                              ? "w-8 bg-blue-600"
+                              : "w-2 bg-gray-400"
+                          }
+                        `}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Navigation Dots */}
-        {showNavigationDots && (
-          <div className="flex justify-center gap-2 mt-6 md:mt-8 px-4">
-            {carouselItems.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex
-                    ? "w-6 md:w-8"
-                    : "bg-gray-400 hover:bg-gray-600 w-2"
-                }`}
-                style={
-                  index === currentIndex
-                    ? { backgroundColor: hoverOverlayColor }
-                    : {}
-                }
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Navigation Arrows */}
-        {showNavigationArrows && (
-          <>
-            <button
-              onClick={() =>
-                setCurrentIndex(
-                  (prev) =>
-                    (prev - 1 + carouselItems.length) % carouselItems.length
-                )
-              }
-              className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
-              aria-label="Previous slide"
-            >
-              <svg
-                className="w-6 h-6"
-                style={{ color: hoverOverlayColor }}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            <button
-              onClick={() =>
-                setCurrentIndex((prev) => (prev + 1) % carouselItems.length)
-              }
-              className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
-              aria-label="Next slide"
-            >
-              <svg
-                className="w-6 h-6"
-                style={{ color: hoverOverlayColor }}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            canGoPrevious={currentPage > 1}
+            canGoNext={currentPage < totalPages}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+          />
         )}
       </div>
-
-      {/* CSS for hiding scrollbar */}
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 };
 
-export default LatestCarousel;
+export default ScrollingCarousel;

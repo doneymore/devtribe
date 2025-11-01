@@ -7,8 +7,8 @@ const ActivityScreen = () => {
     <div>
       <ActivitiesSection />
       <LatestCarousel />
-      <LatestCarousel showTitle={false} marginTop="-mt-30" />
-      <LatestCarousel showTitle={false} marginTop="-mt-30" />
+      {/* <LatestCarousel showTitle={false} marginTop="-mt-30" />
+      <LatestCarousel showTitle={false} marginTop="-mt-30" /> */}
     </div>
   );
 };
