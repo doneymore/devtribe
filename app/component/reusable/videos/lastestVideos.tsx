@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThumbsUp, MessageSquare } from 'lucide-react';
+import { ThumbsUp, MessageSquare, Search } from 'lucide-react';
 
 // Types
 interface VideoItem {
@@ -24,6 +24,8 @@ interface YouTubeVideoSectionProps {
   backgroundColor?: string;
   titleColor?: string;
   showShadow?: boolean;
+  onSearch?: (query: string) => void;
+  searchPlaceholder?: string;
 }
 
 const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
@@ -32,16 +34,56 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
   maxWidth = "1227px",
   backgroundColor = "white",
   titleColor = "#1a4d7a",
-  showShadow = true
+  showShadow = true,
+  onSearch,
+  searchPlaceholder = "Search"
 }) => {
   const [playingVideo, setPlayingVideo] = React.useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const handleVideoClick = (videoId: string) => {
     setPlayingVideo(videoId);
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSearch) {
+      onSearch(searchQuery);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <div className="w-full" style={{ backgroundColor }}>
+      {/* Search Bar Section */}
+      <section className="py-6 px-4 sm:px-6 lg:px-20">
+        <div className="max-w-7xl mx-auto">
+          <form onSubmit={handleSearchSubmit} className="relative w-full">
+            <div className="relative flex items-center">
+              {/* Search Icon */}
+              <div className="absolute left-4 pointer-events-none">
+                <Search className="w-5 h-5 text-gray-400" />
+              </div>
+              
+              {/* Search Input */}
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder={searchPlaceholder}
+                className="w-full pl-12 pr-4 py-3 bg-gray-100 border-0 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm sm:text-base"
+                style={{
+                  fontFamily: 'system-ui, -apple-system, sans-serif'
+                }}
+              />
+            </div>
+          </form>
+        </div>
+      </section>
+
       {/* Main Featured Video Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-20">
         <div className="max-w-7xl mx-auto">

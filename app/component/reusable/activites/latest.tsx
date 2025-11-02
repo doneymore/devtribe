@@ -420,7 +420,7 @@ const ScrollingCarousel: React.FC<ScrollingCarouselProps> = ({
                 href={section.link}
                 className="inline-flex items-center gap-2 mb-4 md:mb-6 group"
               >
-                <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#0D1651] group-hover:text-blue-600 transition-colors">
                   {section.title}
                 </h3>
                 {showLinkIcon && (

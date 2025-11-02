@@ -66,7 +66,7 @@ export const ActivitiesSection: React.FC = () => {
     <section className="py-12 md:py-16 lg:py-20 px-4 md:px-6 lg:px-8 bg-gray-100">
       {/* Title */}
       <h2
-        className="text-4xl md:text-5xl lg:text-6xl text-center mb-12 md:mb-16 lg:mb-20 capitalize leading-none"
+        className="text-4xl md:text-5xl lg:text-6xl text-center mb-12 md:mb-16 lg:mb-20 capitalize leading-none text-[#0D1651]"
         style={{
           fontFamily: "Times New Roman, serif",
           fontWeight: 400,
