@@ -1,5 +1,5 @@
 "use client";
-import { BlogHeroSection } from "@/app/component/reusable/landingpage/blog";
+import BlogPage from "@/app/component/reusable/landingpage/blog";
 import { KnowledgeJourneySection } from "@/app/component/reusable/landingpage/explore";
 import Footer from "@/app/component/reusable/landingpage/footer";
 import { HeroSection } from "@/app/component/reusable/landingpage/heroSection";
@@ -8,6 +8,7 @@ import { Navbar } from "@/app/component/reusable/landingpage/navItem";
 import { AboutSection } from "@/app/component/reusable/landingpage/portfolio";
 import BlogCardsSection from "@/app/component/reusable/landingpage/streams";
 import VideoStreams from "@/app/component/reusable/landingpage/videoStream";
+import { blog } from "@/public/assests/image";
 // import { hero } from "@/public/assests/image";
 import React from "react";
 
@@ -35,14 +36,14 @@ const LandingPage = () => {
     <div>
       <WelcomeSection />
     
-     
+      <BlogPage backgroundImage={blog} />
       
-      <BlogHeroSection
+      {/* <BlogHeroSection
         title="SECNEEDLE BLOG"
         description="Welcome to our blog - home of everything there is to know about cybersecurity and how you can secure your networks. Here you will find everything to spark your inspiration!"
         buttonText="SUBSCRIBE"
         onButtonClick={() => alert("Subscribe clicked!")}
-      />
+      /> */}
       <KnowledgeJourneySection
         title="Your Journey To Knowledge Begins Here."
         description="At DigitalDefynd, We Understand That Powerful Ideas Can Shape Thinking And Well-Timed Quote Can Often Drive Home The Importance Of Goals Awareness Better Than Data Or Charts. Whether You're Leading A Boardroom Discussion, Presenting At A Conference, Or Mentoring A Team, Integrating Meaningful Cybersecurity Quotes Into Your Communication Can Reinforce Essential Messages With Clarity And Authority."

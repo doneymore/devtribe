@@ -26,7 +26,7 @@ export const KnowledgeJourneySection: React.FC<
   className = "",
 }) => {
   return (
-    <section className={`bg-secondary-50 py-16 lg:py-20 ${className}`}>
+    <section className={`bg-[#cddefc] py-16 lg:py-20 ${className}`}>
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           {/* Left Content - 60% width */}

@@ -17,8 +17,8 @@ const VideoStreams: React.FC<VideoStreamsProps> = ({
   title = "Latest Video Streams" 
 }) => {
   return (
-    <section className="w-full bg-[#B8D4E8] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full bg-[#cddefc] py-16 lg:py-20">
+      <div className="container mx-auto px-4 lg:px-8">
         {/* Section Title */}
         <h2 className="text-[#4A5568] text-lg sm:text-xl font-medium mb-8">
           {title}
@@ -120,4 +120,3 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, className = '' }) => {
 };
 
 export default VideoStreams;
-

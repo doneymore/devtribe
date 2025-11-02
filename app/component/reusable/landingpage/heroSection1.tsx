@@ -96,13 +96,13 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
 
             {/* Button */}
 
-            <div className="flex justify-center lg:justify-start">
+            {/* <div className="flex justify-center lg:justify-start">
               <Button
                 text={buttonText}
                 onClick={onButtonClick}
                 className="inline-flex items-center justify-center px-8 py-3 bg-primary-nav text-white font-medium text-lg rounded-full hover:bg-blue-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg hover:shadow-xl"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Right Image - 60% */}
