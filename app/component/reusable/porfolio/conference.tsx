@@ -3,28 +3,54 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-interface ConferenceItem {
-  name: string;
+interface Conference {
+  conferenceId: string;
+  title: string;
   description: string;
-  image: string;
-  imageAlt: string;
-  readMoreUrl: string;
+  yearAttended: number;
+  logoImageBase64: string | null;
+  dateCreated: string;
 }
 
 interface ConferencesContentProps {
-  conferences?: ConferenceItem[];
+  conferences?: Conference[];
   className?: string;
 }
 
-const ConferenceCard: React.FC<{ item: ConferenceItem }> = ({ item }) => {
+const ConferenceCard: React.FC<{ item: Conference }> = ({ item }) => {
+  // Default conference/security-themed images
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop", // Conference hall
+    "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400&h=300&fit=crop", // Tech conference
+    "https://images.unsplash.com/photo-1558403194-611308249627?w=400&h=300&fit=crop", // Hacker convention
+    "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=300&fit=crop", // Tech presentation
+  ];
+
+  // Use logoImageBase64 if available, otherwise use a default image
+  const getImageSrc = () => {
+    if (item.logoImageBase64) {
+      return `data:image/png;base64,${item.logoImageBase64}`;
+    }
+    // Use hash of conferenceId to consistently select an image
+    const hash = item.conferenceId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return defaultImages[hash % defaultImages.length];
+  };
+
+  // Generate a read more URL (you can modify this logic based on your needs)
+  const getReadMoreUrl = () => {
+    // You could store this in your API, or generate it based on the conference name
+    const conferenceSlug = item.title.toLowerCase().replace(/\s+/g, '-');
+    return `#${conferenceSlug}`;
+  };
+
   return (
     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start">
       {/* Conference Logo/Image */}
       <div className="flex-shrink-0 w-full sm:w-44 md:w-48 lg:w-52">
         <div className="relative w-full aspect-[4/3]">
           <Image
-            src={item.image}
-            alt={item.imageAlt}
+            src={getImageSrc()}
+            alt={`${item.title} Logo`}
             fill
             className="object-contain rounded-3xl"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 176px, (max-width: 1024px) 192px, 208px"
@@ -44,13 +70,13 @@ const ConferenceCard: React.FC<{ item: ConferenceItem }> = ({ item }) => {
             color: "#000000",
           }}
         >
-          <span style={{ fontWeight: 700 }}>{item.name}:</span>{" "}
+          <span style={{ fontWeight: 700 }}>
+            {item.title} ({item.yearAttended}):
+          </span>{" "}
           {item.description}
         </p>
         <a
-          href={item.readMoreUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={getReadMoreUrl()}
           className="inline-block mt-2 hover:underline"
           style={{
             fontFamily: "Times New Roman, serif",
@@ -67,35 +93,7 @@ const ConferenceCard: React.FC<{ item: ConferenceItem }> = ({ item }) => {
 };
 
 const ConferencesContent: React.FC<ConferencesContentProps> = ({
-  conferences = [
-    {
-      name: "Black Hat",
-      description:
-        "This is one of the most recognized and technical conferences in the industry, with events held annually in the U.S., Europe, and Asia. It focuses on briefings and hands-on training that showcase the latest security research, threats, and vulnerabilities.",
-      image:
-        "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop",
-      imageAlt: "Black Hat Conference Logo",
-      readMoreUrl: "https://www.blackhat.com",
-    },
-    {
-      name: "RSA Conference",
-      description:
-        "A long-running, premier conference that brings together leading experts, vendors, and security professionals. It's an excellent event for networking, staying on top of industry trends, and learning about a wide range of security topics.",
-      image:
-        "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400&h=300&fit=crop",
-      imageAlt: "RSA Conference Logo",
-      readMoreUrl: "https://www.rsaconference.com",
-    },
-    {
-      name: "DEF CON",
-      description:
-        "The world's largest and most famous hacker convention, typically held alongside Black Hat in Las Vegas. It offers a more casual, community-driven atmosphere with hands-on workshops, live hacking demonstrations, and Capture The Flag (CTF) competitions.",
-      image:
-        "https://images.unsplash.com/photo-1558403194-611308249627?w=400&h=300&fit=crop",
-      imageAlt: "DEF CON Logo",
-      readMoreUrl: "https://www.defcon.org",
-    },
-  ],
+  conferences = [],
   className = "",
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -116,13 +114,22 @@ const ConferencesContent: React.FC<ConferencesContentProps> = ({
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
   };
 
+  // Empty state
+  if (conferences.length === 0) {
+    return (
+      <div className={className}>
+        <p className="text-center text-gray-500">No conferences available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className={className}>
       {/* Conferences List */}
       <div className="space-y-6">
-        {visibleConferences.map((conference, index) => (
+        {visibleConferences.map((conference) => (
           <ConferenceCard
-            key={currentPage * itemsPerPage + index}
+            key={conference.conferenceId}
             item={conference}
           />
         ))}

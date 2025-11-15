@@ -6,18 +6,41 @@ import { SectionNavbar } from "@/app/component/reusable/porfolio/navSection";
 import ProjectsCarousel from "@/app/component/reusable/porfolio/projects";
 import { SectionWrapper } from "@/app/component/reusable/porfolio/sectionWrapper";
 import { SkillsContent } from "@/app/component/reusable/porfolio/skills";
+import { getIconForSkill } from "@/app/component/reusable/porfolio/skillsIcon";
+import { getConferencesPayload } from "@/app/lib/portfolioServices/conferences";
+import { getExperienceByUserId } from "@/app/lib/portfolioServices/experienceServices";
+import { getProjectsPayload } from "@/app/lib/portfolioServices/projectServices";
+import { getSkillsPayload } from "@/app/lib/portfolioServices/skillsServices";
+import { parseJobDutiesServer } from "@/app/utils/htmlTextformatter";
 
-interface PortfolioProps {
-  AboutComponent?: React.ComponentType;
-  SkillsComponent?: React.ComponentType;
-  ExperienceComponent?: React.ComponentType;
-  ProjectsComponent?: React.ComponentType;
-  EducationComponent?: React.ComponentType;
-  ConferencesComponent?: React.ComponentType;
-  ContactComponent?: React.ComponentType;
-}
 
-const Portfolio = () => {
+
+const userId = "C5C676ED-F6C0-4A1E-B4A8-35918F866548";
+const Portfolio =async () => {
+   // Fetch experiences server-side
+  const experiences = await getExperienceByUserId(userId);
+  const skillsData = await getSkillsPayload(userId);
+    const projectsData = await getProjectsPayload(userId);
+    const conferencesData = await getConferencesPayload(userId);
+
+  // Map API skills to component format with icons
+  const formattedSkills = skillsData.map((skill) => ({
+    icon: getIconForSkill(skill.skillName),
+    label: skill.skillName,
+  }))
+
+  // Map projects to component format
+  const formattedProjects = projectsData.map((project) => ({
+    projectId: project.projectId,
+    title: project.title,
+    description: parseJobDutiesServer(project.description).join("\n"),
+    imageSrc: project.imageSrc || `https://images.unsplash.com/photo-${project.projectId % 4 === 0 ? '1550751827-4bd374c3f58b' : project.projectId % 3 === 0 ? '1510915361894-db8b60106cb1' : project.projectId % 2 === 0 ? '1563986768609-322da13575f3' : '1526374965328-7f61d4dc18c5'}?w=600&h=400&fit=crop`,
+    projectUrl: project.projectUrl || undefined,
+  }));
+
+  // Map conferences to component format
+  const formattedConferences = conferencesData;  
+
   const navItems = [
     { id: "about", label: "About", targetId: "about-section" },
     { id: "skills", label: "Skills", targetId: "skills-section" },
@@ -86,32 +109,7 @@ const Portfolio = () => {
         "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop",
     },
   ];
-  const conferences = [
-    {
-      name: "Black Hat",
-      description:
-        "This is one of the most recognized and technical conferences in the industry, with events held annually in the U.S., Europe, and Asia. It focuses on briefings and hands-on training that showcase the latest security research, threats, and vulnerabilities.",
-      image:
-        "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop",
-      imageAlt: "Black Hat Conference Logo",
-    },
-    {
-      name: "RSA Conference",
-      description:
-        "A long-running, premier conference that brings together leading experts, vendors, and security professionals. It's an excellent event for networking, staying on top of industry trends, and learning about a wide range of security topics.",
-      image:
-        "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400&h=300&fit=crop",
-      imageAlt: "RSA Conference Logo",
-    },
-    {
-      name: "DEF CON",
-      description:
-        "The world's largest and most famous hacker convention, typically held alongside Black Hat in Las Vegas. It offers a more casual, community-driven atmosphere with hands-on workshops, live hacking demonstrations, and Capture The Flag (CTF) competitions.",
-      image:
-        "https://images.unsplash.com/photo-1558403194-611308249627?w=400&h=300&fit=crop",
-      imageAlt: "DEF CON Logo",
-    },
-  ];
+ 
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,17 +126,17 @@ const Portfolio = () => {
 
       {/* Skills Section */}
       <SectionWrapper id="skills-section" title="Skills">
-        <SkillsContent />
+        <SkillsContent skills={formattedSkills} />
       </SectionWrapper>
 
       {/* Experience Section */}
       <SectionWrapper id="experience-section" title="Experience">
-        {<ExperienceSection />}
+        {<ExperienceSection experiences={experiences} />}
       </SectionWrapper>
 
       {/* Projects Section */}
       <SectionWrapper id="projects-section" title="Projects">
-        {<ProjectsCarousel />}
+        { <ProjectsCarousel projects={formattedProjects} />}
       </SectionWrapper>
 
       {/* Education Section */}
@@ -148,7 +146,7 @@ const Portfolio = () => {
 
       {/* Conferences Section */}
       <SectionWrapper id="conferences-section" title="Conferences">
-        {<ConferencesContent />}
+        {<ConferencesContent conferences={formattedConferences} />}
       </SectionWrapper>
 
       {/* Contact Section

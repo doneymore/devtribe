@@ -43,7 +43,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
 }) => {
   return (
     <section
-      className={`relative min-h-screen py-12 md:py-16 lg:py-20 ${className}`}
+      className={`relative min-h-screen py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-cover bg-center bg-no-repeat overflow-x-hidden ${className}`}
       style={{
         backgroundImage: backgroundImage
           ? `url(${typeof backgroundImage === "string"
@@ -53,54 +53,34 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                   : String(backgroundImage)
             )})`
           : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
       }}
     >
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/40 z-0"></div>
 
       {/* Content Container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* Header Section */}
-        <div className="text-center mb-12 md:mb-16 lg:mb-20">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-20 w-full">
           {/* Title with underline */}
-          <h1
-            className="text-white mb-6 md:mb-8 font-normal inline-block"
-            style={{
-              fontSize: "clamp(2rem, 6vw, 3.5rem)",
-              lineHeight: "1.2",
-              letterSpacing: "0.3em",
-              borderBottom: "3px solid white",
-              paddingBottom: "0.3em",
-            }}
-          >
+          <h1 className="text-white mb-4 sm:mb-5 md:mb-6 lg:mb-8 font-normal inline-block px-2 w-auto max-w-full text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-wide sm:tracking-wider md:tracking-widest border-b-2 sm:border-b-[2.5px] md:border-b-3 border-white pb-2 sm:pb-3 md:pb-4 leading-tight break-words">
             {title}
           </h1>
 
           {/* Description */}
-          <p
-            className="text-white max-w-4xl mx-auto px-4"
-            style={{
-              fontFamily: "system-ui, -apple-system, sans-serif",
-              fontSize: "clamp(0.95rem, 2vw, 1.25rem)",
-              lineHeight: "1.7",
-              letterSpacing: "0.01em",
-            }}
-          >
+          <p className="text-white w-full max-w-4xl mx-auto px-3 sm:px-4 md:px-6 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed sm:leading-relaxed md:leading-loose tracking-tight">
             {description}
           </p>
         </div>
 
         {/* Blog Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 xl:gap-8 w-full">
           {posts.map((post) => (
             <div
               key={post.id}
-              className="group cursor-pointer transform transition-all duration-300 hover:scale-105"
+              className="group cursor-pointer transform transition-all duration-300 hover:scale-105 w-full"
             >
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden border-2 border-white/30 hover:border-white/60 transition-all duration-300">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden border-2 border-white/30 hover:border-white/60 transition-all duration-300 w-full">
                 {/* Post Image */}
                 <div className="relative w-full aspect-[4/3] overflow-hidden">
                   <Image
@@ -108,13 +88,13 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                     alt={post.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
 
                 {/* Post Title */}
-                <div className="p-4 md:p-5">
-                  <h3 className="text-white text-base md:text-lg font-medium line-clamp-2">
+                <div className="p-3 sm:p-4 md:p-5">
+                  <h3 className="text-white font-medium line-clamp-2 text-sm sm:text-base md:text-lg leading-snug">
                     {post.title}
                   </h3>
                 </div>

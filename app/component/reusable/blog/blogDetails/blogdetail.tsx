@@ -58,7 +58,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
   const [replyAuthorName, setReplyAuthorName] = useState("");
 
 
-  console.log(postData, "postDataInBlogDetailPage");  
+  
   const handleBack = () => {
     if (onBack) {
       onBack();

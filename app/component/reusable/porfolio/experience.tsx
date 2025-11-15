@@ -1,13 +1,18 @@
+// app/component/reusable/porfolio/experience.tsx
 "use client";
 
 import React, { useState } from "react";
 
 interface ExperienceItem {
+  experienceId: string;
   title: string;
   company: string;
   location: string;
   period: string;
-  description?: string[];
+  description: string[];
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
 }
 
 interface ExperienceCardProps {
@@ -207,70 +212,9 @@ interface ExperienceSectionProps {
   className?: string;
 }
 
- const ExperienceSection: React.FC<ExperienceSectionProps> = ({
+const ExperienceSection: React.FC<ExperienceSectionProps> = ({
   title = "Experience",
-  experiences = [
-    {
-      title: "Security Operations Analyst",
-      company: "Carnival Corporation",
-      location: "Miami, FL",
-      period: "05/2025 - Present",
-      description: [
-        "Performed security monitoring across diverse platforms, including network devices, security applications, and threat intelligence feeds to identify threats on brands' networks.",
-        "Managed SIEM, IDS/IPS, and WAF solutions, enhancing threat detection and incident response and monitoring the environment in an enterprise setting.",
-        "Configured and maintained security practices (A/V, NFPT, DLP, WAF, SIEM, IAM) to safeguard critical data and prevent security breaches.",
-        "Led assisted in developing and enforcing security policies and procedures in compliance with regulatory standards (PCI and COBIT). Led the Security Operations team in executing security policies and conducting security audits.",
-      ],
-    },
-    {
-      title: "Security Operations Analyst",
-      company: "Carnival Corporation",
-      location: "Miami, FL",
-      period: "05/2025 - Present",
-      description: [
-        "Performed security monitoring across diverse platforms, including network devices, security applications, and threat intelligence feeds to identify threats on brands' networks.",
-        "Managed SIEM, IDS/IPS, and WAF solutions, enhancing threat detection and incident response and monitoring the environment in an enterprise setting.",
-        "Configured and maintained security practices (A/V, NFPT, DLP, WAF, SIEM, IAM) to safeguard critical data and prevent security breaches.",
-        "Led assisted in developing and enforcing security policies and procedures in compliance with regulatory standards (PCI and COBIT). Led the Security Operations team in executing security policies and conducting security audits.",
-      ],
-    },
-    {
-      title: "Security Operations Analyst",
-      company: "Carnival Corporation",
-      location: "Miami, FL",
-      period: "05/2025 - Present",
-      description: [
-        "Performed security monitoring across diverse platforms, including network devices, security applications, and threat intelligence feeds to identify threats on brands' networks.",
-        "Managed SIEM, IDS/IPS, and WAF solutions, enhancing threat detection and incident response and monitoring the environment in an enterprise setting.",
-        "Configured and maintained security practices (A/V, NFPT, DLP, WAF, SIEM, IAM) to safeguard critical data and prevent security breaches.",
-        "Led assisted in developing and enforcing security policies and procedures in compliance with regulatory standards (PCI and COBIT). Led the Security Operations team in executing security policies and conducting security audits.",
-      ],
-    },
-    {
-      title: "Security Operations Analyst",
-      company: "Carnival Corporation",
-      location: "Miami, FL",
-      period: "05/2025 - Present",
-      description: [
-        "Performed security monitoring across diverse platforms, including network devices, security applications, and threat intelligence feeds to identify threats on brands' networks.",
-        "Managed SIEM, IDS/IPS, and WAF solutions, enhancing threat detection and incident response and monitoring the environment in an enterprise setting.",
-        "Configured and maintained security practices (A/V, NFPT, DLP, WAF, SIEM, IAM) to safeguard critical data and prevent security breaches.",
-        "Led assisted in developing and enforcing security policies and procedures in compliance with regulatory standards (PCI and COBIT). Led the Security Operations team in executing security policies and conducting security audits.",
-      ],
-    },
-
-    {
-      title: "Digital Forensics Adjunct Instructor",
-      company: "Franklin Cummings Tech",
-      location: "Boston, USA",
-      period: "01/2024 - Present",
-      description: [
-        "Taught digital forensics courses covering investigation techniques, evidence collection, and analysis methods.",
-        "Developed curriculum materials and hands-on labs for students to practice forensic tools and methodologies.",
-        "Mentored students in cybersecurity career development and industry best practices.",
-      ],
-    },
-  ],
+  experiences = [],
   className = "",
 }) => {
   const [selectedExperience, setSelectedExperience] =
@@ -304,6 +248,35 @@ interface ExperienceSectionProps {
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
   };
 
+  // Show loading or empty state
+  if (!experiences || experiences.length === 0) {
+    return (
+      <div
+        className={`w-full py-12 ${className}`}
+        style={{
+          background: "#F3F4F7",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-16">
+          <h2
+            className="mb-8 lg:mb-12"
+            style={{
+              fontFamily: "Rowdies, sans-serif",
+              fontWeight: 400,
+              fontSize: "clamp(32px, 6vw, 48px)",
+              lineHeight: "1.2",
+              letterSpacing: "0px",
+              color: "#1a3a5c",
+            }}
+          >
+            {title}
+          </h2>
+          <p className="text-center text-gray-500">No experiences found.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div
@@ -332,7 +305,7 @@ interface ExperienceSectionProps {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {visibleExperiences.map((experience, index) => (
               <ExperienceCard
-                key={currentPage * itemsPerPage + index}
+                key={experience.experienceId || currentPage * itemsPerPage + index}
                 item={experience}
                 onClick={() => handleCardClick(experience)}
               />
@@ -392,6 +365,5 @@ interface ExperienceSectionProps {
     </>
   );
 };
-
 
 export default ExperienceSection;
