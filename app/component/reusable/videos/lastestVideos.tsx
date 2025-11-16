@@ -87,6 +87,19 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
       {/* Main Featured Video Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-20">
         <div className="max-w-7xl mx-auto">
+          {/* Live Stream Text */}
+          <div className="mb-6">
+            <h2 
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold"
+              style={{
+                fontFamily: 'Georgia, serif',
+                color: titleColor,
+              }}
+            >
+              Live Stream
+            </h2>
+          </div>
+
           {/* Header */}
           {(mainVideo.title || mainVideo.description) && (
             <div className="text-center mb-8 lg:mb-12">

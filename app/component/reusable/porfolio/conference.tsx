@@ -8,7 +8,9 @@ interface Conference {
   title: string;
   description: string;
   yearAttended: number;
-  logoImageBase64: string | null;
+  logoImageBase64?: string | null;
+  logoImage?: string | null;
+  conferenceUrl?: string | null;
   dateCreated: string;
 }
 
@@ -26,21 +28,17 @@ const ConferenceCard: React.FC<{ item: Conference }> = ({ item }) => {
     "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=300&fit=crop", // Tech presentation
   ];
 
-  // Use logoImageBase64 if available, otherwise use a default image
+  // Use logoImageBase64 or logoImage if available, otherwise use a default image
   const getImageSrc = () => {
     if (item.logoImageBase64) {
       return `data:image/png;base64,${item.logoImageBase64}`;
     }
+    if (item.logoImage) {
+      return `data:image/png;base64,${item.logoImage}`;
+    }
     // Use hash of conferenceId to consistently select an image
     const hash = item.conferenceId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return defaultImages[hash % defaultImages.length];
-  };
-
-  // Generate a read more URL (you can modify this logic based on your needs)
-  const getReadMoreUrl = () => {
-    // You could store this in your API, or generate it based on the conference name
-    const conferenceSlug = item.title.toLowerCase().replace(/\s+/g, '-');
-    return `#${conferenceSlug}`;
   };
 
   return (
@@ -75,18 +73,22 @@ const ConferenceCard: React.FC<{ item: Conference }> = ({ item }) => {
           </span>{" "}
           {item.description}
         </p>
-        <a
-          href={getReadMoreUrl()}
-          className="inline-block mt-2 hover:underline"
-          style={{
-            fontFamily: "Times New Roman, serif",
-            fontWeight: 400,
-            fontSize: "clamp(15px, 2.2vw, 18px)",
-            color: "#0066cc",
-          }}
-        >
-          Read more
-        </a>
+        {item.conferenceUrl && (
+          <a
+            href={item.conferenceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-2 hover:underline"
+            style={{
+              fontFamily: "Times New Roman, serif",
+              fontWeight: 400,
+              fontSize: "clamp(15px, 2.2vw, 18px)",
+              color: "#0066cc",
+            }}
+          >
+            Read more
+          </a>
+        )}
       </div>
     </div>
   );

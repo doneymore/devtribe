@@ -7,7 +7,9 @@ import ProjectsCarousel from "@/app/component/reusable/porfolio/projects";
 import { SectionWrapper } from "@/app/component/reusable/porfolio/sectionWrapper";
 import { SkillsContent } from "@/app/component/reusable/porfolio/skills";
 import { getIconForSkill } from "@/app/component/reusable/porfolio/skillsIcon";
+import { getFullName, getProfessionalTitle, getUserByUserId } from "@/app/lib/portfolioServices/aboutServices";
 import { getConferencesPayload } from "@/app/lib/portfolioServices/conferences";
+import { formatEducationYear, getEducationByUserId } from "@/app/lib/portfolioServices/educationServices";
 import { getExperienceByUserId } from "@/app/lib/portfolioServices/experienceServices";
 import { getProjectsPayload } from "@/app/lib/portfolioServices/projectServices";
 import { getSkillsPayload } from "@/app/lib/portfolioServices/skillsServices";
@@ -20,8 +22,10 @@ const Portfolio =async () => {
    // Fetch experiences server-side
   const experiences = await getExperienceByUserId(userId);
   const skillsData = await getSkillsPayload(userId);
-    const projectsData = await getProjectsPayload(userId);
-    const conferencesData = await getConferencesPayload(userId);
+  const projectsData = await getProjectsPayload(userId);
+  const conferencesData = await getConferencesPayload(userId);
+  const educationData = await getEducationByUserId(userId);
+  const userData = await getUserByUserId(userId);
 
   // Map API skills to component format with icons
   const formattedSkills = skillsData.map((skill) => ({
@@ -41,6 +45,16 @@ const Portfolio =async () => {
   // Map conferences to component format
   const formattedConferences = conferencesData;  
 
+
+  // Map education to component format for certifications
+   const formattedEducation = educationData.map((edu) => ({
+    title: edu.title,
+    subtitle: "",
+    institution: edu.institutionName,
+    year: formatEducationYear(edu.endDate),
+    image: `https://images.unsplash.com/photo-${edu.educationId.charCodeAt(0) % 4 === 0 ? '1589829545856-d10d557cf95f' : edu.educationId.charCodeAt(0) % 3 === 0 ? '1589829085413-56de8ae18c73' : edu.educationId.charCodeAt(0) % 2 === 0 ? '1606326608690-4e0281b1e588' : '1633356122544-f134324a6cee'}?w=600&h=400&fit=crop`,
+  }));
+  
   const navItems = [
     { id: "about", label: "About", targetId: "about-section" },
     { id: "skills", label: "Skills", targetId: "skills-section" },
@@ -59,57 +73,13 @@ const Portfolio =async () => {
     // { id: "contact", label: "Contact", targetId: "contact-section" },
   ];
 
-  const certifications = [
-    {
-      title: "Software Engineering",
-      subtitle: "Degree",
-      institution: "Western Governors University",
-      year: "2024",
-      image:
-        "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&h=400&fit=crop",
-    },
-    {
-      title: "Information Technology",
-      subtitle: "Management Degree",
-      institution: "Western Governors University",
-      year: "2023",
-      image:
-        "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=600&h=400&fit=crop",
-    },
-    {
-      title: "SANS GCIH",
-      subtitle: "",
-      institution: "GIAC",
-      year: "2024",
-      image:
-        "https://images.unsplash.com/photo-1606326608690-4e0281b1e588?w=600&h=400&fit=crop",
-    },
-    {
-      title: "Investigating Windows",
-      subtitle: "Endpoint",
-      institution: "13Cubed",
-      year: "2025",
-      image:
-        "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=400&fit=crop",
-    },
-    {
-      title: "Investigating Windows",
-      subtitle: "Memory",
-      institution: "13Cubed",
-      year: "2025",
-      image:
-        "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop",
-    },
-    {
-      title: "Security+",
-      subtitle: "",
-      institution: "CompTIA",
-      year: "2022",
-      image:
-        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop",
-    },
-  ];
- 
+  // Combine education and certifications
+  const allEducationAndCerts = [...formattedEducation];
+
+  // Extract user data for About section
+  const fullName = userData ? getFullName(userData) : "Daniel Ben";
+  const professionalTitle = userData ? getProfessionalTitle(userData) : "Cybersecurity Professional";
+  const aboutText = userData?.aboutMeText || "Vestibulum Ante Ipsum Primis In Faucibus Orci Luctus Et Ultrices Posuere Cubilia Curae; Donec Velit Neque, Auctor Sit Amet Aliquam Vel, Ullamcorper Sit Amet Ligula. Curabitur Non Nulla Sit Amet Nisl Ac Lectus. Nulla Quis Lorem Ut Libero Malesuada Feugiat. Curabitur Aliquet Quam Id Dui Posuere Blandit. Cras Ultricies Ligula Sed Magna Dictum Porta.";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -117,9 +87,9 @@ const Portfolio =async () => {
 
       <div id="about-section">
         <AboutSectionSec
-          name="Daniel Ben"
-          title="Cybersecurity Professional"
-          aboutText="Vestibulum Ante Ipsum Primis In Faucibus Orci Luctus Et Ultrices Posuere Cubilia Curae; Donec Velit Neque, Auctor Sit Amet Aliquam Vel, Ullamcorper Sit Amet Ligula. Curabitur Non Nulla Sit Amet Nisl Ac Lectus. Nulla Quis Lorem Ut Libero Malesuada Feugiat. Curabitur Aliquet Quam Id Dui Posuere Blandit. Cras Ultricies Ligula Sed Magna Dictum Porta."
+          name={fullName}
+          title={professionalTitle}
+          aboutText={aboutText}
         />
       </div>
       {/* </SectionWrapper> */}
@@ -141,7 +111,7 @@ const Portfolio =async () => {
 
       {/* Education Section */}
       <SectionWrapper id="education-section" title="Education & Certification">
-        {<EducationCertificationContent certifications={certifications} />}
+        {<EducationCertificationContent certifications={allEducationAndCerts} />}
       </SectionWrapper>
 
       {/* Conferences Section */}

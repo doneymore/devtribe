@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { User } from "lucide-react";
 
 interface AboutSectionProps {
   name?: string;
@@ -15,9 +16,11 @@ const AboutSectionSec: React.FC<AboutSectionProps> = ({
   name = "Daniel Ben",
   title = "Cybersecurity Professional",
   aboutText = "Vestibulum Ante Ipsum Primis In Faucibus Orci Luctus Et Ultrices Posuere Cubilia Curae; Donec Velit Neque, Auctor Sit Amet Aliquam Vel, Ullamcorper Sit Amet Ligula. Curabitur Non Nulla Sit Amet Nisl Ac Lectus. Nulla Quis Lorem Ut Libero Malesuada Feugiat. Curabitur Aliquet Quam Id Dui Posuere Blandit. Cras Ultricies Ligula Sed Magna Dictum Porta. Vestibulum Ante Ipsum Primis In Faucibus Orci Luctus Et Ultrices Posuere Donec Velit Neque.",
-  avatarSrc = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop",
+  avatarSrc = "",
   className = "",
 }) => {
+  const hasAvatar = avatarSrc && avatarSrc.trim() !== "";
+
   return (
     <div className={`w-full min-h-screen flex flex-col ${className}`}>
       {/* Top Section - 40% */}
@@ -95,7 +98,7 @@ const AboutSectionSec: React.FC<AboutSectionProps> = ({
             {/* Left Side - Avatar */}
             <div className="w-full lg:w-auto flex justify-center lg:justify-start flex-shrink-0">
               <div
-                className="relative"
+                className="relative flex items-center justify-center"
                 style={{
                   width: "clamp(200px, 30vw, 280px)",
                   height: "clamp(200px, 30vw, 300px)",
@@ -104,16 +107,29 @@ const AboutSectionSec: React.FC<AboutSectionProps> = ({
                   border: "4px solid #4A90E2",
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
                   transform: "translateY(-40px)",
+                  backgroundColor: hasAvatar ? "transparent" : "#e0e0e0",
                 }}
               >
-                <Image
-                  src={avatarSrc}
-                  alt={`${name} avatar`}
-                  fill
-                  sizes="(max-width: 768px) 200px, 280px"
-                  className="object-cover"
-                  priority
-                />
+                {hasAvatar ? (
+                  <Image
+                    src={avatarSrc}
+                    alt={`${name} avatar`}
+                    fill
+                    sizes="(max-width: 768px) 200px, 280px"
+                    className="object-cover"
+                    priority
+                  />
+                ) : (
+                  <User
+                    size={120}
+                    strokeWidth={1.5}
+                    style={{
+                      color: "#4A90E2",
+                      width: "clamp(80px, 15vw, 120px)",
+                      height: "clamp(80px, 15vw, 120px)",
+                    }}
+                  />
+                )}
               </div>
             </div>
 

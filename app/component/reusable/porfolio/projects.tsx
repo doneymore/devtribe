@@ -44,63 +44,67 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects = [] }) =>
   return (
     <div className="bg-[#F3F0F0] py-12 rounded-[32px]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
-        {projects.slice(startIndex, startIndex + visibleCards).map((project) => (
-          <div
-            key={project.projectId}
-            className="bg-[#F3F4F7] rounded-[30px] w-full max-w-[593px] h-[600px] flex flex-col justify-between p-6 shadow-md mx-auto"
-          >
-            {/* Image */}
-            <div className="relative w-full h-[300px]">
-              <Image
-                src={project.imageSrc || defaultImage}
-                alt={project.title}
-                fill
-                className="object-cover rounded-xl"
-              />
-            </div>
+        {projects.slice(startIndex, startIndex + visibleCards).map((project) => {
+          const hasValidUrl = project.projectUrl !== null && project.projectUrl !== undefined && project.projectUrl.trim() !== '';
+          
+          return (
+            <div
+              key={project.projectId}
+              className="bg-[#F3F4F7] rounded-[30px] w-full max-w-[593px] h-[600px] flex flex-col justify-between p-6 shadow-md mx-auto"
+            >
+              {/* Image */}
+              <div className="relative w-full h-[300px]">
+                <Image
+                  src={project.imageSrc || defaultImage}
+                  alt={project.title}
+                  fill
+                  className="object-cover rounded-xl"
+                />
+              </div>
 
-            {/* Title and Description */}
-            <div className="mt-6 text-center">
-              <h3
-                className="capitalize text-[#000] mb-2"
-                style={{
-                  fontFamily: "Neuton, serif",
-                  fontWeight: 300,
-                  fontSize: "50px",
-                  lineHeight: "60px",
-                  letterSpacing: "0px",
-                  textAlign: "center",
-                }}
-              >
-                {project.title}
-              </h3>
-              <p className="text-gray-600 max-w-[500px] mx-auto">
-                {project.description}
-              </p>
-            </div>
+              {/* Title and Description */}
+              <div className="mt-6 text-center">
+                <h3
+                  className="capitalize text-[#000] mb-2"
+                  style={{
+                    fontFamily: "Neuton, serif",
+                    fontWeight: 300,
+                    fontSize: "50px",
+                    lineHeight: "60px",
+                    letterSpacing: "0px",
+                    textAlign: "center",
+                  }}
+                >
+                  {project.title}
+                </h3>
+                <p className="text-gray-600 max-w-[500px] mx-auto">
+                  {project.description}
+                </p>
+              </div>
 
-            {/* Button at Bottom */}
-            <div className="mt-auto pt-6 text-center">
-              {project.projectUrl ? (
-                <Link
-                  href={project.projectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition"
-                >
-                  View Project
-                </Link>
-              ) : (
-                <button
-                  disabled
-                  className="bg-gray-400 text-white px-6 py-3 rounded-full cursor-not-allowed opacity-50"
-                >
-                  No Link Available
-                </button>
-              )}
+              {/* Button at Bottom */}
+              <div className="mt-auto pt-6 text-center">
+                {hasValidUrl ? (
+                  <Link
+                    href={project.projectUrl!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition"
+                  >
+                    View Project
+                  </Link>
+                ) : (
+                  <button
+                    disabled
+                    className="bg-gray-400 text-white px-6 py-3 rounded-full cursor-not-allowed opacity-50"
+                  >
+                    No Link Available
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Arrows */}
