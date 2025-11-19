@@ -8,8 +8,8 @@ const AboutUsPage = () => {
   return (
     <div className="min-h-screen">
       <WhoWeAreSection />
-   <WhereWeAreHeadedSection />
-    <TeamSection />
+      <WhereWeAreHeadedSection />
+      <TeamSection />
       {/* <HeroSection
         imageSrc="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=485&h=441&fit=crop"
         imageAlt="Professional in business attire"

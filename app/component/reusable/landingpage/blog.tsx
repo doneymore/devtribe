@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
 
 interface BlogPost {
   id: number;
@@ -14,6 +15,8 @@ interface BlogPageProps {
   backgroundImage?: string | StaticImageData;
   posts?: BlogPost[];
   className?: string;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 const defaultPosts: BlogPost[] = [
@@ -40,6 +43,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   backgroundImage,
   posts = defaultPosts,
   className = "",
+  ctaText = "View All Posts",
+  ctaLink = "/pages/blogScreen",
 }) => {
   return (
     <section
@@ -59,11 +64,11 @@ export const BlogPage: React.FC<BlogPageProps> = ({
       <div className="absolute inset-0 bg-black/40 z-0"></div>
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="relative font-inter z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12 lg:mb-16 xl:mb-20 w-full">
           {/* Title with underline */}
-          <h1 className="text-white mb-4 sm:mb-5 md:mb-6 lg:mb-8 font-normal inline-block px-2 w-auto max-w-full text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-wide sm:tracking-wider md:tracking-widest border-b-2 sm:border-b-[2.5px] md:border-b-3 border-white pb-2 sm:pb-3 md:pb-4 leading-tight break-words">
+          <h1 className="text-white font-inter mb-4 sm:mb-5 md:mb-6 lg:mb-8 font-normal inline-block px-2 w-auto max-w-full text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-wide sm:tracking-wider md:tracking-widest border-b-2 sm:border-b-[2.5px] md:border-b-3 border-white pb-2 sm:pb-3 md:pb-4 leading-tight break-words">
             {title}
           </h1>
 
@@ -74,7 +79,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         </div>
 
         {/* Blog Posts Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 xl:gap-8 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 xl:gap-8 w-full mb-8 sm:mb-10 md:mb-12">
           {posts.map((post) => (
             <div
               key={post.id}
@@ -101,6 +106,29 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Call to Action Button */}
+        <div className="flex justify-center w-full">
+          <Link
+            href={ctaLink}
+            className="group inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-900 font-semibold px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base md:text-lg"
+          >
+            {ctaText}
+            <svg
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,15 +1,10 @@
 "use client";
 import BlogPage from "@/app/component/reusable/landingpage/blog";
 import { KnowledgeJourneySection } from "@/app/component/reusable/landingpage/explore";
-import Footer from "@/app/component/reusable/landingpage/footer";
-import { HeroSection } from "@/app/component/reusable/landingpage/heroSection";
 import { WelcomeSection } from "@/app/component/reusable/landingpage/heroSection1";
-import { Navbar } from "@/app/component/reusable/landingpage/navItem";
 import { AboutSection } from "@/app/component/reusable/landingpage/portfolio";
-import BlogCardsSection from "@/app/component/reusable/landingpage/streams";
 import VideoStreams from "@/app/component/reusable/landingpage/videoStream";
 import { blog } from "@/public/assests/image";
-// import { hero } from "@/public/assests/image";
 import React from "react";
 
 const LandingPage = () => {

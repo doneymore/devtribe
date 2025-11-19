@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Play } from 'lucide-react';
+import React, { useState } from "react";
+import Image from "next/image";
+import { Play } from "lucide-react";
 
 // Types
 interface StreamVideo {
@@ -10,12 +11,21 @@ interface StreamVideo {
   episodeNumber?: string;
 }
 
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  canGoPrevious: boolean;
+  canGoNext: boolean;
+  onPrevious: () => void;
+  onNext: () => void;
+}
+
 interface PreviousStreamsSectionProps {
   title?: string;
   videos: StreamVideo[];
   itemsPerPage?: number;
   backgroundColor?: string;
-  PaginationComponent: React.ComponentType<any>;
+  PaginationComponent: React.ComponentType<PaginationProps>;
 }
 
 const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
@@ -23,12 +33,12 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
   videos,
   itemsPerPage = 9,
   backgroundColor = "white",
-  PaginationComponent
+  PaginationComponent,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
 
-  // Calculate pagination
+  // Pagination logic
   const totalPages = Math.ceil(videos.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -36,14 +46,14 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
 
   const handlePrevious = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prev) => prev - 1);
       setPlayingVideo(null);
     }
   };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prev) => prev + 1);
       setPlayingVideo(null);
     }
   };
@@ -53,16 +63,16 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
   };
 
   return (
-    <section 
+    <section
       className="py-12 px-4 sm:px-6 lg:px-20"
       style={{ backgroundColor }}
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         {title && (
-          <h2 
+          <h2
             className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 text-gray-900"
-            style={{ fontFamily: 'Arial, sans-serif' }}
+            style={{ fontFamily: "Arial, sans-serif" }}
           >
             {title}
           </h2>
@@ -85,14 +95,18 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
                     title={video.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    style={{ border: 'none' }}
+                    style={{ border: "none" }}
                   />
                 ) : (
                   <>
-                    <img
+                    <Image
                       src={video.thumbnail}
                       alt={video.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw,
+                             (max-width: 1200px) 50vw,
+                             33vw"
                     />
 
                     {/* Episode Badge */}
@@ -105,8 +119,8 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
                     {/* Play Button Overlay */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-50 transition-all duration-300">
                       <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-2xl">
-                        <Play 
-                          className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" 
+                        <Play
+                          className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1"
                           fill="white"
                         />
                       </div>
@@ -119,7 +133,7 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
                         viewBox="0 0 24 24"
                         fill="currentColor"
                       >
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                       </svg>
                     </div>
                   </>

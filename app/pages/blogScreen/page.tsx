@@ -6,44 +6,48 @@ import { BlogHeroSection } from "@/app/component/reusable/blog/hero";
 import BlogGrid from "@/app/component/reusable/blog/blogCards/blogGrid";
 
 import { blog_post } from "@/public/assests/image";
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 import { getAllBlogPosts } from "@/app/lib/blogServices";
 import { formatBlogDate } from "@/app/utils/dateformatter";
 import { createExcerpt } from "@/app/utils/createExcerptOfImage";
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
 
+export const dynamic = "force-dynamic"; // Allow dynamic fetching
+// Alternative:
+// export const fetchCache = "force-no-store";
+
 export const metadata: Metadata = {
-  title: 'Blog - Latest Posts',
-  description: 'Read our latest blog posts and articles',
+  title: "Blog - Latest Posts",
+  description: "Read our latest blog posts and articles",
   openGraph: {
-    title: 'Blog - Latest Posts',
-    description: 'Read our latest blog posts and articles',
-    type: 'website',
+    title: "Blog - Latest Posts",
+    description: "Read our latest blog posts and articles",
+    type: "website",
   },
 };
 
-// This is now a Server Component (SSR)
 export default async function BlogScreen() {
   let postsData: any = null;
   let featuredPost: any = null;
-  
+
   try {
     postsData = await getAllBlogPosts();
-    console.log(postsData, "showAllBlogPosts");
-    
-    // Get the most recent post as featured from the payload
-    if (postsData?.payload && Array.isArray(postsData.payload) && postsData.payload.length > 0) {
-      featuredPost = postsData.payload[0];
+
+    if (
+      postsData?.payload &&
+      Array.isArray(postsData.payload) &&
+      postsData.payload.length > 0
+    ) {
+      featuredPost = postsData.payload[0]; // recent item
     }
   } catch (error) {
     console.error("Error loading blog data:", error);
   }
 
-  // Normalize posts from the payload
-  const normalizedPosts = postsData?.payload && Array.isArray(postsData.payload)
-    ? postsData.payload
-    : [];
-    console.log(normalizedPosts, "normalizedPosts");
+  const normalizedPosts =
+    postsData?.payload && Array.isArray(postsData.payload)
+      ? postsData.payload
+      : [];
 
   return (
     <div>
@@ -62,8 +66,8 @@ export default async function BlogScreen() {
         />
       )}
 
-      {/* Blog Grid - Convert posts to format BlogGrid expects */}
-      <BlogGrid 
+      {/* Blog Grid */}
+      <BlogGrid
         posts={normalizedPosts.map((post: any) => ({
           id: post.blogId.toString(),
           title: post.blogTItle,
