@@ -3,20 +3,30 @@ import React, { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { secneedle } from "@/public/assests/image";
+import { GoogleAuthModal } from "./googleAuth";
+import { useAuth } from "@/app/lib/hooks/useAuths";
+import { logout } from "@/app/lib/features/auth/authSlice";
+
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("ENG");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   const languageRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Use Redux auth instead of localStorage
+  const { isAuthenticated, user,  } = useAuth();
 
   // Navigation items with their routes
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Blog", href: "/pages/blogScreen" },
+    { name: "Blog", href: "/pages/blogScreen", requiresAuth: true },
     { name: "Video Streams", href: "/pages/videoScreen" },
     { name: "Services", href: "/pages/servicesScreen" },
     { name: "Portfolio", href: "/pages/portfolioScreen" },
@@ -66,6 +76,27 @@ export const Navbar = () => {
     setSelectedLanguage(language.code);
     setIsLanguageOpen(false);
   };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleNavClick = (e: React.MouseEvent, item: any) => {
+    if (item.requiresAuth && !isAuthenticated) {
+      e.preventDefault();
+      setShowAuthModal(true);
+      setIsMenuOpen(false);
+    }
+  };
+
+  // Watch for authentication changes and redirect to blog
+  useEffect(() => {
+    if (isAuthenticated && showAuthModal) {
+      setShowAuthModal(false);
+      router.push("/pages/blogScreen");
+    }
+  }, [isAuthenticated, showAuthModal, router]);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
 
   return (
     <nav className="bg-primary-nav text-white shadow-lg relative z-50">
@@ -94,6 +125,7 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
                   className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
                       ? "text-white"
@@ -126,6 +158,7 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
                   className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
                       ? "text-white"
@@ -158,6 +191,7 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
                   className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
                       ? "text-white"
@@ -189,6 +223,7 @@ export const Navbar = () => {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item)}
                 className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 ${
                   isActive(item.href)
                     ? "text-white"
@@ -259,9 +294,35 @@ export const Navbar = () => {
 
             {/* Auth Buttons - Show on medium screens and up */}
             <div className="hidden md:flex items-center space-x-2 lg:space-x-3 xl:space-x-4 font-orelega">
-              <button className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base">
-                Login
-              </button>
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-3">
+                  {/* User Avatar & Name */}
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={user?.picture}
+                      alt={user?.name}
+                      className="w-8 h-8 rounded-full border-2 border-white"
+                    />
+                    <span className="text-sm font-medium hidden lg:inline">
+                      {user?.name}
+                    </span>
+                  </div>
+                  {/* Logout Button */}
+                  <button
+                    onClick={handleLogout}
+                    className="text-white hover:text-red-300 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base"
+                >
+                  Login
+                </button>
+              )}
             </div>
 
             {/* Mobile Menu Button - Show only on small screens */}
@@ -293,7 +354,12 @@ export const Navbar = () => {
                         ? "text-white"
                         : "text-white hover:text-blue-200 hover:bg-blue-800/50"
                     }`}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => {
+                      handleNavClick(e, item);
+                      if (!item.requiresAuth || isAuthenticated) {
+                        setIsMenuOpen(false);
+                      }
+                    }}
                   >
                     {item.name}
                     {isActive(item.href) && (
@@ -303,20 +369,52 @@ export const Navbar = () => {
                 ))}
               </div>
 
-              {/* Mobile Auth Buttons */}
+              {/* Mobile Auth Section */}
               <div className="pt-3 sm:pt-4 border-t border-blue-700 space-y-2 sm:space-y-3">
-                <button
-                  className="w-full text-center sm:text-left px-3 sm:px-4 py-2 sm:py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </button>
-                <button
-                  className="w-full bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </button>
+                {isAuthenticated ? (
+                  <div className="space-y-2">
+                    {/* User Info */}
+                    <div className="flex items-center space-x-3 px-4 py-3 bg-blue-800/50 rounded-lg">
+                      <img
+                        src={user?.picture}
+                        alt={user?.name}
+                        className="w-10 h-10 rounded-full border-2 border-white"
+                      />
+                      <div>
+                        <p className="text-white font-medium">{user?.name}</p>
+                        <p className="text-blue-200 text-sm">{user?.email}</p>
+                      </div>
+                    </div>
+                    {/* Logout Button */}
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full bg-red-500 hover:bg-red-600 text-white transition-colors duration-200 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full text-center sm:text-left px-3 sm:px-4 py-2 sm:py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base"
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base"
+                    >
+                      Sign Up
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -333,6 +431,12 @@ export const Navbar = () => {
           display: none;
         }
       `}</style>
+
+      {/* Google Auth Modal - Removed onSuccess callback */}
+      <GoogleAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </nav>
   );
 };
