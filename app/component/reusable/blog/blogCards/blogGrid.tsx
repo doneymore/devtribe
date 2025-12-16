@@ -1,9 +1,20 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BlogPost } from "../types";
 import { usePagination } from "@/app/lib/hooks/usePagination";
 import BlogCard from "./blogCard";
 import PaginationControls from "../../pagination";
+import GoogleAuthModal from "../../landingpage/googleAuth";
+import { useDispatch, useSelector } from "react-redux";
+
+// Import from authSlice for liked posts
+import {
+  selectLikedPosts,
+  toggleLikedPost,
+} from "@/app/lib/features/auth/authSlice";
+
+// Import from blogSlice for blog user ID
+import { selectBlogUserId } from "@/app/lib/features/auth/blogSlice";
 
 interface BlogGridProps {
   posts: BlogPost[];
@@ -16,7 +27,12 @@ const BlogGrid: React.FC<BlogGridProps> = ({
   itemsPerPage = 8,
   className = "",
 }) => {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(posts);
+  const dispatch = useDispatch();
+  const blogUserId = useSelector(selectBlogUserId);
+  const likedPostsFromRedux = useSelector(selectLikedPosts) || {};
+
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const {
     currentPage,
@@ -36,22 +52,51 @@ const BlogGrid: React.FC<BlogGridProps> = ({
     paginatedData.endIndex
   );
 
-  const handleLike = (id: number) => {
+  // Initialize posts only when the posts prop changes
+  useEffect(() => {
+    const postsWithLikedState = posts.map((post) => {
+      const postId =
+        typeof post.id === "string" ? parseInt(post.id, 10) : post.id;
+      return {
+        ...post,
+        id: postId,
+        isLiked: likedPostsFromRedux[postId] ?? false,
+        comments: typeof post.comments === "number" ? post.comments : 0,
+        likes: typeof post.likes === "number" ? post.likes : 0,
+      };
+    });
+    setBlogPosts(postsWithLikedState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts]); // Only re-initialize when posts from API change
+
+  const handleLike = (id: number | string) => {
+    // Convert id to number for consistency
+    const numericId = typeof id === "string" ? parseInt(id, 10) : id;
+
     setBlogPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === id
+      prevPosts.map((post) => {
+        const postId =
+          typeof post.id === "string" ? parseInt(post.id, 10) : post.id;
+        return postId === numericId
           ? {
               ...post,
               isLiked: !post.isLiked,
               likes: post.isLiked ? post.likes - 1 : post.likes + 1,
             }
-          : post
-      )
+          : post;
+      })
     );
+
+    // Save liked state to Redux
+    dispatch(toggleLikedPost(numericId));
   };
 
-  const handleCommentClick = (id: number) => {
-    console.log(`Comment clicked for post ${id}`);
+  const handleCommentClick = (id: number | string) => {
+    // console.log(`Comment clicked for post ${id}`);
+  };
+
+  const handleAuthRequired = () => {
+    setShowAuthModal(true);
   };
 
   return (
@@ -79,6 +124,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({
                 post={post}
                 onLike={handleLike}
                 onCommentClick={handleCommentClick}
+                onAuthRequired={handleAuthRequired}
               />
             ))}
           </div>
@@ -98,6 +144,12 @@ const BlogGrid: React.FC<BlogGridProps> = ({
           )}
         </div>
       </div>
+
+      {/* Google Auth Modal */}
+      <GoogleAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </section>
   );
 };

@@ -1,20 +1,25 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, Heart, MessageCircle, User } from "lucide-react";
+import { useAuth } from "@/app/lib/hooks/useAuths";
+import GoogleAuthModal from "../../landingpage/googleAuth";
+import {
+  likeBlogPost,
+  unlikeBlogPost,
+  createBlogComment,
+  createOrLoginUser,
+} from "@/app/lib/blogServices";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectBlogUserEmail,
+  selectBlogUserId,
+  setBlogUser,
+} from "@/app/lib/features/auth/blogSlice";
+import { useRouter, useParams } from "next/navigation";
 
 interface Author {
   name: string;
   avatar: string;
-}
-
-interface Reply {
-  id: number;
-  author: Author;
-  content: string;
-  timestamp: string;
-  likes: number;
-  isLiked: boolean;
 }
 
 interface Comment {
@@ -24,10 +29,10 @@ interface Comment {
   timestamp: string;
   likes: number;
   isLiked: boolean;
-  replies: Reply[];
 }
 
 interface BlogDetailPost {
+  id: number;
   imageUrl: string;
   title: string;
   publishedDate: string;
@@ -49,16 +54,19 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
   onBack,
 }) => {
   const router = useRouter();
+  const { isAuthenticated, user, auth } = useAuth();
+  const params = useParams<{ id: string }>();
+  const dispatch = useDispatch();
+  const blogUserId = useSelector(selectBlogUserId);
+  const blogUserEmail = useSelector(selectBlogUserEmail);
+
   const [postData, setPostData] = useState(post);
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
-  const [commentAuthorName, setCommentAuthorName] = useState("");
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyText, setReplyText] = useState("");
-  const [replyAuthorName, setReplyAuthorName] = useState("");
 
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -67,15 +75,82 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
     }
   };
 
-  const handlePostLike = () => {
-    setPostData((prev) => ({
-      ...prev,
-      isLiked: !prev.isLiked,
-      likes: prev.isLiked ? prev.likes - 1 : prev.likes + 1,
-    }));
+  const handleAuthRequired = () => {
+    setShowAuthModal(true);
   };
 
-  const handleCommentLike = (commentId: number) => {
+  const ensureUserAuthenticated = async () => {
+    if (!isAuthenticated || !user?.id || !auth?.token) {
+      handleAuthRequired();
+      return { userId: null, email: null };
+    }
+
+    // If we already have userId in Redux, return it
+    if (blogUserId && blogUserEmail) {
+      return { userId: blogUserId, email: blogUserEmail };
+    }
+
+    try {
+      setIsProcessing(true);
+
+      const result = await createOrLoginUser({
+        email: user.email,
+        name: user.name || "Anonymous User",
+        token: auth.token,
+      });
+
+      if (!result || result.result !== 1 || !result.payload) {
+        console.error("Failed to authenticate user with backend");
+        return { userId: null, email: null };
+      }
+
+      // Save user info to Redux store
+      dispatch(setBlogUser(result));
+      return {
+        userId: result.payload.userId,
+        email: result.payload.emailAddress,
+      };
+    } catch (error) {
+      console.error("Error during authentication:", error);
+      return { userId: null, email: null };
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handlePostLike = async () => {
+    if (isProcessing) return;
+
+    const { userId } = await ensureUserAuthenticated();
+    if (!userId) return;
+
+    try {
+      setIsProcessing(true);
+
+      const response = postData.isLiked
+        ? await unlikeBlogPost(Number(params?.id), userId)
+        : await likeBlogPost(Number(params?.id), userId);
+
+      if (response.result === 1) {
+        setPostData((prev) => ({
+          ...prev,
+          isLiked: !prev.isLiked,
+          likes: prev.isLiked ? prev.likes - 1 : prev.likes + 1,
+        }));
+      }
+    } catch (error) {
+      console.error("Error updating like:", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleCommentLike = async (commentId: number) => {
+    if (isProcessing) return;
+
+    const { userId } = await ensureUserAuthenticated();
+    if (!userId) return;
+
     setComments((prev) =>
       prev.map((comment) =>
         comment.id === commentId
@@ -89,74 +164,44 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
     );
   };
 
-  const handleReplyLike = (commentId: number, replyId: number) => {
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              replies: comment.replies.map((reply) =>
-                reply.id === replyId
-                  ? {
-                      ...reply,
-                      isLiked: !reply.isLiked,
-                      likes: reply.isLiked ? reply.likes - 1 : reply.likes + 1,
-                    }
-                  : reply
-              ),
-            }
-          : comment
-      )
-    );
-  };
+  const handleAddComment = async () => {
+    if (isProcessing || !newComment.trim()) return;
 
-  const handleAddComment = () => {
-    if (!newComment.trim() || !commentAuthorName.trim()) return;
+    const { userId, email } = await ensureUserAuthenticated();
+    if (!userId || !email || !user) return;
 
-    const comment: Comment = {
-      id: Date.now(),
-      author: {
-        name: commentAuthorName,
-        avatar: "",
-      },
-      content: newComment,
-      timestamp: "Just now",
-      likes: 0,
-      isLiked: false,
-      replies: [],
-    };
+    try {
+      setIsProcessing(true);
 
-    setComments((prev) => [...prev, comment]);
-    setNewComment("");
-    setCommentAuthorName("");
-  };
+      const response = await createBlogComment({
+        blogId: Number(params?.id),
+        comment: newComment,
+        emailAddress: email,
+      });
 
-  const handleAddReply = (commentId: number) => {
-    if (!replyText.trim() || !replyAuthorName.trim()) return;
+      if (response.result === 1) {
+        const comment: Comment = {
+          id: response.payload?.commentId || Date.now(),
+          author: {
+            name: user.name || "Anonymous User",
+            avatar: "",
+          },
+          content: newComment,
+          timestamp: "Just now",
+          likes: 0,
+          isLiked: false,
+        };
 
-    const reply: Reply = {
-      id: Date.now(),
-      author: {
-        name: replyAuthorName,
-        avatar: "",
-      },
-      content: replyText,
-      timestamp: "Just now",
-      likes: 0,
-      isLiked: false,
-    };
-
-    setComments((prev) =>
-      prev.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, replies: [...comment.replies, reply] }
-          : comment
-      )
-    );
-
-    setReplyText("");
-    setReplyAuthorName("");
-    setReplyingTo(null);
+        setComments((prev) => [...prev, comment]);
+        setNewComment("");
+      } else {
+        console.error("Failed to create comment:", response.message);
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const getInitials = (name: string): string => {
@@ -169,7 +214,6 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
     ).toUpperCase();
   };
 
-  // Function to render HTML content safely
   const renderContent = (htmlContent: string) => {
     return { __html: htmlContent };
   };
@@ -189,32 +233,33 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
         {/* Main Content */}
         <article className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Hero Image */}
-          {/* Hero Image */}
-<div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[595px]">
-  {postData.imageUrl && postData.imageUrl.trim() !== "" ? (
-    <Image
-      src={postData.imageUrl}
-      alt={postData.title}
-      fill
-      className="object-cover"
-      style={{ borderRadius: "15px 15px 0 0" }}
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1215px"
-      priority
-    />
-  ) : (
-    <div 
-      className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300"
-      style={{ borderRadius: "15px 15px 0 0" }}
-    >
-      <div className="text-center">
-        <div className="w-20 h-20 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
-          <User size={40} className="text-gray-600" />
-        </div>
-        <p className="text-gray-600 font-medium text-lg">No Image Available</p>
-      </div>
-    </div>
-  )}
-</div>
+          <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[595px]">
+            {postData.imageUrl && postData.imageUrl.trim() !== "" ? (
+              <Image
+                src={postData.imageUrl}
+                alt={postData.title}
+                fill
+                className="object-cover"
+                style={{ borderRadius: "15px 15px 0 0" }}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1215px"
+                priority
+              />
+            ) : (
+              <div
+                className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300"
+                style={{ borderRadius: "15px 15px 0 0" }}
+              >
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <User size={40} className="text-gray-600" />
+                  </div>
+                  <p className="text-gray-600 font-medium text-lg">
+                    No Image Available
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Content Container */}
           <div className="p-6 sm:p-8 lg:p-12">
@@ -277,9 +322,9 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
               </span>
             </div>
 
-            {/* Blog Content - Render actual content from API */}
+            {/* Blog Content */}
             <div className="prose prose-lg max-w-none mb-8">
-              <div 
+              <div
                 className="text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={renderContent(postData.content)}
               />
@@ -289,11 +334,12 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
             <div className="flex items-center space-x-4 mb-8 pb-6 border-b border-gray-200">
               <button
                 onClick={handlePostLike}
+                disabled={isProcessing}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-200 ${
                   postData.isLiked
                     ? "text-red-500 bg-red-50 hover:bg-red-100"
                     : "text-gray-600 hover:text-red-500 hover:bg-red-50"
-                }`}
+                } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <Heart
                   size={20}
@@ -317,13 +363,6 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
               {/* Add Comment */}
               <div className="bg-[#E1EFFF] p-4 rounded-lg mb-6">
-                <input
-                  type="text"
-                  value={commentAuthorName}
-                  onChange={(e) => setCommentAuthorName(e.target.value)}
-                  placeholder="Your name"
-                  className="w-full p-3 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
@@ -334,10 +373,10 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                 <div className="flex justify-end mt-3">
                   <button
                     onClick={handleAddComment}
-                    disabled={!newComment.trim() || !commentAuthorName.trim()}
+                    disabled={!newComment.trim() || isProcessing}
                     className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
                   >
-                    Post
+                    {isProcessing ? "Posting..." : "Post"}
                   </button>
                 </div>
               </div>
@@ -385,108 +424,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                         />
                         <span>{comment.likes}</span>
                       </button>
-                      <button
-                        onClick={() =>
-                          setReplyingTo(
-                            replyingTo === comment.id ? null : comment.id
-                          )
-                        }
-                        className="flex items-center space-x-1 text-sm text-gray-500 hover:text-blue-500 transition-colors duration-200"
-                      >
-                        <MessageCircle size={16} />
-                        <span>Reply</span>
-                      </button>
                     </div>
-
-                    {/* Reply Form */}
-                    {replyingTo === comment.id && (
-                      <div className="ml-13 mt-4 bg-[#E1EFFF] p-3 rounded-lg">
-                        <input
-                          type="text"
-                          value={replyAuthorName}
-                          onChange={(e) => setReplyAuthorName(e.target.value)}
-                          placeholder="Your name"
-                          className="w-full p-2 border border-gray-300 rounded mb-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <textarea
-                          value={replyText}
-                          onChange={(e) => setReplyText(e.target.value)}
-                          placeholder="Write a reply..."
-                          className="w-full p-2 border border-gray-300 rounded resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          rows={2}
-                        />
-                        <div className="flex justify-end mt-2 space-x-2">
-                          <button
-                            onClick={() => {
-                              setReplyingTo(null);
-                              setReplyAuthorName("");
-                              setReplyText("");
-                            }}
-                            className="px-3 py-1 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={() => handleAddReply(comment.id)}
-                            disabled={
-                              !replyText.trim() || !replyAuthorName.trim()
-                            }
-                            className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
-                          >
-                            Post
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Replies */}
-                    {comment.replies.length > 0 && (
-                      <div className="ml-13 mt-4 space-y-4">
-                        {comment.replies.map((reply) => (
-                          <div
-                            key={reply.id}
-                            className="flex items-start space-x-3"
-                          >
-                            <div className="w-8 h-8 rounded-full bg-[#578FC5] flex items-center justify-center flex-shrink-0">
-                              <span className="text-white font-medium text-xs">
-                                {getInitials(reply.author.name)}
-                              </span>
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <span className="font-medium text-gray-900 text-sm">
-                                  {reply.author.name}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {reply.timestamp}
-                                </span>
-                              </div>
-                              <p className="text-gray-700 text-sm">
-                                {reply.content}
-                              </p>
-                              <button
-                                onClick={() =>
-                                  handleReplyLike(comment.id, reply.id)
-                                }
-                                className={`flex items-center space-x-1 text-xs mt-2 transition-colors duration-200 ${
-                                  reply.isLiked
-                                    ? "text-red-500"
-                                    : "text-gray-500 hover:text-red-500"
-                                }`}
-                              >
-                                <Heart
-                                  size={12}
-                                  className={
-                                    reply.isLiked ? "fill-current" : ""
-                                  }
-                                />
-                                <span>{reply.likes}</span>
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
@@ -494,6 +432,12 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
           </div>
         </article>
       </div>
+
+      {/* Google Auth Modal */}
+      <GoogleAuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </div>
   );
 };

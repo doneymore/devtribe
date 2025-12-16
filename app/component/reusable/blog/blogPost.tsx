@@ -31,14 +31,19 @@ export const BlogCard: React.FC<BlogCardProps> = ({
             {/* Left Image Section - 60% on desktop */}
             <div className="w-full lg:w-3/5">
               <div className="relative w-full h-64 lg:h-[460px]">
-                <Image
-                  src={image}
-                  alt={imageAlt}
-                  fill
-                  className="object-cover rounded-2xl"
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                  priority
-                />
+                <Link
+                  href={`/pages/blogScreen/${slug}`}
+                  className="block relative w-full h-64 lg:h-[460px] group"
+                >
+                  <Image
+                    src={image}
+                    alt={imageAlt}
+                    fill
+                    className="object-cover rounded-2xl group-hover:opacity-90 transition-opacity duration-200"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    priority
+                  />
+                </Link>
               </div>
             </div>
 
@@ -46,16 +51,21 @@ export const BlogCard: React.FC<BlogCardProps> = ({
             <div className="w-full lg:w-2/5 flex flex-col justify-between">
               {/* Title */}
               <div className="mb-4 lg:mb-6">
-                <h2
-                  className="font-roboto font-medium text-2xl sm:text-3xl lg:text-4xl xl:text-[42px] text-[#005DFF] mb-3 lg:mb-4"
-                  style={{
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                    verticalAlign: "middle",
-                  }}
+                <Link
+                  href={`/pages/blogScreen/${slug}`}
+                  className="block group"
                 >
-                  {title}
-                </h2>
+                  <h2
+                    className="font-roboto font-medium text-2xl sm:text-3xl lg:text-4xl xl:text-[42px] text-[#005DFF] mb-3 lg:mb-4 hover:text-blue-700 transition-colors duration-200"
+                    style={{
+                      lineHeight: "100%",
+                      letterSpacing: "0%",
+                      verticalAlign: "middle",
+                    }}
+                  >
+                    {title}
+                  </h2>
+                </Link>
                 <div className="flex justify-between sm:items-center gap-2 mb-4 lg:mb-6">
                   <span className="text-gray-600 text-sm lg:text-base">
                     By {author}

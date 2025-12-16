@@ -1,20 +1,55 @@
-const API_BASE_URL = 'https://secneedles-webapi.onrender.com/api/Blog';
+const API_BASE_URL = "https://secneedles-vn55-v1.onrender.com/api";
+("https://secneedles-vn55-v1.onrender.com/api");
 
 export interface BlogComment {
-  commentId: number;
   blogId: number;
   comment: string;
   emailAddress: string;
+}
+
+export interface CreateOrLoginUserRequest {
+  emailAddress: string;
+  fullName: string;
+  jwtToken: string;
+}
+
+export interface CreateOrLoginUserApiResponse {
+  result: number;
+  code: number;
+  description: string | null;
+  isExistingUser: boolean;
+  totalCount: number;
+  thirdPartyAPIResponseCode: number;
+  thirdPartyAPIResult: string | null;
+  payload: BlogUserPayload;
+}
+
+export interface BlogUserPayload {
+  id: number;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  otherName: string | null;
+  emailAddress: string;
+  phoneNumber: string | null;
+  professionalTitle: string | null;
+  aboutMeText: string | null;
+  userImage: string | null;
+
+  roleId: number;
+  isActive: boolean;
+  isBlockedUntil: string | null;
+
   dateCreated: string;
-  createdBy: string;
-  isLocked: number;
-  isEdited: boolean;
-  dateEdited: string | null;
+  lastLoggedIn: string | null;
+  dateOfBirth: string | null;
+
+  passwordHash: string; // usually not needed on FE, but included for accuracy
 }
 
 export interface BlogPost {
   blogId: number;
-  blogTItle: string; // Note: API has typo in field name
+  blogTItle: string;
   blogBody: string;
   likes: number;
   dateCreated: string;
@@ -23,7 +58,7 @@ export interface BlogPost {
   updatedBy: string | null;
   dateUpdated: string | null;
   comments: BlogComment[];
-  thumnailImage: string | null; // Note: API has typo in 'thumnail'
+  thumnailImage: string | null;
   formatedLikes: string;
 }
 
@@ -49,12 +84,28 @@ export interface AllBlogPostsResponse {
   thirdPartyAPIResult: string | null;
 }
 
+export interface LikeUnlikeResponse {
+  result: number;
+  message?: string;
+  payload?: any;
+}
+
+export interface CreateCommentRequest {
+  blogId: number;
+  comment: string;
+  emailAddress: string;
+}
+
+export interface CreateCommentResponse {
+  result: number;
+  message?: string;
+  payload?: BlogComment;
+}
+
 export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/GetAllBlogPost`, {
-      cache: 'no-store', // Force SSR on every request
-      // Alternative for ISR (Incremental Static Regeneration):
-      // next: { revalidate: 3600 } // Revalidate every hour
+    const response = await fetch(`${API_BASE_URL}/Blog/GetAllBlogPost`, {
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -64,16 +115,15 @@ export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching blog posts:', error);
+    console.error("Error fetching blog posts:", error);
     throw error;
   }
 }
 
 export async function getBlogPostById(id: string): Promise<BlogPost | null> {
   try {
-    // Use your Next.js API route instead of calling the external API directly
-    const response = await fetch(`/api/blog/${id}`, {
-      cache: 'no-store',
+    const response = await fetch(`${API_BASE_URL}/Blog/GetBlogPostById/${id}`, {
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -81,15 +131,127 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
     }
 
     const data: BlogPostResponse = await response.json();
-    
-    // Check if the request was successful and return the payload
+
     if (data.result === 1 && data.payload) {
       return data.payload;
     }
-    
+
     return null;
   } catch (error) {
-    console.error('Error fetching blog post:', error);
+    console.error("Error fetching blog post:", error);
     return null;
+  }
+}
+
+export async function createOrLoginUser(user: {
+  email: string;
+  name: string;
+  token: string;
+}): Promise<CreateOrLoginUserApiResponse | null> {
+  try {
+    const requestBody: CreateOrLoginUserRequest = {
+      emailAddress: user.email,
+      fullName: user.name,
+      jwtToken: user.token,
+    };
+
+    const response = await fetch(
+      `${API_BASE_URL}/GoogleAuth/CreateOrLoginUser`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: CreateOrLoginUserApiResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error creating/logging in user:", error);
+    return null;
+  }
+}
+
+export async function likeBlogPost(
+  postId: number,
+  userId: string
+): Promise<LikeUnlikeResponse> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/Blog/LikeBlogPost/${postId}/like?userId=${userId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: LikeUnlikeResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error liking blog post:", error);
+    return { result: 0, message: "Failed to like post" };
+  }
+}
+
+export async function unlikeBlogPost(
+  postId: number,
+  userId: string
+): Promise<LikeUnlikeResponse> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/Blog/UnlikeBlogPost/${postId}/unlike?userId=${userId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: LikeUnlikeResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error unliking blog post:", error);
+    return { result: 0, message: "Failed to unlike post" };
+  }
+}
+
+export async function createBlogComment(
+  commentData: CreateCommentRequest
+): Promise<CreateCommentResponse> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/Blog/CreateBlogComment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(commentData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: CreateCommentResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error creating blog comment:", error);
+    return { result: 0, message: "Failed to create comment" };
   }
 }

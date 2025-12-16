@@ -12,9 +12,7 @@ import { formatBlogDate } from "@/app/utils/dateformatter";
 import { createExcerpt } from "@/app/utils/createExcerptOfImage";
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
 
-export const dynamic = "force-dynamic"; // Allow dynamic fetching
-// Alternative:
-// export const fetchCache = "force-no-store";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blog - Latest Posts",
@@ -38,7 +36,7 @@ export default async function BlogScreen() {
       Array.isArray(postsData.payload) &&
       postsData.payload.length > 0
     ) {
-      featuredPost = postsData.payload[0]; // recent item
+      featuredPost = postsData.payload[0];
     }
   } catch (error) {
     console.error("Error loading blog data:", error);
@@ -69,14 +67,17 @@ export default async function BlogScreen() {
       {/* Blog Grid */}
       <BlogGrid
         posts={normalizedPosts.map((post: any) => ({
-          id: post.blogId.toString(),
+          id: post.blogId,
           title: post.blogTItle,
           description: createExcerpt(post.blogBody, 150),
           author: post.createdBy,
           date: formatBlogDate(post.dateCreated),
           image: getImageSrc(post.thumnailImage) ?? blog_post,
           slug: post.blogId.toString(),
-          likes: post.likes,
+          likes: typeof post.likes === 'number' ? post.likes : 0,
+          // FIX: Convert comments array to count
+          comments: Array.isArray(post.comments) ? post.comments.length : 0,
+          isLiked: false, // Will be synced with Redux
         }))}
         itemsPerPage={9}
         className="mb-8"

@@ -5,28 +5,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { secneedle } from "@/public/assests/image";
-import { GoogleAuthModal } from "./googleAuth";
 import { useAuth } from "@/app/lib/hooks/useAuths";
 import { logout } from "@/app/lib/features/auth/authSlice";
-
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("ENG");
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const languageRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
   // Use Redux auth instead of localStorage
-  const { isAuthenticated, user,  } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   // Navigation items with their routes
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Blog", href: "/pages/blogScreen", requiresAuth: true },
+    { name: "Blog", href: "/pages/blogScreen" },
     { name: "Video Streams", href: "/pages/videoScreen" },
     { name: "Services", href: "/pages/servicesScreen" },
     { name: "Portfolio", href: "/pages/portfolioScreen" },
@@ -76,22 +73,6 @@ export const Navbar = () => {
     setSelectedLanguage(language.code);
     setIsLanguageOpen(false);
   };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleNavClick = (e: React.MouseEvent, item: any) => {
-    if (item.requiresAuth && !isAuthenticated) {
-      e.preventDefault();
-      setShowAuthModal(true);
-      setIsMenuOpen(false);
-    }
-  };
-
-  // Watch for authentication changes and redirect to blog
-  useEffect(() => {
-    if (isAuthenticated && showAuthModal) {
-      setShowAuthModal(false);
-      router.push("/pages/blogScreen");
-    }
-  }, [isAuthenticated, showAuthModal, router]);
 
   const handleLogout = () => {
     logout();
@@ -125,7 +106,6 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={(e) => handleNavClick(e, item)}
                   className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
                       ? "text-white"
@@ -158,7 +138,6 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={(e) => handleNavClick(e, item)}
                   className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
                       ? "text-white"
@@ -191,7 +170,6 @@ export const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  onClick={(e) => handleNavClick(e, item)}
                   className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
                     isActive(item.href)
                       ? "text-white"
@@ -223,7 +201,6 @@ export const Navbar = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={(e) => handleNavClick(e, item)}
                 className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 ${
                   isActive(item.href)
                     ? "text-white"
@@ -316,12 +293,12 @@ export const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setShowAuthModal(true)}
+                <Link
+                  href="/pages/blogScreen"
                   className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base"
                 >
                   Login
-                </button>
+                </Link>
               )}
             </div>
 
@@ -354,12 +331,7 @@ export const Navbar = () => {
                         ? "text-white"
                         : "text-white hover:text-blue-200 hover:bg-blue-800/50"
                     }`}
-                    onClick={(e) => {
-                      handleNavClick(e, item);
-                      if (!item.requiresAuth || isAuthenticated) {
-                        setIsMenuOpen(false);
-                      }
-                    }}
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
                     {isActive(item.href) && (
@@ -398,15 +370,13 @@ export const Navbar = () => {
                   </div>
                 ) : (
                   <>
-                    <button
-                      onClick={() => {
-                        setShowAuthModal(true);
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full text-center sm:text-left px-3 sm:px-4 py-2 sm:py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base"
+                    <Link
+                      href="/pages/blogScreen"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block w-full text-center sm:text-left px-3 sm:px-4 py-2 sm:py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base"
                     >
                       Login
-                    </button>
+                    </Link>
                     <button
                       onClick={() => setIsMenuOpen(false)}
                       className="w-full bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base"
@@ -431,12 +401,6 @@ export const Navbar = () => {
           display: none;
         }
       `}</style>
-
-      {/* Google Auth Modal - Removed onSuccess callback */}
-      <GoogleAuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-      />
     </nav>
   );
 };

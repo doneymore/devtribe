@@ -14,6 +14,7 @@ export interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  likedPosts: Record<number, boolean>; // Add this line
 }
 
 const initialState: AuthState = {
@@ -21,6 +22,7 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  likedPosts: {}, // Add this line
 };
 
 export const authSlice = createSlice({
@@ -31,7 +33,6 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<{ token: string; user: AuthUser }>
     ) => {
-      
       state.token = action.payload.token;
       state.user = action.payload.user;
       state.isAuthenticated = true;
@@ -42,6 +43,21 @@ export const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.isLoading = false;
+      state.likedPosts = {}; // Clear liked posts on logout
+    },
+    toggleLikedPost: (state, action: PayloadAction<number>) => {
+      const postId = action.payload;
+      state.likedPosts[postId] = !state.likedPosts[postId];
+    },
+    setLikedPost: (
+      state,
+      action: PayloadAction<{ postId: number; isLiked: boolean }>
+    ) => {
+      const { postId, isLiked } = action.payload;
+      state.likedPosts[postId] = isLiked;
+    },
+    clearLikedPosts: (state) => {
+      state.likedPosts = {};
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -55,8 +71,15 @@ export const authSlice = createSlice({
 });
 
 // Action creators
-export const { setCredentials, logout, setLoading, updateUser } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  toggleLikedPost,
+  setLikedPost,
+  clearLikedPosts,
+  logout,
+  setLoading,
+  updateUser,
+} = authSlice.actions;
 
 // Selectors
 export const selectAuth = (state: RootState) => state.auth;
@@ -65,6 +88,7 @@ export const selectUser = (state: RootState) => state.auth.user;
 export const selectIsAuthenticated = (state: RootState) =>
   state.auth.isAuthenticated;
 export const selectIsLoading = (state: RootState) => state.auth.isLoading;
+export const selectLikedPosts = (state: RootState) => state.auth.likedPosts; // Fixed: state.auth instead of state.blog
 
 // Reducer
 export const authReducer = authSlice.reducer;

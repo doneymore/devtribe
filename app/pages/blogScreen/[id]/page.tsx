@@ -20,16 +20,16 @@ const BlogDetailPageRoute = () => {
       try {
         setLoading(true);
         setError(false);
-        
+
         const id = params.id as string;
-        
+
         if (!id) {
           setError(true);
           return;
         }
 
         const blogPost = await getBlogPostById(id);
-        console.log(blogPost, "fetchedBlogPost");
+
         if (blogPost) {
           setPost(blogPost);
         } else {
@@ -77,18 +77,18 @@ const BlogDetailPageRoute = () => {
       </div>
     );
   }
- const getValidImageUrl = (): string | null => {
+  const getValidImageUrl = (): string | null => {
     const blogImage = getImageSrc(post.blogImage);
     const thumbnailImage = getImageSrc(post.thumnailImage);
-    
+
     // Return the first non-empty, non-null image
     if (blogImage && blogImage.trim() !== "") return blogImage;
     if (thumbnailImage && thumbnailImage.trim() !== "") return thumbnailImage;
-    
+
     return null; // Return null if no valid image
   };
   // Transform the API response to match BlogDetailPost interface
-    const transformedPost = {
+  const transformedPost = {
     imageUrl: getValidImageUrl() || "", // Empty string as fallback, but we'll handle it in the component
     title: post.blogTItle,
     author: {
@@ -102,7 +102,7 @@ const BlogDetailPageRoute = () => {
   };
 
   // Transform comments from API response to match Comment interface
-  const transformedComments = post.comments.map(comment => ({
+  const transformedComments = post.comments.map((comment) => ({
     id: comment.commentId,
     author: {
       name: comment.createdBy,

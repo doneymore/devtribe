@@ -4,12 +4,12 @@ import { X } from "lucide-react";
 import Script from "next/script";
 import { useAuth } from "@/app/lib/hooks/useAuths";
 import { useRouter } from "next/navigation";
+import { createOrLoginUser } from "@/app/lib/blogServices";
 
 interface GoogleAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
 
 export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
   const router = useRouter();
@@ -26,7 +26,7 @@ export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
     process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
     "1030737803985-m259rn3ostuqa08du9nanhmjcu40c8jh.apps.googleusercontent.com";
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCredentialResponse = async (response: any) => {
     const idToken = response.credential;
     setAuthLoading(true);
@@ -34,7 +34,7 @@ export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
 
     try {
       const res = await fetch(
-        "https://secneedles-webapi.onrender.com/api/googleauth/signin-google",
+        "https://secneedles-vn55-v1.onrender.com/api/GoogleAuth/signin-google",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -47,13 +47,27 @@ export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
       }
 
       const data = await res.json();
+
+      if (!data.token || !data.user) {
+        throw new Error("Invalid Google auth response");
+      }
+      const blogUserResponse = await createOrLoginUser({
+        email: data.user.email,
+        name: data.user.name,
+        token: data.token,
+      });
       debugger;
+
+      if (!blogUserResponse || blogUserResponse.result !== 1) {
+        throw new Error("Failed to create or login blog user");
+      }
+
       if (data.token && data.user) {
         // Save to Redux store
         login(data.token, {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.name,
+          id: blogUserResponse?.payload?.userId || "",
+          email: blogUserResponse?.payload?.emailAddress || data.user.email,
+          name: `${blogUserResponse.payload.firstName} ${blogUserResponse.payload.lastName}`,
           picture: data.user.picture,
         });
 
