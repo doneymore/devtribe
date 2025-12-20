@@ -29,7 +29,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({
 }) => {
   const dispatch = useDispatch();
   const blogUserId = useSelector(selectBlogUserId);
-  const likedPostsFromRedux = useSelector(selectLikedPosts) || {};
+
 
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -52,22 +52,19 @@ const BlogGrid: React.FC<BlogGridProps> = ({
     paginatedData.endIndex
   );
 
-  // Initialize posts only when the posts prop changes
-  useEffect(() => {
-    const postsWithLikedState = posts.map((post) => {
-      const postId =
-        typeof post.id === "string" ? parseInt(post.id, 10) : post.id;
-      return {
-        ...post,
-        id: postId,
-        isLiked: likedPostsFromRedux[postId] ?? false,
-        comments: typeof post.comments === "number" ? post.comments : 0,
-        likes: typeof post.likes === "number" ? post.likes : 0,
-      };
-    });
-    setBlogPosts(postsWithLikedState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posts]); // Only re-initialize when posts from API change
+ useEffect(() => {
+  const postsWithLikedState = posts.map((post) => {
+    const postId = typeof post.id === "string" ? parseInt(post.id, 10) : post.id;
+    return {
+      ...post,
+      id: postId,
+      isLiked: post.isLiked, // ✅ Already comes from API via BlogScreen
+      comments: typeof post.comments === "number" ? post.comments : 0,
+      likes: typeof post.likes === "number" ? post.likes : 0,
+    };
+  });
+  setBlogPosts(postsWithLikedState);
+}, [posts]);
 
   const handleLike = (id: number | string) => {
     // Convert id to number for consistency
@@ -87,8 +84,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({
       })
     );
 
-    // Save liked state to Redux
-    dispatch(toggleLikedPost(numericId));
+  
   };
 
   const handleCommentClick = (id: number | string) => {

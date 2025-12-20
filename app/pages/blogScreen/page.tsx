@@ -74,10 +74,9 @@ export default async function BlogScreen() {
           date: formatBlogDate(post.dateCreated),
           image: getImageSrc(post.thumnailImage) ?? blog_post,
           slug: post.blogId.toString(),
-          likes: typeof post.likes === 'number' ? post.likes : 0,
-          // FIX: Convert comments array to count
+          likes: typeof post.likes === "number" ? post.likes : 0,
           comments: Array.isArray(post.comments) ? post.comments.length : 0,
-          isLiked: false, // Will be synced with Redux
+          isLiked: post.hasCurrentUserLiked ?? false,
         }))}
         itemsPerPage={9}
         className="mb-8"

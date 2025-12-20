@@ -126,7 +126,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
     try {
       setIsProcessing(true);
-
+debugger
       const response = postData.isLiked
         ? await unlikeBlogPost(Number(params?.id), userId)
         : await likeBlogPost(Number(params?.id), userId);

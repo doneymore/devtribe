@@ -1,5 +1,5 @@
-import React from 'react';
-import { ThumbsUp, MessageSquare, Search } from 'lucide-react';
+import React from "react";
+import { ThumbsUp, MessageSquare, Search } from "lucide-react";
 
 // Types
 interface VideoItem {
@@ -36,10 +36,29 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
   titleColor = "#1a4d7a",
   showShadow = true,
   onSearch,
-  searchPlaceholder = "Search"
+  searchPlaceholder = "Search",
 }) => {
   const [playingVideo, setPlayingVideo] = React.useState<string | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [filteredVideos, setFilteredVideos] =
+    React.useState<VideoItem[]>(additionalVideos);
+
+  // Update filtered videos when additionalVideos change
+  React.useEffect(() => {
+    setFilteredVideos(additionalVideos);
+  }, [additionalVideos]);
+
+  // Search filter function
+  const filterVideos = (query: string) => {
+    if (!query.trim()) {
+      return additionalVideos;
+    }
+
+    const lowerQuery = query.toLowerCase();
+    return additionalVideos.filter((video) =>
+      video.title.toLowerCase().includes(lowerQuery)
+    );
+  };
 
   const handleVideoClick = (videoId: string) => {
     setPlayingVideo(videoId);
@@ -53,7 +72,20 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // Real-time search
+    if (onSearch) {
+      onSearch(value);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    if (onSearch) {
+      onSearch("");
+    }
   };
 
   return (
@@ -67,18 +99,29 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
               <div className="absolute left-4 pointer-events-none">
                 <Search className="w-5 h-5 text-gray-400" />
               </div>
-              
+
               {/* Search Input */}
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder={searchPlaceholder}
-                className="w-full pl-12 pr-4 py-3 bg-gray-100 border-0 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm sm:text-base"
+                className="w-full pl-12 pr-10 py-3 bg-gray-100 border-0 rounded-full text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-base sm:text-lg font-semibold"
                 style={{
-                  fontFamily: 'system-ui, -apple-system, sans-serif'
+                  fontFamily: "system-ui, -apple-system, sans-serif",
                 }}
               />
+
+              {/* Clear button (shows when there's a search query) */}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold"
+                >
+                  ×
+                </button>
+              )}
             </div>
           </form>
         </div>
@@ -89,10 +132,10 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
         <div className="max-w-7xl mx-auto">
           {/* Live Stream Text */}
           <div className="mb-6">
-            <h2 
+            <h2
               className="text-2xl sm:text-3xl lg:text-4xl font-bold"
               style={{
-                fontFamily: 'Georgia, serif',
+                fontFamily: "Georgia, serif",
                 color: titleColor,
               }}
             >
@@ -104,26 +147,27 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
           {(mainVideo.title || mainVideo.description) && (
             <div className="text-center mb-8 lg:mb-12">
               {mainVideo.title && (
-                <h2 
+                <h2
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6"
                   style={{
-                    fontFamily: 'Georgia, serif',
+                    fontFamily: "Georgia, serif",
                     color: titleColor,
-                    lineHeight: '1.2'
+                    lineHeight: "1.2",
                   }}
                 >
                   {mainVideo.title}
                 </h2>
               )}
               {mainVideo.description && (
-                <p 
+                <p
                   className="text-sm sm:text-base lg:text-lg text-gray-700 max-w-3xl mx-auto px-4 leading-relaxed"
-                  style={{ fontFamily: 'Arial, sans-serif' }}
+                  style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  {mainVideo.description.split('\n').map((line, index) => (
+                  {mainVideo.description.split("\n").map((line, index) => (
                     <React.Fragment key={index}>
                       {line}
-                      {index < mainVideo.description!.split('\n').length - 1 && (
+                      {index <
+                        mainVideo.description!.split("\n").length - 1 && (
                         <br className="hidden sm:block" />
                       )}
                     </React.Fragment>
@@ -134,13 +178,18 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
           )}
 
           {/* Main Video Container */}
-          <div className="relative w-full" style={{ maxWidth, margin: '0 auto' }}>
-            <div 
-              className={`relative w-full overflow-hidden ${showShadow ? 'shadow-2xl' : ''}`}
+          <div
+            className="relative w-full"
+            style={{ maxWidth, margin: "0 auto" }}
+          >
+            <div
+              className={`relative w-full overflow-hidden ${
+                showShadow ? "shadow-2xl" : ""
+              }`}
               style={{
-                paddingBottom: '56.4%',
-                background: '#000',
-                borderRadius: '15px'
+                paddingBottom: "clamp(45%, 56.25%, 56.25%)", // Reduced from 56.4% to make it smaller
+                background: "#000",
+                borderRadius: "15px",
               }}
             >
               <iframe
@@ -149,7 +198,7 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
                 title={mainVideo.title || "Video"}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                style={{ border: 'none', borderRadius: '15px' }}
+                style={{ border: "none", borderRadius: "15px" }}
               />
             </div>
 
@@ -165,14 +214,14 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
       </section>
 
       {/* Additional Videos List */}
-      {additionalVideos.length > 0 && (
+      {filteredVideos.length > 0 && (
         <section className="px-4 sm:px-6 lg:px-20 py-8">
           <div className="max-w-7xl mx-auto space-y-6">
-            {additionalVideos.map((video) => (
+            {filteredVideos.map((video) => (
               <div
                 key={video.id}
                 className="relative rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-[1.02] cursor-pointer group"
-                style={{ backgroundColor: video.backgroundColor || '#1e4d8b' }}
+                style={{ backgroundColor: video.backgroundColor || "#1e4d8b" }}
                 onClick={() => handleVideoClick(video.videoId)}
               >
                 <div className="flex flex-col sm:flex-row items-stretch">
@@ -185,7 +234,7 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
                         title={video.title}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                        style={{ border: 'none' }}
+                        style={{ border: "none" }}
                       />
                     ) : (
                       <>
@@ -220,15 +269,15 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
 
                     {/* YouTube Actions */}
                     <div className="flex items-center gap-6 mt-4">
-                      <button 
+                      <button
                         className="flex items-center gap-2 text-white hover:text-gray-200 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ThumbsUp className="w-5 h-5" />
                         <span className="text-sm font-medium">Like</span>
                       </button>
-                      
-                      <button 
+
+                      <button
                         className="flex items-center gap-2 text-white hover:text-gray-200 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -243,7 +292,7 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
                           viewBox="0 0 24 24"
                           fill="currentColor"
                         >
-                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                         </svg>
                       </div>
                     </div>
@@ -251,6 +300,29 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* No Results Message */}
+      {searchQuery && filteredVideos.length === 0 && (
+        <section className="px-4 sm:px-6 lg:px-20 py-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="bg-white rounded-lg shadow-md p-8">
+              <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                No videos found
+              </h3>
+              <p className="text-gray-600 mb-4">
+                No videos match your search for "{searchQuery}"
+              </p>
+              <button
+                onClick={handleClearSearch}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Clear search
+              </button>
+            </div>
           </div>
         </section>
       )}

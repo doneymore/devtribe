@@ -98,11 +98,11 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
     try {
       setIsProcessing(true);
 
+      debugger;
       // Call API based on current like status
       const response = post.isLiked
         ? await unlikeBlogPost(Number(post.id), userId) // <-- Remove ?.userId
         : await likeBlogPost(Number(post.id), userId); // <-- Remove ?.userId
-
       if (response.result === 1) {
         // Update local state through parent callback
         onLike(post.id);

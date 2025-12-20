@@ -102,6 +102,52 @@ export interface CreateCommentResponse {
   payload?: BlogComment;
 }
 
+export interface VideoStream {
+  id: number;
+  title: string;
+  description: string;
+  videoUrl: string;
+  youtubeStreamId: string | null;
+  scheduledStartTime: string;
+  actualStartTime: string;
+  endTime: string;
+  thumbnailUrl: string;
+  status: "completed" | "upcoming" | "live";
+  dateCreated: string;
+}
+
+export interface VideoStreamsResponse {
+  payload: VideoStream[];
+  totalCount: number;
+  isExistingUser: boolean;
+  code: number;
+  description: string | null;
+  result: number;
+  thirdPartyAPIResponseCode: number;
+  thirdPartyAPIResult: string | null;
+}
+
+export async function getAllLiveStreams(): Promise<VideoStreamsResponse> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/VideoStream/GetAllLiveStreams`,
+      {
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching video streams:", error);
+    throw error;
+  }
+}
+
 export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
   try {
     const response = await fetch(`${API_BASE_URL}/Blog/GetAllBlogPost`, {
