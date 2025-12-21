@@ -109,18 +109,6 @@ const PreviousStreamsSection: React.FC<PreviousStreamsSectionProps> = ({
               "{searchQuery}"
             </p>
 
-            {/* Suggestions */}
-            <div className="bg-blue-50 rounded-lg p-6 mb-6 max-w-md mx-auto">
-              <p className="text-sm text-gray-700 font-medium mb-2">
-                Try searching for:
-              </p>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Different keywords</li>
-                <li>• Broader terms</li>
-                <li>• Episode numbers or dates</li>
-              </ul>
-            </div>
-
             {/* Clear Search Button */}
             {onClearSearch && (
               <button

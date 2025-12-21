@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://secneedles-webapi.onrender.com/api/User';
+const API_BASE_URL = "https://secneedles-vn55-v1.onrender.com/api/User";
 
 export interface Role {
   roleId: number;
@@ -37,7 +37,7 @@ export interface UserResponse {
 export async function getAllUsers(): Promise<User[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/getallusers`, {
-      cache: 'no-store', // Force SSR on every request
+      cache: "no-store", // Force SSR on every request
       // Alternative for ISR (Incremental Static Regeneration):
       // next: { revalidate: 3600 } // Revalidate every hour
     });
@@ -47,15 +47,15 @@ export async function getAllUsers(): Promise<User[]> {
     }
 
     const data: UserResponse = await response.json();
-    
+
     // Check if the request was successful and return the payload
     if (data.result === 1 && data.payload) {
       return data.payload;
     }
-    
+
     return [];
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error("Error fetching users:", error);
     return [];
   }
 }
@@ -63,10 +63,12 @@ export async function getAllUsers(): Promise<User[]> {
 export async function getUserByUserId(userId: string): Promise<User | null> {
   try {
     const users = await getAllUsers();
-    const user = users.find(u => u.userId.toLowerCase() === userId.toLowerCase());
+    const user = users.find(
+      (u) => u.userId.toLowerCase() === userId.toLowerCase()
+    );
     return user || null;
   } catch (error) {
-    console.error('Error fetching user by userId:', error);
+    console.error("Error fetching user by userId:", error);
     return null;
   }
 }
@@ -74,10 +76,10 @@ export async function getUserByUserId(userId: string): Promise<User | null> {
 // Helper function to get full name
 export function getFullName(user: User): string {
   const parts = [user.firstName, user.otherName, user.lastName].filter(Boolean);
-  return parts.join(' ');
+  return parts.join(" ");
 }
 
 // Helper function to get professional title or fallback
 export function getProfessionalTitle(user: User): string {
-  return user.professionalTitle || user.role.roleName || 'Professional';
+  return user.professionalTitle || user.role.roleName || "Professional";
 }

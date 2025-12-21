@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CreateOrLoginUserApiResponse } from '../../blogServices';
+import { CreateOrLoginUserApiResponse, BlogUserPayload } from '../../blogServices';
 
 
 interface BlogUserState {
@@ -70,6 +70,9 @@ export const {
   updateBlogUserEmail,
   updateBlogUserInfo 
 } = blogUserSlice.actions;
+
+// Ensure BlogUserPayload has fullName property
+// If it doesn't exist in blogServices, add it to the interface definition there
 
 // Selectors with null safety
 export const selectBlogUser = (state: { blogUser: BlogUserState }) => state.blogUser;

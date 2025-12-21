@@ -1,7 +1,7 @@
 // lib/api/skills.ts
 
-const API_BASE_URL = 'https://secneedles-webapi.onrender.com/api/Portfolio';
-const USER_ID = 'C5C676ED-F6C0-4A1E-B4A8-35918F866548';
+const API_BASE_URL = "https://secneedles-vn55-v1.onrender.com/api/Portfolio";
+const USER_ID = "C5C676ED-F6C0-4A1E-B4A8-35918F866548";
 
 export interface Skill {
   skillId: number;
@@ -20,12 +20,14 @@ export interface SkillsResponse {
   thirdPartyAPIResult: string | null;
 }
 
-export async function getUserSkills(userId: string = USER_ID): Promise<SkillsResponse> {
+export async function getUserSkills(
+  userId: string = USER_ID
+): Promise<SkillsResponse> {
   try {
     const response = await fetch(
       `${API_BASE_URL}/GetUserSkills?userId=${userId}`,
       {
-        cache: 'no-store', // Force SSR on every request
+        cache: "no-store", // Force SSR on every request
         // Alternative for ISR (Incremental Static Regeneration):
         // next: { revalidate: 3600 } // Revalidate every hour
       }
@@ -38,23 +40,25 @@ export async function getUserSkills(userId: string = USER_ID): Promise<SkillsRes
     const data: SkillsResponse = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching user skills:', error);
+    console.error("Error fetching user skills:", error);
     throw error;
   }
 }
 
-export async function getSkillsPayload(userId: string = USER_ID): Promise<Skill[]> {
+export async function getSkillsPayload(
+  userId: string = USER_ID
+): Promise<Skill[]> {
   try {
     const response = await getUserSkills(userId);
-    
+
     // Check if the request was successful and return the payload
     if (response.result === 1 && response.payload) {
       return response.payload;
     }
-    
+
     return [];
   } catch (error) {
-    console.error('Error fetching skills payload:', error);
+    console.error("Error fetching skills payload:", error);
     return [];
   }
 }

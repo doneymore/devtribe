@@ -126,7 +126,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
     try {
       setIsProcessing(true);
-debugger
+      debugger;
       const response = postData.isLiked
         ? await unlikeBlogPost(Number(params?.id), userId)
         : await likeBlogPost(Number(params?.id), userId);
@@ -181,7 +181,7 @@ debugger
 
       if (response.result === 1) {
         const comment: Comment = {
-          id: response.payload?.commentId || Date.now(),
+          id: Date.now(),
           author: {
             name: user.name || "Anonymous User",
             avatar: "",

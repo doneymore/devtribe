@@ -10,7 +10,9 @@ import {
   Twitter,
   Linkedin,
   Youtube,
+  Loader2,
 } from "lucide-react";
+import { createContactUs } from "@/app/lib/footerService";
 
 interface ContactInfo {
   location: string;
@@ -40,6 +42,9 @@ interface FormData {
   query: string;
 }
 
+const isValidEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
 export const PortfolioFooter: React.FC<FooterProps> = ({
   contactInfo = {
     location: "Muzaffargar, Lagos",
@@ -62,24 +67,77 @@ export const PortfolioFooter: React.FC<FooterProps> = ({
     headline: "",
     query: "",
   });
-
-  const handleSubmit = () => {
-    if (onSubmit) {
-      onSubmit(formData);
-    }
-    setFormData({
-      name: "",
-      email: "",
-      headline: "",
-      query: "",
-    });
-  };
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChange = (field: keyof FormData, value: string) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const handleSubmit = async () => {
+    // Clear previous messages
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    // Basic validation
+    if (!formData.name.trim()) {
+      setErrorMessage("Name is required.");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setErrorMessage("Email is required.");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (!formData.query.trim()) {
+      setErrorMessage("Please enter your message.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const [firstName, ...rest] = formData.name.trim().split(" ");
+      const lastName = rest.join(" ") || " ";
+
+      const success = await createContactUs({
+        emailAddress: formData.email.trim(),
+        firstName,
+        lastName,
+        message: formData.headline
+          ? `${formData.headline}\n\n${formData.query}`
+          : formData.query,
+      });
+
+      if (!success) {
+        throw new Error("API returned failure");
+      }
+
+      setSuccessMessage(
+        "✅ Your message has been sent successfully. We’ll get back to you shortly."
+      );
+
+      setFormData({
+        name: "",
+        email: "",
+        headline: "",
+        query: "",
+      });
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(
+        "❌ Unable to send your message right now. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -184,6 +242,17 @@ export const PortfolioFooter: React.FC<FooterProps> = ({
             >
               Send Me Email
             </h3>
+            {successMessage && (
+              <div className="mb-3 text-green-400 text-sm text-center font-medium">
+                {successMessage}
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="mb-3 text-red-400 text-sm text-center font-medium">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="space-y-3">
               <input
@@ -240,15 +309,23 @@ export const PortfolioFooter: React.FC<FooterProps> = ({
 
               <div className="flex justify-center pt-1">
                 <button
+                  type="button"
                   onClick={handleSubmit}
-                  className="px-10 py-2 bg-white text-[#091248] rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+                  disabled={loading}
+                  className={`px-10 py-2 rounded-full transition-all duration-200 flex items-center gap-2
+    ${
+      loading
+        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+        : "bg-white text-[#091248] hover:bg-gray-100 active:scale-95"
+    }`}
                   style={{
                     fontFamily: "Roboto, sans-serif",
                     fontWeight: 500,
                     fontSize: "14px",
                   }}
                 >
-                  Send
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {loading ? "Sending..." : "Send"}
                 </button>
               </div>
             </div>

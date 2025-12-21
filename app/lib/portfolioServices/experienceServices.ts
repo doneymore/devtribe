@@ -2,7 +2,7 @@ import { parseJobDutiesServer } from "@/app/utils/htmlTextformatter";
 import { formatPeriod } from "@/app/utils/timeFormatter";
 
 // lib/api/experience.ts
-const API_BASE_URL = 'https://secneedles-webapi.onrender.com/api/Portfolio';
+const API_BASE_URL = 'https://secneedles-vn55-v1.onrender.com/api/Portfolio';
 
 export interface ExperienceItemAPI {
   id: number;

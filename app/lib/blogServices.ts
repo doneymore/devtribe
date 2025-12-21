@@ -1,5 +1,4 @@
 const API_BASE_URL = "https://secneedles-vn55-v1.onrender.com/api";
-("https://secneedles-vn55-v1.onrender.com/api");
 
 export interface BlogComment {
   blogId: number;
@@ -35,6 +34,7 @@ export interface BlogUserPayload {
   professionalTitle: string | null;
   aboutMeText: string | null;
   userImage: string | null;
+  fullName: string | null;
 
   roleId: number;
   isActive: boolean;
@@ -87,7 +87,7 @@ export interface AllBlogPostsResponse {
 export interface LikeUnlikeResponse {
   result: number;
   message?: string;
-  payload?: any;
+  payload?: unknown;
 }
 
 export interface CreateCommentRequest {
@@ -127,12 +127,74 @@ export interface VideoStreamsResponse {
   thirdPartyAPIResult: string | null;
 }
 
+export interface SystemSettings {
+  settingsId: number;
+  appName: string;
+  logo: string;
+  phoneNumber: string;
+  emailAddress: string;
+  createdBy: string;
+  dateCreated: string;
+  dateUpdated: string | null;
+  updatedBy: string;
+  whoWeAre: string;
+  whereWeAreHeaded: string;
+  teamMembers: string;
+}
+
+export interface Service {
+  id: number;
+  settingsId: number;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  systemSettings: SystemSettings;
+}
+
+export interface ServicesResponse {
+  payload: Service[];
+  totalCount: number;
+  isExistingUser: boolean;
+  code: number;
+  description: string | null;
+  result: number;
+  thirdPartyAPIResponseCode: number;
+  thirdPartyAPIResult: string | null;
+}
+
+// Fetch all services
+export async function getAllServices(
+  settingsId: number = 1
+): Promise<ServicesResponse> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/Admin/GetAllServices/${settingsId}`,
+      {
+        cache: "no-store",
+        next: { revalidate: 3600 }, // Revalidate every hour (services don't change often)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    throw error;
+  }
+}
+
 export async function getAllLiveStreams(): Promise<VideoStreamsResponse> {
   try {
     const response = await fetch(
       `${API_BASE_URL}/VideoStream/GetAllLiveStreams`,
       {
-        cache: "no-store",
+        cache: "no-store", // Important for Server Components
+        next: { revalidate: 0 }, // Disable caching for real-time data
       }
     );
 

@@ -1,19 +1,21 @@
 "use client";
 
-import BlogDetailPage from "@/app/component/reusable/blog/blogDetails/blogdetail";
-import { BlogPost } from "@/app/lib/blogServices";
-import { getBlogPostById } from "@/app/lib/blogServices";
-import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+
+import BlogDetailPage from "@/app/component/reusable/blog/blogDetails/blogdetail";
+import { BlogPost, BlogComment } from "@/app/lib/blogServices";
+import { getBlogPostById } from "@/app/lib/blogServices";
 import { formatBlogDate } from "@/app/utils/dateformatter";
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
 
 const BlogDetailPageRoute = () => {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
+
   const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const loadPost = async () => {
@@ -21,43 +23,43 @@ const BlogDetailPageRoute = () => {
         setLoading(true);
         setError(false);
 
-        const id = params.id as string;
-
-        if (!id) {
+        if (!params?.id) {
           setError(true);
           return;
         }
 
-        const blogPost = await getBlogPostById(id);
+        const blogPost = await getBlogPostById(params.id);
 
         if (blogPost) {
           setPost(blogPost);
         } else {
           setError(true);
         }
-      } catch (error) {
-        console.error("Error loading blog post:", error);
+      } catch (err) {
+        console.error("Error loading blog post:", err);
         setError(true);
       } finally {
         setLoading(false);
       }
     };
 
-    if (params.id) {
-      loadPost();
-    }
-  }, [params.id]);
+    loadPost();
+  }, [params?.id]);
+
+  /* ================= LOADING ================= */
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4" />
           <p className="text-gray-600">Loading blog post...</p>
         </div>
       </div>
     );
   }
+
+  /* ================= ERROR ================= */
 
   if (error || !post) {
     return (
@@ -77,19 +79,24 @@ const BlogDetailPageRoute = () => {
       </div>
     );
   }
+
+  /* ================= IMAGE PICKER ================= */
+
   const getValidImageUrl = (): string | null => {
     const blogImage = getImageSrc(post.blogImage);
     const thumbnailImage = getImageSrc(post.thumnailImage);
 
-    // Return the first non-empty, non-null image
-    if (blogImage && blogImage.trim() !== "") return blogImage;
-    if (thumbnailImage && thumbnailImage.trim() !== "") return thumbnailImage;
+    if (blogImage?.trim()) return blogImage;
+    if (thumbnailImage?.trim()) return thumbnailImage;
 
-    return null; // Return null if no valid image
+    return null;
   };
-  // Transform the API response to match BlogDetailPost interface
+
+  /* ================= POST TRANSFORM ================= */
+
   const transformedPost = {
-    imageUrl: getValidImageUrl() || "", // Empty string as fallback, but we'll handle it in the component
+     id: post.blogId,
+    imageUrl: getValidImageUrl() ?? "",
     title: post.blogTItle,
     author: {
       name: post.createdBy,
@@ -101,19 +108,22 @@ const BlogDetailPageRoute = () => {
     isLiked: false,
   };
 
-  // Transform comments from API response to match Comment interface
-  const transformedComments = post.comments.map((comment) => ({
-    id: comment.commentId,
-    author: {
-      name: comment.createdBy,
-      avatar: "", // API doesn't provide comment author avatar
-    },
-    content: comment.comment,
-    timestamp: formatBlogDate(comment.dateCreated),
-    likes: 0, // API doesn't provide comment likes
-    isLiked: false,
-    replies: [], // API doesn't provide nested replies
-  }));
+  /* ================= COMMENTS TRANSFORM ================= */
+
+  const transformedComments = post.comments.map(
+    (comment: BlogComment, index: number) => ({
+      id: index + 1, // generated safe ID
+      author: {
+        name: comment.emailAddress,
+        avatar: "",
+      },
+      content: comment.comment,
+      timestamp: "", // API does not provide date
+      likes: 0,
+      isLiked: false,
+      replies: [],
+    })
+  );
 
   return (
     <BlogDetailPage
