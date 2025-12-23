@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectBlogUserId,
-  selectBlogUserEmail, // <-- ADD THIS
+  selectBlogUserEmail,
   setBlogUser,
 } from "@/app/lib/features/auth/blogSlice";
 
@@ -35,7 +35,6 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
   const dispatch = useDispatch();
   const blogUserId = useSelector(selectBlogUserId);
   const blogUserEmail = useSelector(selectBlogUserEmail);
-  console.log("Blog User ID from Redux:", user);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleCardClick = () => {
@@ -89,20 +88,19 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
 
     const { userId } = await ensureUserAuthenticated();
 
-    // CHECK if userId is null - stop execution if no auth
     if (!userId) {
       console.log("User not authenticated, stopping like action");
-      return; // <-- This stops the function here
+      return;
     }
 
     try {
       setIsProcessing(true);
 
-      debugger;
       // Call API based on current like status
       const response = post.isLiked
-        ? await unlikeBlogPost(Number(post.id), userId) // <-- Remove ?.userId
-        : await likeBlogPost(Number(post.id), userId); // <-- Remove ?.userId
+        ? await unlikeBlogPost(Number(post.id), userId)
+        : await likeBlogPost(Number(post.id), userId);
+        
       if (response.result === 1) {
         // Update local state through parent callback
         onLike(post.id);
@@ -188,17 +186,20 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
                 <button
                   onClick={handleLikeClick}
                   disabled={isProcessing}
-                  className={`flex items-center space-x-1.5 transition-colors ${
+                  className={`flex items-center space-x-1.5 transition-colors duration-200 ${
                     post.isLiked
-                      ? "text-red-500" // Changed to red to match BlogDetailPage
-                      : "text-gray-600 hover:text-red-500" // Changed hover to red
+                      ? "text-red-500"
+                      : "text-gray-400 hover:text-red-500"
                   } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
+                  aria-label={post.isLiked ? "Unlike post" : "Like post"}
                 >
                   <Heart
                     size={16}
-                    className={post.isLiked ? "fill-current" : ""}
+                    className={`transition-all duration-200 ${
+                      post.isLiked ? "fill-red-500" : "fill-none"
+                    }`}
                   />
-                  <span className="text-[13px]">{post.likes}</span>
+                  <span className="text-[13px] font-medium">{post.likes}</span>
                 </button>
 
                 <button
@@ -207,6 +208,7 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
                   className={`flex items-center space-x-1.5 text-gray-600 hover:text-blue-600 transition-colors ${
                     isProcessing ? "opacity-50 cursor-not-allowed" : ""
                   }`}
+                  aria-label="View comments"
                 >
                   <MessageCircle size={16} />
                   <span className="text-[13px]">{post.comments}</span>

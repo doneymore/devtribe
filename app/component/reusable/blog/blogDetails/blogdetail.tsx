@@ -126,7 +126,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
 
     try {
       setIsProcessing(true);
-      debugger;
+
       const response = postData.isLiked
         ? await unlikeBlogPost(Number(params?.id), userId)
         : await likeBlogPost(Number(params?.id), userId);
@@ -330,24 +330,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
               />
             </div>
 
-            {/* Like Button */}
-            <div className="flex items-center space-x-4 mb-8 pb-6 border-b border-gray-200">
-              <button
-                onClick={handlePostLike}
-                disabled={isProcessing}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-200 ${
-                  postData.isLiked
-                    ? "text-red-500 bg-red-50 hover:bg-red-100"
-                    : "text-gray-600 hover:text-red-500 hover:bg-red-50"
-                } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                <Heart
-                  size={20}
-                  className={postData.isLiked ? "fill-current" : ""}
-                />
-                <span className="font-medium">{postData.likes}</span>
-              </button>
-            </div>
+     
 
             {/* Comments Section */}
             <div
@@ -408,23 +391,7 @@ const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                       </div>
                     </div>
 
-                    {/* Comment Actions */}
-                    <div className="flex items-center space-x-4 ml-13">
-                      <button
-                        onClick={() => handleCommentLike(comment.id)}
-                        className={`flex items-center space-x-1 text-sm transition-colors duration-200 ${
-                          comment.isLiked
-                            ? "text-red-500"
-                            : "text-gray-500 hover:text-red-500"
-                        }`}
-                      >
-                        <Heart
-                          size={16}
-                          className={comment.isLiked ? "fill-current" : ""}
-                        />
-                        <span>{comment.likes}</span>
-                      </button>
-                    </div>
+                 
                   </div>
                 ))}
               </div>

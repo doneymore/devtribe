@@ -1,9 +1,18 @@
 const API_BASE_URL = "https://secneedles-vn55-v1.onrender.com/api";
 
+// Default user ID for initial/unauthenticated requests
+const DEFAULT_USER_ID = "8ba233fe-ced6-4bcd-a38c-1c9e5814b185";
+
 export interface BlogComment {
+  commentId: number;
   blogId: number;
   comment: string;
   emailAddress: string;
+  dateCreated: string;
+  createdBy: string;
+  isLocked: number;
+  isEdited: boolean;
+  dateEdited: string | null;
 }
 
 export interface CreateOrLoginUserRequest {
@@ -35,16 +44,13 @@ export interface BlogUserPayload {
   aboutMeText: string | null;
   userImage: string | null;
   fullName: string | null;
-
   roleId: number;
   isActive: boolean;
   isBlockedUntil: string | null;
-
   dateCreated: string;
   lastLoggedIn: string | null;
   dateOfBirth: string | null;
-
-  passwordHash: string; // usually not needed on FE, but included for accuracy
+  passwordHash: string;
 }
 
 export interface BlogPost {
@@ -60,6 +66,7 @@ export interface BlogPost {
   comments: BlogComment[];
   thumnailImage: string | null;
   formatedLikes: string;
+  hasCurrentUserLiked: boolean; // Note: API uses hasCurrentuserLiked (lowercase 'u')
 }
 
 export interface BlogPostResponse {
@@ -172,7 +179,7 @@ export async function getAllServices(
       `${API_BASE_URL}/Admin/GetAllServices/${settingsId}`,
       {
         cache: "no-store",
-        next: { revalidate: 3600 }, // Revalidate every hour (services don't change often)
+        next: { revalidate: 3600 },
       }
     );
 
@@ -193,8 +200,8 @@ export async function getAllLiveStreams(): Promise<VideoStreamsResponse> {
     const response = await fetch(
       `${API_BASE_URL}/VideoStream/GetAllLiveStreams`,
       {
-        cache: "no-store", // Important for Server Components
-        next: { revalidate: 0 }, // Disable caching for real-time data
+        cache: "no-store",
+        next: { revalidate: 0 },
       }
     );
 
@@ -210,11 +217,24 @@ export async function getAllLiveStreams(): Promise<VideoStreamsResponse> {
   }
 }
 
-export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
+/**
+ * Fetch all blog posts for a specific user
+ * @param userId - The user ID to fetch posts for. If not provided, uses default user ID
+ * @returns Promise with blog posts response
+ */
+export async function getAllBlogPostsByUserId(
+  userId?: string
+): Promise<AllBlogPostsResponse> {
+  const userIdToUse = userId || DEFAULT_USER_ID;
+  
   try {
-    const response = await fetch(`${API_BASE_URL}/Blog/GetAllBlogPost`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/Blog/GetAllBlogPost/${userIdToUse}`,
+      {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -223,9 +243,20 @@ export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching blog posts:", error);
+    console.error("Error fetching blog posts by user ID:", error);
     throw error;
   }
+}
+
+/**
+ * @deprecated Use getAllBlogPostsByUserId instead
+ * Legacy method maintained for backwards compatibility
+ */
+export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
+  console.warn(
+    "getAllBlogPosts is deprecated. Use getAllBlogPostsByUserId instead."
+  );
+  return getAllBlogPostsByUserId();
 }
 
 export async function getBlogPostById(id: string): Promise<BlogPost | null> {
