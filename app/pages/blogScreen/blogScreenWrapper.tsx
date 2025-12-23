@@ -4,8 +4,12 @@ import React, { useEffect, useState } from "react";
 import { BlogCard } from "@/app/component/reusable/blog/blogPost";
 import { BlogHeroSection } from "@/app/component/reusable/blog/hero";
 import BlogGrid from "@/app/component/reusable/blog/blogCards/blogGrid";
-import { blog, blog_post } from "@/public/assests/image";
-import { getAllBlogPostsByUserId } from "@/app/lib/blogServices";
+import { blog_post } from "@/public/assests/image";
+import {
+  getAllBlogPostsByUserId,
+  type AllBlogPostsResponse,
+  type BlogPost,
+} from "@/app/lib/blogServices";
 import { formatBlogDate } from "@/app/utils/dateformatter";
 import { createExcerpt } from "@/app/utils/createExcerptOfImage";
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
@@ -16,8 +20,9 @@ import { useAuth } from "@/app/lib/hooks/useAuths";
 export default function BlogScreenClient() {
   const blogUserId = useSelector(selectBlogUserId);
   const { user } = useAuth();
-  const [postsData, setPostsData] = useState<any>(null);
-  const [featuredPost, setFeaturedPost] = useState<any>(null);
+
+  const [postsData, setPostsData] = useState<AllBlogPostsResponse | null>(null);
+  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,14 +32,11 @@ export default function BlogScreenClient() {
         setLoading(true);
         setError(null);
 
-        // Use authenticated user's ID from Redux, or fallback to default
-        const data = await getAllBlogPostsByUserId(user?.id || undefined);
+        const data = await getAllBlogPostsByUserId(user?.id);
 
         if (data?.payload && Array.isArray(data.payload)) {
           setPostsData(data);
-          if (data.payload.length > 0) {
-            setFeaturedPost(data.payload[0]);
-          }
+          setFeaturedPost(data.payload[0] ?? null);
         }
       } catch (err) {
         console.error("Error loading blog data:", err);
@@ -45,12 +47,9 @@ export default function BlogScreenClient() {
     }
 
     fetchBlogPosts();
-  }, [blogUserId]); // Re-fetch when user authentication changes
+  }, [blogUserId, user?.id]);
 
-  const normalizedPosts =
-    postsData?.payload && Array.isArray(postsData.payload)
-      ? postsData.payload
-      : [];
+  const normalizedPosts: BlogPost[] = postsData?.payload ?? [];
 
   if (loading) {
     return (
@@ -58,7 +57,7 @@ export default function BlogScreenClient() {
         <BlogHeroSection />
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4" />
             <p className="text-gray-600 text-lg font-medium">
               Loading blog posts...
             </p>
@@ -74,21 +73,6 @@ export default function BlogScreenClient() {
         <BlogHeroSection />
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="text-center">
-            <div className="mb-4">
-              <svg
-                className="w-16 h-16 text-red-500 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
             <p className="text-red-600 mb-4 text-lg font-medium">{error}</p>
             <button
               onClick={() => window.location.reload()}
@@ -106,7 +90,6 @@ export default function BlogScreenClient() {
     <div>
       <BlogHeroSection />
 
-      {/* Featured Post */}
       {featuredPost && (
         <BlogCard
           image={getImageSrc(featuredPost.thumnailImage) ?? blog_post}
@@ -119,9 +102,8 @@ export default function BlogScreenClient() {
         />
       )}
 
-      {/* Blog Grid */}
       <BlogGrid
-        posts={normalizedPosts.map((post: any) => ({
+        posts={normalizedPosts.map((post: BlogPost) => ({
           id: post.blogId,
           title: post.blogTItle,
           description: createExcerpt(post.blogBody, 150),
@@ -129,9 +111,9 @@ export default function BlogScreenClient() {
           date: formatBlogDate(post.dateCreated),
           image: getImageSrc(post.thumnailImage) ?? blog_post,
           slug: post.blogId.toString(),
-          likes: typeof post.likes === "number" ? post.likes : 0,
-          comments: Array.isArray(post.comments) ? post.comments.length : 0,
-          isLiked: post.hasCurrentuserLiked ?? false,
+          likes: post.likes ?? 0,
+          comments: post.comments?.length ?? 0,
+          isLiked: false,
         }))}
         itemsPerPage={9}
         className="mb-8"
