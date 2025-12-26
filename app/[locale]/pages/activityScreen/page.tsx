@@ -1,6 +1,7 @@
-import LatestCarousel from "@/app/component/reusable/activites/latest";
-import { ActivitiesSection } from "@/app/component/reusable/activites/main";
+import LatestCarousel from "../../component/reusable/activites/latest";
+// import { ActivitiesSection } from "@/app/component/reusable/activites/main";
 import React from "react";
+import { ActivitiesSection } from "../../component/reusable/activites/main";
 
 const ActivityScreen = () => {
   return (
