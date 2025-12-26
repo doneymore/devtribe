@@ -409,26 +409,24 @@ const ScrollingCarousel: React.FC<ScrollingCarouselProps> = ({
   return (
     <section className={`${sectionStyles} ${className}`}>
       <div className={paddingX}>
-        
-
         {/* Carousel Sections */}
         <div className="space-y-8 md:space-y-12">
           {currentSections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {/* Section Title with Link Icon */}
-              <Link
+              {/* <Link
                 href={section.link}
                 className="inline-flex items-center gap-2 mb-4 md:mb-6 group"
-              >
-                <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#0D1651] group-hover:text-blue-600 transition-colors">
-                  {section.title}
-                </h3>
-                {showLinkIcon && (
+              > */}
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#0D1651] group-hover:text-blue-600 transition-colors">
+                {section.title}
+              </h3>
+              {/* {showLinkIcon && (
                   <ExternalLink
                     className={`w-4 h-4 md:w-5 md:h-5 ${linkIconColor} opacity-0 group-hover:opacity-100 transition-opacity`}
                   />
-                )}
-              </Link>
+                )} */}
+              {/* </Link> */}
 
               {/* Scrolling Carousel */}
               <div
@@ -444,19 +442,20 @@ const ScrollingCarousel: React.FC<ScrollingCarouselProps> = ({
                       (carouselIndices[sectionIndex] || 0) + 3
                     )
                     .map((image, imgIndex) => (
-                      <Link key={imgIndex} href={image.link} className="group">
-                        <div
-                          className={`relative overflow-hidden ${cardBorderRadius} bg-gray-300 hover:shadow-lg transition-shadow duration-300 aspect-[4/3]`}
-                        >
-                          <Image
-                            src={image.imageUrl}
-                            alt={image.imageAlt}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                        </div>
-                      </Link>
+                      // <Link href={image.link} className="group">
+                      <div
+                        key={imgIndex}
+                        className={`relative overflow-hidden ${cardBorderRadius} bg-gray-300 hover:shadow-lg transition-shadow duration-300 aspect-[4/3]`}
+                      >
+                        <Image
+                          src={image.imageUrl}
+                          alt={image.imageAlt}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      </div>
+                      // </Link>
                     ))}
                 </div>
 

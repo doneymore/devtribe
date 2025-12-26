@@ -17,7 +17,6 @@ export const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Use Redux auth instead of localStorage
   const { isAuthenticated, user } = useAuth();
 
   // Navigation items with their routes
@@ -97,106 +96,10 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Navigation - Different layouts for different screen sizes */}
-
-          {/* Tablet Portrait (md): Compact horizontal with 4 items */}
-          <div className="hidden md:flex lg:hidden items-center flex-1 justify-center mx-2">
-            <div className="flex items-center space-x-2 overflow-x-auto scrollbar-hide max-w-full">
-              {navItems.slice(0, 4).map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
-                    isActive(item.href)
-                      ? "text-white"
-                      : "text-white hover:text-blue-200"
-                  }`}
-                >
-                  {item.name}
-                  <span
-                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
-                      isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                  ></span>
-                </Link>
-              ))}
-              {navItems.length > 4 && (
-                <button
-                  className="text-white hover:text-blue-200 text-sm font-medium flex-shrink-0 px-2"
-                  onClick={() => setIsMenuOpen(true)}
-                >
-                  More
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Tablet Landscape/Small Laptop (lg): Compact horizontal with 5 items */}
-          <div className="hidden lg:flex xl:hidden items-center flex-1 justify-center mx-3">
-            <div className="flex items-center space-x-3 overflow-x-auto scrollbar-hide max-w-full">
-              {navItems.slice(0, 5).map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`transition-colors duration-200 font-medium relative group text-sm whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
-                    isActive(item.href)
-                      ? "text-white"
-                      : "text-white hover:text-blue-200"
-                  }`}
-                >
-                  {item.name}
-                  <span
-                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
-                      isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                  ></span>
-                </Link>
-              ))}
-              {navItems.length > 5 && (
-                <button
-                  className="text-white hover:text-blue-200 text-sm font-medium flex-shrink-0 px-2"
-                  onClick={() => setIsMenuOpen(true)}
-                >
-                  More
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Desktop (xl): Full navigation with 6 items */}
-          <div className="hidden xl:flex 2xl:hidden items-center flex-1 justify-center mx-4">
-            <div className="flex items-center space-x-4 overflow-x-auto scrollbar-hide max-w-full">
-              {navItems.slice(0, 6).map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 flex-shrink-0 ${
-                    isActive(item.href)
-                      ? "text-white"
-                      : "text-white hover:text-blue-200"
-                  }`}
-                >
-                  {item.name}
-                  <span
-                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
-                      isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                  ></span>
-                </Link>
-              ))}
-              {navItems.length > 6 && (
-                <button
-                  className="text-white hover:text-blue-200 text-base font-medium flex-shrink-0 px-2"
-                  onClick={() => setIsMenuOpen(true)}
-                >
-                  More
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Large Desktop (2xl+): Full navigation with all items */}
-          <div className="hidden 2xl:flex items-center space-x-6 font-times flex-1 justify-center cursor-pointer">
+          {/* Navigation - Show hamburger for breakpoints 767px - 1536px */}
+          
+          {/* Desktop (1536px+): Full navigation with all items */}
+          <div className="hidden min-[1536px]:flex items-center space-x-6 font-times flex-1 justify-center cursor-pointer">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -217,7 +120,7 @@ export const Navbar = () => {
             ))}
           </div>
 
-          {/* Right Side - Language + Auth Buttons */}
+          {/* Right Side - Language + Auth Buttons + Hamburger for 767-1536px */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Language Dropdown */}
             <div className="relative" ref={languageRef}>
@@ -269,25 +172,23 @@ export const Navbar = () => {
               )}
             </div>
 
-            {/* Auth Buttons - Show on medium screens and up */}
-            <div className="hidden md:flex items-center space-x-2 lg:space-x-3 xl:space-x-4 font-orelega">
+            {/* Auth Buttons - Show only on desktop (1536px+) */}
+            <div className="hidden min-[1536px]:flex items-center space-x-4 font-orelega">
               {isAuthenticated ? (
                 <div className="flex items-center space-x-3">
-                  {/* User Avatar & Name */}
                   <div className="flex items-center space-x-2">
                     <img
                       src={user?.picture}
                       alt={user?.name}
                       className="w-8 h-8 rounded-full border-2 border-white"
                     />
-                    <span className="text-sm font-medium hidden lg:inline">
+                    <span className="text-sm font-medium">
                       {user?.name}
                     </span>
                   </div>
-                  {/* Logout Button */}
                   <button
                     onClick={handleLogout}
-                    className="text-white hover:text-red-300 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base"
+                    className="text-white hover:text-red-300 transition-colors duration-200 font-medium px-4 py-2 text-base"
                   >
                     Logout
                   </button>
@@ -295,17 +196,18 @@ export const Navbar = () => {
               ) : (
                 <Link
                   href="/pages/blogScreen"
-                  className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-2 lg:px-3 xl:px-4 py-1.5 lg:py-2 text-sm lg:text-base"
+                  className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-4 py-2 text-base"
                 >
                   Login
                 </Link>
               )}
             </div>
 
-            {/* Mobile Menu Button - Show only on small screens */}
+            {/* Hamburger Menu Button - Show from 0px to 1535px */}
             <button
-              className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-blue-700/50 transition-colors duration-200"
+              className="min-[1536px]:hidden p-1.5 sm:p-2 rounded-lg hover:bg-blue-700/50 transition-colors duration-200"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
             >
               {isMenuOpen ? (
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -316,32 +218,32 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu - Only show on small screens */}
+        {/* Mobile/Tablet Menu - Show from 0px to 1535px */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-blue-900 border-t border-blue-700 shadow-xl">
-            <div className="px-4 py-4 space-y-2 sm:space-y-3">
-              {/* Mobile Navigation Links */}
-              <div className="grid grid-cols-2 gap-2 sm:block sm:space-y-1">
+          <div className="min-[1536px]:hidden absolute top-full left-0 right-0 bg-blue-900 border-t border-blue-700 shadow-xl">
+            <div className="px-4 py-4 space-y-2 sm:space-y-3 max-h-[80vh] overflow-y-auto">
+              {/* Navigation Links */}
+              <div className="space-y-1">
                 {navItems.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`block px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base text-center sm:text-left relative ${
+                    className={`block px-4 py-3 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base relative ${
                       isActive(item.href)
-                        ? "text-white"
+                        ? "bg-blue-800 text-white"
                         : "text-white hover:text-blue-200 hover:bg-blue-800/50"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
                     {isActive(item.href) && (
-                      <span className="absolute bottom-1 left-3 right-3 h-0.5 bg-white"></span>
+                      <span className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r"></span>
                     )}
                   </Link>
                 ))}
               </div>
 
-              {/* Mobile Auth Section */}
+              {/* Auth Section */}
               <div className="pt-3 sm:pt-4 border-t border-blue-700 space-y-2 sm:space-y-3">
                 {isAuthenticated ? (
                   <div className="space-y-2">
@@ -363,27 +265,19 @@ export const Navbar = () => {
                         handleLogout();
                         setIsMenuOpen(false);
                       }}
-                      className="w-full bg-red-500 hover:bg-red-600 text-white transition-colors duration-200 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base"
+                      className="w-full bg-red-500 hover:bg-red-600 text-white transition-colors duration-200 font-medium px-6 py-3 rounded-lg text-sm sm:text-base"
                     >
                       Logout
                     </button>
                   </div>
                 ) : (
-                  <>
-                    <Link
-                      href="/pages/blogScreen"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block w-full text-center sm:text-left px-3 sm:px-4 py-2 sm:py-3 text-white hover:text-blue-200 hover:bg-blue-800/50 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base"
-                    >
-                      Login
-                    </Link>
-                    <button
-                      onClick={() => setIsMenuOpen(false)}
-                      className="w-full bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base"
-                    >
-                      Sign Up
-                    </button>
-                  </>
+                  <Link
+                    href="/pages/blogScreen"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block w-full text-center px-6 py-3 bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium rounded-lg text-sm sm:text-base"
+                  >
+                    Login
+                  </Link>
                 )}
               </div>
             </div>

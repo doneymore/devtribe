@@ -56,7 +56,7 @@ export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
         name: data.user.name,
         token: data.token,
       });
-      debugger;
+
 
       if (!blogUserResponse || blogUserResponse.result !== 1) {
         throw new Error("Failed to create or login blog user");

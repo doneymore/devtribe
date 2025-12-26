@@ -26,12 +26,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
         <p className="text-sm md:text-base leading-relaxed mb-6 lg:mb-8 opacity-90">
           {description}
         </p>
-        <a
-          href="#"
-          className="text-sm md:text-base font-medium hover:underline inline-block"
-        >
-          {linkText}
-        </a>
+       
       </div>
 
       {/* Right Side - Image */}

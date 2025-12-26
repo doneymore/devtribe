@@ -9,8 +9,9 @@ export default function ConditionalFooter() {
 
   // Only show footer on portfolio page
   const isPortfolioPage = pathname === "/pages/portfolioScreen";
+  const isAboutUs = pathname === "/pages/contactScreen"
 
-  if (isPortfolioPage) {
+  if (isPortfolioPage || isAboutUs) {
     return <PortfolioFooter />;
   }
 
