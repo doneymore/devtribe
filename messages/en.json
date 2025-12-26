@@ -1,5 +1,19 @@
 {
   "home": {
-    "description": "At DigitalDefynd, We Understand That Powerful Ideas Can Shape Thinking And Well-Timed Quote Can Often Drive Home The Importance Of Goals Awareness Better Than Data Or Charts. Whether You're Leading A Boardroom Discussion, Presenting At A Conference, Or Mentoring A Team, Integrating Meaningful Cybersecurity Quotes Into Your Communication Can Reinforce Essential Messages With Clarity And Authority."
+    "about1": "Hi",
+    "aboutbtn": "View Portfolio",
+    "aboutdes": "I am a Cybersecurity Analyst with a strong focus on identifying vulnerabilities, monitoring threats, and implementing security measures to protect digital systems. I am passionate about safeguarding data and ensuring the confidentiality, integrity, and availability of information in today's evolving cyber landscape.",
+    "aboutname": "Daniel",
+    "abouttitle": "Cybersecurity Analyst",
+    "blog": "SECNEEDLE BLOG",
+    "blog1": "Welcome to our blog - home of everything there is to know about cybersecurity and how you can secure your networks. Here you will find everything to spark your inspiration!",
+    "blogtext": "View All Posts",
+    "description": "At DigitalDefynd, We Understand That Powerful Ideas Can Shape Thinking And Well-Timed Quote Can Often Drive Home The Importance Of Goals Awareness Better Than Data Or Charts. Whether You're Leading A Boardroom Discussion, Presenting At A Conference, Or Mentoring A Team, Integrating Meaningful Cybersecurity Quotes Into Your Communication Can Reinforce Essential Messages With Clarity And Authority.",
+    "journey": "Your Journey To Knowledge Begins Here.",
+    "journeybtn": "Explore",
+    "subtitle": "Thank you for stopping by. Nice to have you here.",
+    "welcome0": "Welcome to",
+    "welcome1": "Secneedle is a carefully organised online directory website for the learning of cyber security. It's an all-in-one niche source for people searching for cyber security products, courses, resources, or any other providers in the cyber security sector.",
+    "welcome2": "Secneedle"
   }
 }

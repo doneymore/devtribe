@@ -1,5 +1,19 @@
 {
   "home": {
-    "description": "Chez DigitalDefynd, nous comprenons que des idées puissantes peuvent façonner la pensée et qu'une citation bien placée peut souvent souligner l'importance de la sensibilisation aux objectifs mieux que des données ou des graphiques. Que vous dirigiez une discussion en salle de conseil, que vous présentiez lors d'une conférence ou que vous mentoriez une équipe, intégrer des citations significatives sur la cybersécurité dans votre communication peut renforcer des messages essentiels avec clarté et autorité."
+    "about1": "Salut",
+    "aboutbtn": "Voir le portfolio",
+    "aboutdes": "Je suis analyste en cybersécurité avec un fort accent sur l'identification des vulnérabilités, la surveillance des menaces et la mise en œuvre de mesures de sécurité pour protéger les systèmes numériques. Je suis passionné par la protection des données et par l'assurance de la confidentialité, de l'intégrité et de la disponibilité des informations dans le paysage cybernétique en évolution d'aujourd'hui.",
+    "aboutname": "Daniel",
+    "abouttitle": "Analyste en cybersécurité",
+    "blog": "BLOG SECNEEDLE",
+    "blog1": "Bienvenue sur notre blog - le foyer de tout ce qu'il faut savoir sur la cybersécurité et comment vous pouvez sécuriser vos réseaux. Ici, vous trouverez tout pour stimuler votre inspiration !",
+    "blogtext": "Voir tous les articles",
+    "description": "Chez DigitalDefynd, nous comprenons que des idées puissantes peuvent façonner la pensée et qu'une citation bien placée peut souvent souligner l'importance de la sensibilisation aux objectifs mieux que des données ou des graphiques. Que vous dirigiez une discussion en salle de conseil, que vous présentiez lors d'une conférence ou que vous mentoriez une équipe, intégrer des citations significatives sur la cybersécurité dans votre communication peut renforcer des messages essentiels avec clarté et autorité.",
+    "journey": "Votre voyage vers la connaissance commence ici.",
+    "journeybtn": "Explorer",
+    "subtitle": "Merci de vous être arrêté. Heureux de vous avoir ici.",
+    "welcome0": "Bienvenue à",
+    "welcome1": "Secneedle est un annuaire en ligne soigneusement organisé pour l'apprentissage de la cybersécurité. C'est une source tout-en-un pour les personnes à la recherche de produits, de cours, de ressources ou de tout autre fournisseur dans le secteur de la cybersécurité.",
+    "welcome2": "Secneedle"
   }
 }

@@ -38,12 +38,12 @@ const defaultPosts: BlogPost[] = [
 ];
 
 export const BlogPage: React.FC<BlogPageProps> = ({
-  title = "SECNEEDLE BLOG",
-  description = "Welcome to our blog - home of everything there is to know about cybersecurity and how you can secure your networks. Here you will find everything to spark your inspiration!",
+  title = "",
+  description = "",
   backgroundImage,
   posts = defaultPosts,
   className = "",
-  ctaText = "View All Posts",
+  ctaText = "",
   ctaLink = "/pages/blogScreen",
 }) => {
   return (

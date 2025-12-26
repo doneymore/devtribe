@@ -6,6 +6,7 @@ import { Button } from "./buttons";
 interface WelcomeSectionProps {
   title?: string;
   subtitle?: string;
+  subtitle1?: string;
   description?: string;
   buttonText?: string;
   buttonHref?: string;
@@ -15,9 +16,10 @@ interface WelcomeSectionProps {
 }
 
 export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
-  title = "Welcome to",
-  subtitle = "Secneedle",
-  description = "Secneedle is a carefully organised online directory website for the learning of cyber security. It's an all-in-one niche source for people searching for cyber security products, courses, resources, or any other providers in the cyber security sector.",
+  title = "",
+  subtitle = "",
+  description = "",
+  subtitle1 = "",
   buttonText = "Login",
   buttonHref = "#",
   imageUrl = "",
@@ -69,7 +71,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
                 textAlign: "justify",
               }}
             >
-              Thank you for stopping by. Nice to have you here.
+              {subtitle1}
             </p>
 
             {/* Description */}

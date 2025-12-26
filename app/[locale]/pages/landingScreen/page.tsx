@@ -31,9 +31,19 @@ const LandingPage = () => {
 
   return (
     <div>
-      <WelcomeSection />
+      <WelcomeSection
+        description={`${t("welcome1")}`}
+        title={`${t("welcome0")}`}
+        subtitle={`${t("welcome2")}`}
+        subtitle1={`${t("subtitle")}`}
+      />
 
-      <BlogPage backgroundImage={blog} />
+      <BlogPage
+        title={`${t("blog")}`}
+        description={`${t("blog1")}`}
+        ctaText={`${t("blogtext")}`}
+        backgroundImage={blog}
+      />
 
       {/* <BlogHeroSection
         title="SECNEEDLE BLOG"
@@ -42,17 +52,17 @@ const LandingPage = () => {
         onButtonClick={() => alert("Subscribe clicked!")}
       /> */}
       <KnowledgeJourneySection
-        title="Your Journey To Knowledge Begins Here."
+        title={`${t("journey")}`}
         description={`${t("description")}`}
-        buttonText="Explore"
+        buttonText={`${t("journeybtn")}`}
         onButtonClick={() => alert("Explore clicked!")}
       />
       <AboutSection
-        greeting="Hi"
-        name="Daniel"
-        title="Cybersecurity Analyst"
-        description="I am a Cybersecurity Analyst with a strong focus on identifying vulnerabilities, monitoring threats, and implementing security measures to protect digital systems. I am passionate about safeguarding data and ensuring the confidentiality, integrity, and availability of information in today's evolving cyber landscape."
-        buttonText="View Portfolio"
+        greeting={`${t("about1")}`}
+        name={`${t("aboutname")}`}
+        title={`${t("abouttitle")}`}
+        description={`${t("aboutdes")}`}
+        buttonText={`${t("aboutbtn")}`}
         onButtonClick={() => alert("View Portfolio clicked!")}
       />
 

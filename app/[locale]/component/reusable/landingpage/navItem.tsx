@@ -45,6 +45,12 @@ export const Navbar = () => {
     { code: "PT", name: "Portuguese", flag: "🇵🇹" },
   ];
 
+  const localeMap: Record<string, string> = {
+    ENG: "en",
+    FR: "fr",
+    PT: "pt",
+  };
+
   // Close language dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,8 +75,16 @@ export const Navbar = () => {
   }
 
   const handleLanguageSelect = (language: Language): void => {
+    const locale = localeMap[language.code];
+
     setSelectedLanguage(language.code);
     setIsLanguageOpen(false);
+
+    // Remove current locale from pathname
+    const segments = pathname.split("/");
+    segments[1] = locale;
+
+    router.replace(segments.join("/"));
   };
 
   const handleLogout = () => {
@@ -97,7 +111,7 @@ export const Navbar = () => {
           </div>
 
           {/* Navigation - Show hamburger for breakpoints 767px - 1536px */}
-          
+
           {/* Desktop (1536px+): Full navigation with all items */}
           <div className="hidden min-[1536px]:flex items-center space-x-6 font-times flex-1 justify-center cursor-pointer">
             {navItems.map((item) => (
@@ -182,9 +196,7 @@ export const Navbar = () => {
                       alt={user?.name}
                       className="w-8 h-8 rounded-full border-2 border-white"
                     />
-                    <span className="text-sm font-medium">
-                      {user?.name}
-                    </span>
+                    <span className="text-sm font-medium">{user?.name}</span>
                   </div>
                   <button
                     onClick={handleLogout}
