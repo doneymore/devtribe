@@ -1,0 +1,28 @@
+{
+  "home": {
+    "about1": "Hola",
+    "aboutbtn": "Ver Portafolio",
+    "aboutdes": "Soy un Analista de Ciberseguridad con un fuerte enfoque en identificar vulnerabilidades, monitorear amenazas e implementar medidas de seguridad para proteger sistemas digitales. Me apasiona salvaguardar datos y asegurar la confidencialidad, integridad y disponibilidad de la información en el paisaje cibernético en evolución de hoy.",
+    "aboutname": "Daniel",
+    "abouttitle": "Analista de Ciberseguridad",
+    "blog": "BLOG DE SECNEEDLE",
+    "blog1": "Bienvenido a nuestro blog, el hogar de todo lo que hay que saber sobre ciberseguridad y cómo puedes asegurar tus redes. Aquí encontrarás todo para inspirarte.",
+    "blogtext": "Ver todas las publicaciones",
+    "description": "En DigitalDefynd, entendemos que las ideas poderosas pueden moldear el pensamiento y una cita bien cronometrada a menudo puede resaltar la importancia de la conciencia de los objetivos mejor que los datos o gráficos. Ya sea que estés liderando una discusión en la sala de juntas, presentando en una conferencia o mentorando a un equipo, integrar citas significativas sobre ciberseguridad en tu comunicación puede reforzar mensajes esenciales con claridad y autoridad.",
+    "journey": "Tu viaje hacia el conocimiento comienza aquí.",
+    "journeybtn": "Explorar",
+    "subtitle": "Gracias por visitarnos. Es un placer tenerte aquí.",
+    "welcome0": "Bienvenido a",
+    "welcome1": "Secneedle es un sitio web de directorio en línea cuidadosamente organizado para el aprendizaje de la ciberseguridad. Es una fuente integral para personas que buscan productos, cursos, recursos o cualquier otro proveedor en el sector de la ciberseguridad.",
+    "welcome2": "Secneedle"
+  },
+  "nav": {
+    "about": "Sobre nosotros",
+    "activities": "Actividades",
+    "blog": "Blog",
+    "home": "Inicio",
+    "portfolio": "Portafolio",
+    "services": "Servicios",
+    "videos": "Transmisiones de Video"
+  }
+}

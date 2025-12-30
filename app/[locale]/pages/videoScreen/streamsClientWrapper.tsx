@@ -1,9 +1,12 @@
 "use client";
 import { useState } from "react";
-import PaginationControls from "@/app/component/reusable/pagination";
-import YouTubeVideoSection from "@/app/component/reusable/videos/lastestVideos";
-import PreviousStreamsSection from "@/app/component/reusable/videos/previousVideo";
+// import PaginationControls from "@/app/component/reusable/pagination";
+// import YouTubeVideoSection from "@/app/component/reusable/videos/lastestVideos";
+// import PreviousStreamsSection from "@/app/component/reusable/videos/previousVideo";
 import { VideoStream } from "@/app/lib/blogServices";
+import YouTubeVideoSection from "../../component/reusable/videos/lastestVideos";
+import PreviousStreamsSection from "../../component/reusable/videos/previousVideo";
+import PaginationControls from "../../component/reusable/pagination";
 
 interface StreamsClientWrapperProps {
   initialLiveStream: VideoStream | null;
@@ -21,9 +24,13 @@ export default function StreamsClientWrapper({
   const [liveStream] = useState<VideoStream | null>(initialLiveStream);
   const [upcomingStreams] = useState<VideoStream[]>(initialUpcomingStreams);
   const [previousStreams] = useState<VideoStream[]>(initialPreviousStreams);
-  
-  const [filteredPreviousStreams, setFilteredPreviousStreams] = useState<VideoStream[]>(initialPreviousStreams);
-  const [filteredUpcomingStreams, setFilteredUpcomingStreams] = useState<VideoStream[]>(initialUpcomingStreams);
+
+  const [filteredPreviousStreams, setFilteredPreviousStreams] = useState<
+    VideoStream[]
+  >(initialPreviousStreams);
+  const [filteredUpcomingStreams, setFilteredUpcomingStreams] = useState<
+    VideoStream[]
+  >(initialUpcomingStreams);
   const [currentSearchQuery, setCurrentSearchQuery] = useState("");
 
   // Handle search from YouTubeVideoSection
@@ -63,10 +70,10 @@ export default function StreamsClientWrapper({
   };
 
   // Combine upcoming and completed streams for search
-  const allSearchableVideos = [
-    ...filteredUpcomingStreams,
-    ...filteredPreviousStreams,
-  ]
+  const featuredStream = liveStream;
+
+  // Show ALL upcoming streams in the additional videos section
+  const additionalUpcomingVideos = filteredUpcomingStreams
     .filter((stream) => stream.youtubeStreamId)
     .map((stream) => ({
       id: stream.youtubeStreamId || stream.id.toString(),
@@ -110,11 +117,12 @@ export default function StreamsClientWrapper({
             "@context": "https://schema.org",
             "@type": "VideoObject",
             name: liveStream?.title || "Live Stream",
-            description: liveStream?.description || "Watch our live cybersecurity content",
+            description:
+              liveStream?.description || "Watch our live cybersecurity content",
             thumbnailUrl: liveStream?.thumbnailUrl || "",
             uploadDate: liveStream?.dateCreated || new Date().toISOString(),
             contentUrl: liveStream?.videoUrl || "",
-            embedUrl: liveStream?.youtubeStreamId 
+            embedUrl: liveStream?.youtubeStreamId
               ? `https://www.youtube.com/embed/${liveStream.youtubeStreamId}`
               : "",
             publisher: {
@@ -131,13 +139,13 @@ export default function StreamsClientWrapper({
 
       <YouTubeVideoSection
         mainVideo={{
-          title: liveStream?.title || "No Live Stream",
+          title: featuredStream?.title || "No Stream Available",
           description:
-            liveStream?.description || "Check back later for live content",
-          videoId: liveStream?.youtubeStreamId || "",
-          showLiveBadge: liveStream?.status === "live",
+            featuredStream?.description || "Check back later for live content",
+          videoId: featuredStream?.youtubeStreamId || "",
+          showLiveBadge: featuredStream?.status === "live",
         }}
-        additionalVideos={allSearchableVideos}
+        additionalVideos={additionalUpcomingVideos}
         maxWidth="1227px"
         backgroundColor="white"
         titleColor="#1a4d7a"

@@ -33,7 +33,7 @@ export default function RootLayout({
     >
       <body className="font-inter antialiased">
         <StoreProvider>
-          <Navbar />
+          {/* <Navbar /> */}
           {children}
           <ConditionalFooter />
         </StoreProvider>

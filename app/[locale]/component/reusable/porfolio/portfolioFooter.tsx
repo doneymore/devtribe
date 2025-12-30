@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { createContactUs } from "@/app/lib/footerService";
+import Link from "next/link";
 
 interface ContactInfo {
   location: string;
@@ -406,7 +407,7 @@ export const PortfolioFooter: React.FC<FooterProps> = ({
         {/* Footer Bottom */}
         <div className="mt-8 pt-4 border-t border-white/20">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 text-white/70">
-            <a
+            <Link
               href="/privacy-policy"
               className="hover:text-white transition-colors"
               style={{
@@ -416,9 +417,9 @@ export const PortfolioFooter: React.FC<FooterProps> = ({
               }}
             >
               Privacy Policy
-            </a>
+            </Link>
             <span className="hidden sm:inline">|</span>
-            <a
+            <Link
               href="/terms-of-services"
               className="hover:text-white transition-colors"
               style={{
@@ -428,7 +429,7 @@ export const PortfolioFooter: React.FC<FooterProps> = ({
               }}
             >
               Terms of Services
-            </a>
+            </Link>
             <span className="hidden sm:inline">|</span>
             <p
               style={{

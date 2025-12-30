@@ -1,6 +1,7 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 
 interface BlogCardProps {
   image: StaticImageData | string;
@@ -23,6 +24,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   slug,
   className = "",
 }) => {
+  const locale = useLocale();
   return (
     <section className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden">
       <div className="relative z-10 w-full">
@@ -32,7 +34,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
             <div className="w-full lg:w-3/5">
               <div className="relative w-full h-64 lg:h-[460px]">
                 <Link
-                  href={`/pages/blogScreen/${slug}`}
+                  href={`/${locale}/pages/blogScreen/${slug}`}
                   className="block relative w-full h-64 lg:h-[460px] group"
                 >
                   <Image
@@ -52,7 +54,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
               {/* Title */}
               <div className="mb-4 lg:mb-6">
                 <Link
-                  href={`/pages/blogScreen/${slug}`}
+                  href={`/${locale}/pages/blogScreen/${slug}`}
                   className="block group"
                 >
                   <h2
@@ -94,7 +96,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
               {/* See Full Link */}
               <div className="flex justify-end">
                 <Link
-                  href={`/pages/blogScreen/${slug}`}
+                 href={`/${locale}/pages/blogScreen/${slug}`}
                   className="inline-flex items-center text-[#005DFF] hover:text-blue-700 font-medium text-base lg:text-lg transition-colors duration-200 group"
                 >
                   See full

@@ -66,7 +66,7 @@ export interface BlogPost {
   comments: BlogComment[];
   thumnailImage: string | null;
   formatedLikes: string;
-  hasCurrentUserLiked: boolean; // Note: API uses hasCurrentuserLiked (lowercase 'u')
+  hasCurrentUserLiked: boolean;
 }
 
 export interface BlogPostResponse {
@@ -170,6 +170,55 @@ export interface ServicesResponse {
   thirdPartyAPIResult: string | null;
 }
 
+export interface Activity {
+  id: number;
+  settingsId: number;
+  title: string;
+  description: string;
+  imageUrl: string | null;
+  images: {
+    image1: string | null;
+    image2: string | null;
+    image3: string | null;
+  };
+  systemSettings: SystemSettings | null;
+}
+
+export interface ActivitiesResponse {
+  payload: Activity[];
+  totalCount: number;
+  isExistingUser: boolean;
+  code: number;
+  description: string | null;
+  result: number;
+  thirdPartyAPIResponseCode: number;
+  thirdPartyAPIResult: string | null;
+}
+
+// Add this function to your blogService.ts
+export async function getAllActivities(
+  settingsId: number = 1
+): Promise<ActivitiesResponse> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/Admin/GetAllActivities/${settingsId}`,
+      {
+        cache: "no-store",
+        // next: { revalidate: 3600 },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching activities:", error);
+    throw error;
+  }
+}
 // Fetch all services
 export async function getAllServices(
   settingsId: number = 1
@@ -226,10 +275,10 @@ export async function getAllBlogPostsByUserId(
   userId?: string
 ): Promise<AllBlogPostsResponse> {
   const userIdToUse = userId || DEFAULT_USER_ID;
-  
+
   try {
     const response = await fetch(
-      `${API_BASE_URL}/Blog/GetAllBlogPost/${userIdToUse}`,
+      `${API_BASE_URL}/Blog/GetAllBlogPost?userId=${userIdToUse}`,
       {
         cache: "no-store",
         next: { revalidate: 0 },
@@ -259,11 +308,18 @@ export async function getAllBlogPosts(): Promise<AllBlogPostsResponse> {
   return getAllBlogPostsByUserId();
 }
 
-export async function getBlogPostById(id: string): Promise<BlogPost | null> {
+export async function getBlogPostById(
+  id: string,
+  userId?: string
+): Promise<BlogPost | null> {
+  const userIdToUse = userId || DEFAULT_USER_ID;
   try {
-    const response = await fetch(`${API_BASE_URL}/Blog/GetBlogPostById/${id}`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/Blog/GetBlogPostById/${id}?userId=${userIdToUse}`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

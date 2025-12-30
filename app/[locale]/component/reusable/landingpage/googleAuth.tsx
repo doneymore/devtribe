@@ -5,6 +5,7 @@ import Script from "next/script";
 import { useAuth } from "@/app/lib/hooks/useAuths";
 import { useRouter } from "next/navigation";
 import { createOrLoginUser } from "@/app/lib/blogServices";
+import { useLocale } from "next-intl";
 
 interface GoogleAuthModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface GoogleAuthModalProps {
 
 export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
   const router = useRouter();
+   const locale = useLocale();
   const buttonDivRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +77,7 @@ export const GoogleAuthModal = ({ isOpen, onClose }: GoogleAuthModalProps) => {
         onClose();
 
         // Redirect to blog page after successful login
-        router.push("/pages/blogScreen");
+        router.push(`/${locale}/pages/blogScreen`);
       } else {
         throw new Error("No token received from backend");
       }

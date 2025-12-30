@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
       "images.unsplash.com",
     ],
   },
+  // Disable error overlay
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  // This will prevent errors from showing in production
+  productionBrowserSourceMaps: false,
 };
 const withNextIntl = createNextIntlPlugin();
 

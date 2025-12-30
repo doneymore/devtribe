@@ -15,5 +15,14 @@
     "welcome0": "Bem-vindo ao",
     "welcome1": "Secneedle é um site de diretório online cuidadosamente organizado para o aprendizado de segurança cibernética. É uma fonte completa e específica para pessoas que buscam produtos, cursos, recursos ou qualquer outro fornecedor no setor de segurança cibernética.",
     "welcome2": "Secneedle"
+  },
+  "nav": {
+    "about": "Sobre Nós",
+    "activities": "Atividades",
+    "blog": "Blog",
+    "home": "Início",
+    "portfolio": "Portfólio",
+    "services": "Serviços",
+    "videos": "Transmissões de Vídeo"
   }
 }

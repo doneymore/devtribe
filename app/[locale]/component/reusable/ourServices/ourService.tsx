@@ -44,17 +44,19 @@ interface ServicesSectionProps {
 export const ServicesSection: React.FC<ServicesSectionProps> = ({
   services,
   title = "Our Services",
-  subtitle = "Neque Porro Quisquam Est Qui Dolorem Ipsum Quia Dolor Sit Amet, Consectetur, Adipisci Velit...\" \"There Is No One Who Loves Pain Itself, Who Seeks After It And Wants To Have It, Simply Because It Is Pain",
-  backgroundColor = "bg-gradient-to-b from-[#1a4d6d] to-[#0d2838]",
+  subtitle = 'Neque Porro Quisquam Est Qui Dolorem Ipsum Quia Dolor Sit Amet, Consectetur, Adipisci Velit..." "There Is No One Who Loves Pain Itself, Who Seeks After It And Wants To Have It, Simply Because It Is Pain',
+  backgroundColor = "bg-[#f8f8f8]",
   className = "",
 }) => {
   return (
-    <section className={`relative py-16 md:py-20 lg:py-24 ${backgroundColor} ${className}`}>
+    <section
+      className={`relative py-16 md:py-20 lg:py-24 ${backgroundColor} ${className}`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title Section */}
         <div className="text-center mb-12 md:mb-16">
           <h2
-            className="text-white mb-4 md:mb-6"
+            className="text-[#1a4d6d] mb-4 md:mb-6"
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 700,
@@ -66,7 +68,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
           >
             {title}
           </h2>
-          <p className="text-white/90 max-w-4xl mx-auto text-sm md:text-base px-4">
+          <p className="text-gray-600 max-w-4xl mx-auto text-sm md:text-base px-4">
             {subtitle}
           </p>
         </div>
@@ -100,10 +102,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
       <div
         className="w-full relative"
         style={{
-          background: "rgba(217, 217, 217, 0.7)",
+         background: "rgba(217, 217, 217, 0.7)",
           borderTopLeftRadius: "173px",
           borderTopRightRadius: "173px",
           minHeight: "600px",
+          border: "1px solid rgba(226, 232, 240, 0.5)",
         }}
       >
         {/* Icon Circle - Positioned at top */}
@@ -145,7 +148,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           </h3>
 
           {/* Description */}
-          <p className="text-white text-sm md:text-base leading-relaxed">
+          <p className="text-gray-600 text-sm md:text-base leading-relaxed">
             {service.description}
           </p>
         </div>

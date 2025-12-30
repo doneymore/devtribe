@@ -15,5 +15,14 @@
     "welcome0": "Bienvenue à",
     "welcome1": "Secneedle est un annuaire en ligne soigneusement organisé pour l'apprentissage de la cybersécurité. C'est une source tout-en-un pour les personnes à la recherche de produits, de cours, de ressources ou de tout autre fournisseur dans le secteur de la cybersécurité.",
     "welcome2": "Secneedle"
+  },
+  "nav": {
+    "about": "À propos de nous",
+    "activities": "Activités",
+    "blog": "Blog",
+    "home": "Accueil",
+    "portfolio": "Portefeuille",
+    "services": "Services",
+    "videos": "Flux vidéo"
   }
 }

@@ -1,11 +1,13 @@
 import { Metadata } from "next";
 
-import WhoWeAreSection from "@/app/component/reusable/aboutUs/info";
-import WhereWeAreHeadedSection from "@/app/component/reusable/aboutUs/whereWe";
-import TeamSection from "@/app/component/reusable/aboutUs/teamMembers";
+// import WhoWeAreSection from "@/app/component/reusable/aboutUs/info";
+import WhereWeAreHeadedSection from "../../component/reusable/aboutUs/whereWe";
+// import TeamSection from "@/app/component/reusable/aboutUs/teamMembers";
 
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
 import { getAboutUsSettings, parseAboutUsData } from "@/app/lib/contactUs";
+import WhoWeAreSection from "../../component/reusable/aboutUs/info";
+import TeamSection from "../../component/reusable/aboutUs/teamMembers";
 
 // ================= SEO =================
 export const metadata: Metadata = {

@@ -1,16 +1,30 @@
-// app/types/blog.ts
-
+import { StaticImageData } from "next/image";
 export interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  author?: string;
-  createdAt: string;
-  updatedAt?: string;
-  // Add other fields based on your actual API response
+  blogId: number;
+  blogTItle: string;
+  blogBody: string;
+  createdBy: string;
+  dateCreated: string;
+  thumnailImage?: string | null;
+  likes?: number;
+  comments?: unknown[];
+  hasCurrentuserLiked?: boolean;
 }
 
-export interface BlogResponse {
-  posts: BlogPost[];
-  // Add other fields if your API returns pagination, etc.
+export interface AllBlogPostsResponse {
+  payload: BlogPost[];
+}
+
+export interface UIBlogPost {
+  id: number;
+  title: string;
+  description: string;
+  author: string;
+  date: string;
+  image: string | StaticImageData;
+  slug: string;
+  likes: number;
+  comments: number;
+  isLiked: boolean;
+  hasCurrentuserLiked: boolean;
 }

@@ -1,12 +1,12 @@
-import AboutSectionSec from "@/app/component/reusable/porfolio/aboutme";
-import EducationCertificationContent from "@/app/component/reusable/porfolio/certifications";
-import ConferencesContent from "@/app/component/reusable/porfolio/conference";
-import ExperienceSection from "@/app/component/reusable/porfolio/experience";
-import { SectionNavbar } from "@/app/component/reusable/porfolio/navSection";
-import ProjectsCarousel from "@/app/component/reusable/porfolio/projects";
-import { SectionWrapper } from "@/app/component/reusable/porfolio/sectionWrapper";
-import { SkillsContent } from "@/app/component/reusable/porfolio/skills";
-import { getIconForSkill } from "@/app/component/reusable/porfolio/skillsIcon";
+// import AboutSectionSec from "@/app/component/reusable/porfolio/aboutme";
+// import EducationCertificationContent from "@/app/component/reusable/porfolio/certifications";
+// import ConferencesContent from "@/app/component/reusable/porfolio/conference";
+// import ExperienceSection from "@/app/component/reusable/porfolio/experience";
+// import { SectionNavbar } from "@/app/component/reusable/porfolio/navSection";
+// import ProjectsCarousel from "@/app/component/reusable/porfolio/projects";
+// import { SectionWrapper } from "@/app/component/reusable/porfolio/sectionWrapper";
+// import { SkillsContent } from "@/app/component/reusable/porfolio/skills";
+// import { getIconForSkill } from "@/app/component/reusable/porfolio/skillsIcon";
 import { getFullName, getProfessionalTitle, getUserByUserId } from "@/app/lib/portfolioServices/aboutServices";
 import { getConferencesPayload } from "@/app/lib/portfolioServices/conferences";
 import { formatEducationYear, getEducationByUserId } from "@/app/lib/portfolioServices/educationServices";
@@ -14,6 +14,15 @@ import { getExperienceByUserId } from "@/app/lib/portfolioServices/experienceSer
 import { getProjectsPayload } from "@/app/lib/portfolioServices/projectServices";
 import { getSkillsPayload } from "@/app/lib/portfolioServices/skillsServices";
 import { parseJobDutiesServer } from "@/app/utils/htmlTextformatter";
+import { getIconForSkill } from "../../component/reusable/porfolio/skillsIcon";
+import { SectionNavbar } from "../../component/reusable/porfolio/navSection";
+import AboutSectionSec from "../../component/reusable/porfolio/aboutme";
+import { SectionWrapper } from "../../component/reusable/porfolio/sectionWrapper";
+import { SkillsContent } from "../../component/reusable/porfolio/skills";
+import ExperienceSection from "../../component/reusable/porfolio/experience";
+import ProjectsCarousel from "../../component/reusable/porfolio/projects";
+import EducationCertificationContent from "../../component/reusable/porfolio/certifications";
+import ConferencesContent from "../../component/reusable/porfolio/conference";
 
 
 

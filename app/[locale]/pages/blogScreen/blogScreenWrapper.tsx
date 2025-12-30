@@ -1,9 +1,7 @@
+//@typescript-eslint/no-explicit-any
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { BlogCard } from "@/app/component/reusable/blog/blogPost";
-import { BlogHeroSection } from "@/app/component/reusable/blog/hero";
-import BlogGrid from "@/app/component/reusable/blog/blogCards/blogGrid";
 import { blog, blog_post } from "@/public/assests/image";
 import { getAllBlogPostsByUserId } from "@/app/lib/blogServices";
 import { formatBlogDate } from "@/app/utils/dateformatter";
@@ -12,12 +10,22 @@ import { getImageSrc } from "@/app/utils/convertBase64toImage";
 import { useSelector } from "react-redux";
 import { selectBlogUserId } from "@/app/lib/features/auth/blogSlice";
 import { useAuth } from "@/app/lib/hooks/useAuths";
+import BlogGrid from "../../component/reusable/blog/blogCards/blogGrid";
+import { BlogHeroSection } from "../../component/reusable/blog/hero";
+import { BlogCard } from "../../component/reusable/blog/blogPost";
+import { AllBlogPostsResponse, BlogPost, UIBlogPost } from "@/app/types";
+import { mapBlogPostToUI } from "@/app/lib/blogMapper";
+
+interface BlogGridProps {
+  posts: UIBlogPost[];
+  itemsPerPage: number;
+}
 
 export default function BlogScreenClient() {
   const blogUserId = useSelector(selectBlogUserId);
   const { user } = useAuth();
-  const [postsData, setPostsData] = useState<any>(null);
-  const [featuredPost, setFeaturedPost] = useState<any>(null);
+  const [posts, setPosts] = useState<UIBlogPost[]>([]);
+  const [featuredPost, setFeaturedPost] = useState<UIBlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,17 +35,14 @@ export default function BlogScreenClient() {
         setLoading(true);
         setError(null);
 
-        // Use authenticated user's ID from Redux, or fallback to default
-        const data = await getAllBlogPostsByUserId(user?.id || undefined);
+        const data = await getAllBlogPostsByUserId(user?.id);
 
-        if (data?.payload && Array.isArray(data.payload)) {
-          setPostsData(data);
-          if (data.payload.length > 0) {
-            setFeaturedPost(data.payload[0]);
-          }
+        if (Array.isArray(data.payload)) {
+          const mappedPosts = data.payload.map((post) => mapBlogPostToUI(post));
+          setPosts(mappedPosts);
+          setFeaturedPost(mappedPosts[0] ?? null);
         }
       } catch (err) {
-        console.error("Error loading blog data:", err);
         setError("Failed to load blog posts");
       } finally {
         setLoading(false);
@@ -45,12 +50,9 @@ export default function BlogScreenClient() {
     }
 
     fetchBlogPosts();
-  }, [blogUserId]); // Re-fetch when user authentication changes
+  }, [blogUserId]);
 
-  const normalizedPosts =
-    postsData?.payload && Array.isArray(postsData.payload)
-      ? postsData.payload
-      : [];
+  // const normalizedPosts: BlogPost[] = postsData?.payload ?? [];
 
   if (loading) {
     return (
@@ -109,25 +111,25 @@ export default function BlogScreenClient() {
       {/* Featured Post */}
       {featuredPost && (
         <BlogCard
-          image={getImageSrc(featuredPost.thumnailImage) ?? blog_post}
-          imageAlt={featuredPost.blogTItle}
-          title={featuredPost.blogTItle}
-          author={featuredPost.createdBy}
-          date={formatBlogDate(featuredPost.dateCreated)}
-          excerpt={createExcerpt(featuredPost.blogBody, 300)}
-          slug={featuredPost.blogId.toString()}
+          image={featuredPost.image}
+          imageAlt={featuredPost.title}
+          title={featuredPost.title}
+          author={featuredPost.author}
+          date={featuredPost.date}
+          excerpt={featuredPost.description}
+          slug={featuredPost.slug}
         />
       )}
 
       {/* Blog Grid */}
-      <BlogGrid
-        posts={normalizedPosts.map((post: any) => ({
+      {/* <BlogGrid
+        posts={normalizedPosts.map((post: BlogPost) => ({
           id: post.blogId,
           title: post.blogTItle,
           description: createExcerpt(post.blogBody, 150),
           author: post.createdBy,
           date: formatBlogDate(post.dateCreated),
-          image: getImageSrc(post.thumnailImage) ?? blog_post,
+          image: getImageSrc(post.thumnailImage ?? null) ?? blog_post,
           slug: post.blogId.toString(),
           likes: typeof post.likes === "number" ? post.likes : 0,
           comments: Array.isArray(post.comments) ? post.comments.length : 0,
@@ -135,7 +137,8 @@ export default function BlogScreenClient() {
         }))}
         itemsPerPage={9}
         className="mb-8"
-      />
+      /> */}
+      <BlogGrid posts={posts} itemsPerPage={9} />
     </div>
   );
 }

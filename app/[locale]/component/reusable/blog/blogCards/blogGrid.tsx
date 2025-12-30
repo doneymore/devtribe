@@ -15,9 +15,10 @@ import {
 
 // Import from blogSlice for blog user ID
 import { selectBlogUserId } from "@/app/lib/features/auth/blogSlice";
+import { UIBlogPost } from "@/app/types";
 
 interface BlogGridProps {
-  posts: BlogPost[];
+  posts: UIBlogPost[];
   itemsPerPage?: number;
   className?: string;
 }
@@ -31,7 +32,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({
   const blogUserId = useSelector(selectBlogUserId);
 
 
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogPosts, setBlogPosts] = useState<UIBlogPost[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const {

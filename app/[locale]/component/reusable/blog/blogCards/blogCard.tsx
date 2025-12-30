@@ -16,9 +16,11 @@ import {
   selectBlogUserEmail,
   setBlogUser,
 } from "@/app/lib/features/auth/blogSlice";
+import { useLocale } from "next-intl";
+import { UIBlogPost } from "@/app/types";
 
 interface BlogCardGridProps {
-  post: BlogPost;
+  post: BlogPost | UIBlogPost;
   onLike: (id: number) => void;
   onCommentClick: (id: number) => void;
   onAuthRequired: () => void;
@@ -36,9 +38,10 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
   const blogUserId = useSelector(selectBlogUserId);
   const blogUserEmail = useSelector(selectBlogUserEmail);
   const [isProcessing, setIsProcessing] = useState(false);
+  const locale = useLocale();
 
   const handleCardClick = () => {
-    router.push(`/pages/blogScreen/${post.id}`);
+    router.push(`/${locale}/pages/blogScreen/${post.id}`);
   };
 
   const ensureUserAuthenticated = async () => {
@@ -95,12 +98,11 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
 
     try {
       setIsProcessing(true);
-
       // Call API based on current like status
       const response = post.isLiked
         ? await unlikeBlogPost(Number(post.id), userId)
         : await likeBlogPost(Number(post.id), userId);
-        
+
       if (response.result === 1) {
         // Update local state through parent callback
         onLike(post.id);
@@ -117,12 +119,12 @@ const BlogCard: React.FC<BlogCardGridProps> = ({
   const handleCommentClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    router.push(`/pages/blogScreen/${post.id}`);
+    router.push(`/${locale}/pages/blogScreen/${post.id}`);
   };
 
   const handleSeeAllClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    router.push(`/pages/blogScreen/${post.id}`);
+    router.push(`/${locale}/pages/blogScreen/${post.id}`);
   };
 
   return (

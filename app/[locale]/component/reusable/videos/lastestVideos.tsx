@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ThumbsUp, MessageSquare, Search } from "lucide-react";
 
 // Types
@@ -38,13 +38,13 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
   onSearch,
   searchPlaceholder = "Search",
 }) => {
-  const [playingVideo, setPlayingVideo] = React.useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [filteredVideos, setFilteredVideos] =
-    React.useState<VideoItem[]>(additionalVideos);
+    useState<VideoItem[]>(additionalVideos);
 
   // Update filtered videos when additionalVideos change
-  React.useEffect(() => {
+  useEffect(() => {
     setFilteredVideos(additionalVideos);
   }, [additionalVideos]);
 
@@ -217,6 +217,15 @@ const YouTubeVideoSection: React.FC<YouTubeVideoSectionProps> = ({
       {filteredVideos.length > 0 && (
         <section className="px-4 sm:px-6 lg:px-20 py-8">
           <div className="max-w-7xl mx-auto space-y-6">
+            {/* Upcoming Stream Tag */}
+            <div className="mb-4">
+              <span
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 text-gray-900"
+                style={{ fontFamily: "Arial, sans-serif" }}
+              >
+                Upcoming Stream
+              </span>
+            </div>
             {filteredVideos.map((video) => (
               <div
                 key={video.id}

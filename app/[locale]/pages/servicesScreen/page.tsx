@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Script from "next/script";
 
-import ServicesSection from "@/app/component/reusable/ourServices/ourService";
+// import ServicesSection from "@/app/component/reusable/ourServices/ourService";
 import { getAllServices } from "@/app/lib/blogServices";
 import { mapServiceColor, mapServiceIconName } from "@/app/utils/iconMapper";
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
+import ServicesSection from "../../component/reusable/ourServices/ourService";
 
 /* ================= TYPES ================= */
 
@@ -73,8 +74,8 @@ export const metadata: Metadata = {
   },
 };
 
-// Revalidate every hour
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 /* ================= PAGE ================= */
 
@@ -82,7 +83,14 @@ export default async function ServicesPage() {
   let servicesData: ServicesApiResponse | null = null;
 
   try {
-    servicesData = await getAllServices(1);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Timeout")), 15000)
+    );
+
+    servicesData = (await Promise.race([
+      getAllServices(1),
+      timeoutPromise,
+    ])) as ServicesApiResponse;
   } catch (error) {
     console.error("Failed to fetch services:", error);
   }

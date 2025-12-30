@@ -7,11 +7,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { secneedle } from "@/public/assests/image";
 import { useAuth } from "@/app/lib/hooks/useAuths";
 import { logout } from "@/app/lib/features/auth/authSlice";
+import { useLocale, useTranslations } from "next-intl";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("ENG");
+  const t = useTranslations("nav");
 
   const languageRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -19,15 +21,27 @@ export const Navbar = () => {
 
   const { isAuthenticated, user } = useAuth();
 
+  const locale = useLocale();
+
+  useEffect(() => {
+    const reverseLocaleMap: Record<string, string> = {
+      en: "ENG",
+      fr: "FR",
+      es: "ES",
+    };
+
+    setSelectedLanguage(reverseLocaleMap[locale]);
+  }, [locale]);
+
   // Navigation items with their routes
   const navItems = [
-    { name: "Home", href: "/" },
-    { name: "Blog", href: "/pages/blogScreen" },
-    { name: "Video Streams", href: "/pages/videoScreen" },
-    { name: "Services", href: "/pages/servicesScreen" },
-    { name: "Portfolio", href: "/pages/portfolioScreen" },
-    { name: "Activities", href: "/pages/activityScreen" },
-    { name: "About Us", href: "/pages/contactScreen" },
+    { key: "home", href: `/${locale}` },
+    { key: "blog", href: `/${locale}/pages/blogScreen` },
+    { key: "videos", href: `/${locale}/pages/videoScreen` },
+    { key: "services", href: `/${locale}/pages/servicesScreen` },
+    { key: "portfolio", href: `/${locale}/pages/portfolioScreen` },
+    { key: "activities", href: `/${locale}/pages/activityScreen` },
+    { key: "about", href: `/${locale}/pages/contactScreen` },
   ];
 
   // Helper function to check if nav item is active
@@ -42,15 +56,14 @@ export const Navbar = () => {
   const languages = [
     { code: "ENG", name: "English", flag: "🇺🇸" },
     { code: "FR", name: "French", flag: "🇫🇷" },
-    { code: "PT", name: "Portuguese", flag: "🇵🇹" },
+    { code: "ES", name: "Spanish", flag: "🇪🇸" },
   ];
 
   const localeMap: Record<string, string> = {
     ENG: "en",
     FR: "fr",
-    PT: "pt",
+    ES: "es",
   };
-
   // Close language dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,7 +102,7 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    router.push("/");
+    router.push(`/${locale}`);
   };
 
   return (
@@ -99,7 +112,7 @@ export const Navbar = () => {
           {/* Logo Section */}
           <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
             <Link
-              href="/"
+              href={`/${locale}`}
               className="rounded-full flex items-center justify-center overflow-hidden"
             >
               <Image
@@ -110,13 +123,11 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Navigation - Show hamburger for breakpoints 767px - 1536px */}
-
           {/* Desktop (1536px+): Full navigation with all items */}
           <div className="hidden min-[1536px]:flex items-center space-x-6 font-times flex-1 justify-center cursor-pointer">
             {navItems.map((item) => (
               <Link
-                key={item.name}
+                key={item.key}
                 href={item.href}
                 className={`transition-colors duration-200 font-medium relative group text-base whitespace-nowrap px-3 py-1.5 ${
                   isActive(item.href)
@@ -124,7 +135,7 @@ export const Navbar = () => {
                     : "text-white hover:text-blue-200"
                 }`}
               >
-                {item.name}
+                {t(item.key)}
                 <span
                   className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 ${
                     isActive(item.href) ? "w-full" : "w-0 group-hover:w-full"
@@ -198,19 +209,19 @@ export const Navbar = () => {
                     />
                     <span className="text-sm font-medium">{user?.name}</span>
                   </div>
-                  <button
+                  {/* <button
                     onClick={handleLogout}
                     className="text-white hover:text-red-300 transition-colors duration-200 font-medium px-4 py-2 text-base"
                   >
                     Logout
-                  </button>
+                  </button> */}
                 </div>
               ) : (
                 <Link
                   href="/pages/blogScreen"
                   className="text-white hover:text-blue-200 transition-colors duration-200 font-medium px-4 py-2 text-base"
                 >
-                  Login
+                  {/* Login */}
                 </Link>
               )}
             </div>
@@ -238,7 +249,7 @@ export const Navbar = () => {
               <div className="space-y-1">
                 {navItems.map((item) => (
                   <Link
-                    key={item.name}
+                    key={item.key}
                     href={item.href}
                     className={`block px-4 py-3 rounded-lg transition-colors duration-200 font-medium text-sm sm:text-base relative ${
                       isActive(item.href)
@@ -247,7 +258,7 @@ export const Navbar = () => {
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    {item.name}
+                    {t(item.key)}
                     {isActive(item.href) && (
                       <span className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r"></span>
                     )}
@@ -279,7 +290,7 @@ export const Navbar = () => {
                       }}
                       className="w-full bg-red-500 hover:bg-red-600 text-white transition-colors duration-200 font-medium px-6 py-3 rounded-lg text-sm sm:text-base"
                     >
-                      Logout
+                      {t("logout")}
                     </button>
                   </div>
                 ) : (
@@ -288,7 +299,7 @@ export const Navbar = () => {
                     onClick={() => setIsMenuOpen(false)}
                     className="block w-full text-center px-6 py-3 bg-white text-primary-nav hover:bg-gray-100 transition-colors duration-200 font-medium rounded-lg text-sm sm:text-base"
                   >
-                    Login
+                    {/* {t("login")} */}
                   </Link>
                 )}
               </div>

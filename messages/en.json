@@ -15,5 +15,14 @@
     "welcome0": "Welcome to",
     "welcome1": "Secneedle is a carefully organised online directory website for the learning of cyber security. It's an all-in-one niche source for people searching for cyber security products, courses, resources, or any other providers in the cyber security sector.",
     "welcome2": "Secneedle"
+  },
+  "nav": {
+    "about": "About Us",
+    "activities": "Activites",
+    "blog": "Blog",
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "services": "Services",
+    "videos": "Video Streams"
   }
 }

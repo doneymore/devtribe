@@ -3,15 +3,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-import BlogDetailPage from "@/app/component/reusable/blog/blogDetails/blogdetail";
+// import BlogDetailPage from "@/app/component/reusable/blog/blogDetails/blogdetail";
 import { BlogPost, BlogComment } from "@/app/lib/blogServices";
 import { getBlogPostById } from "@/app/lib/blogServices";
 import { formatBlogDate } from "@/app/utils/dateformatter";
 import { getImageSrc } from "@/app/utils/convertBase64toImage";
+import BlogDetailPage from "@/app/[locale]/component/reusable/blog/blogDetails/blogdetail";
+import { useLocale } from "next-intl";
+import { useSelector } from "react-redux";
+import { selectBlogUserId } from "@/app/lib/features/auth/blogSlice";
 
 const BlogDetailPageRoute = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
+  const locale = useLocale();
+  const blogUserId = useSelector(selectBlogUserId);
 
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +34,7 @@ const BlogDetailPageRoute = () => {
           return;
         }
 
-        const blogPost = await getBlogPostById(params.id);
+     const blogPost = await getBlogPostById(params.id, blogUserId || undefined);
 
         if (blogPost) {
           setPost(blogPost);
@@ -71,7 +77,7 @@ const BlogDetailPageRoute = () => {
           The blog post you're looking for doesn't exist.
         </p>
         <button
-          onClick={() => router.push("/pages/blogScreen")}
+          onClick={() => router.push(`/${locale}/pages/blogScreen`)}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Back to Blog
@@ -95,7 +101,7 @@ const BlogDetailPageRoute = () => {
   /* ================= POST TRANSFORM ================= */
 
   const transformedPost = {
-     id: post.blogId,
+    id: post.blogId,
     imageUrl: getValidImageUrl() ?? "",
     title: post.blogTItle,
     author: {
@@ -105,7 +111,7 @@ const BlogDetailPageRoute = () => {
     publishedDate: formatBlogDate(post.dateCreated),
     content: post.blogBody,
     likes: post.likes,
-    isLiked: false,
+    isLiked: post.hasCurrentUserLiked ?? false,
   };
 
   /* ================= COMMENTS TRANSFORM ================= */
@@ -129,7 +135,7 @@ const BlogDetailPageRoute = () => {
     <BlogDetailPage
       post={transformedPost}
       comments={transformedComments}
-      onBack={() => router.push("/pages/blogScreen")}
+      onBack={() => router.push(`/${locale}/pages/blogScreen`)}
     />
   );
 };
